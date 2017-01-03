@@ -1,0 +1,9 @@
+[Unit]
+Description=Rauc Good-marking Service
+
+[Service]
+ExecStart=@BINDIR@/rauc status mark-good
+
+[Install]
+WantedBy=multi-user.target
+
