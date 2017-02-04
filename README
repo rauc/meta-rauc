@@ -1,5 +1,5 @@
-This README file contains information on the contents of the
-rauc layer.
+The meta-rauc layer provides support for integrating the RAUC update tool
+into your device.
 
 Please see the corresponding sections below for details.
 
@@ -16,31 +16,31 @@ This layer depends on:
   layers: meta
   branch: master
 
-  URI: git://git.yoctoproject.org/xxxx
-  layers: xxxx
+  URI: git://git.yoctoproject.org/meta-oe
+  layers: meta-oe
   branch: master
 
 
 Patches
 =======
 
-Please submit any patches against the rauc layer to the
-xxxx mailing list (xxxx@zzzz.org) and cc: the maintainer:
+Please submit patches via GitHub pull request on https://github.com/rauc/meta-rauc
 
-Maintainer: XXX YYYYYY <xxx.yyyyyy@zzzzz.com>
+Maintainer: Enrico Joerns <ejo@pengutronix.de>
 
 
 Table of Contents
 =================
 
   I. Adding the rauc layer to your build
- II. Misc
+ II. Building RAUC
+III. Adding the RAUC update framework to your device
+ IV. Configure Custom Kernel
+  V. References
 
 
-I. Adding the rauc layer to your build
-=================================================
-
---- replace with specific instructions for the rauc layer ---
+I. Adding the rauc Layer to your Build
+======================================
 
 In order to use this layer, you need to make the build system aware of
 it.
@@ -58,7 +58,68 @@ other layers needed. e.g.:
     "
 
 
-II. Misc
-========
+II. Building RAUC
+=================
 
---- replace with specific information about the rauc layer ---
+If you only intend to build the RAUC host tool, you may simply run
+
+  bitbake rauc-native
+
+This will place the rauc binary at tmp/deploy/tools/rauc.
+
+III. Adding the RAUC update framework to your device
+====================================================
+
+To prepare your device for using RAUC as its update handler,
+you have to follow at least the following steps:
+
+1. Add the `rauc` package to your systems image recipe:
+
+  IMAGE_INSTALL_append = " rauc"
+
+2. Add a rauc_%.bbappend in your device-specific (BSP) layer
+that installs your RAUC system configuration file under
+/etc/rauc/system.conf. For information on how to write the RAUC
+update file, please refer to the RAUC user documentation [1].
+
+  FILESEXTRAPATHS_prepend := "${THISDIR}/files:"
+  SRC_URI_append := " file://system.conf"
+
+3. Create a bundle recipe for your device by adding a recipe
+that inherits the `bundle` class and adds all desired
+configuration.
+
+  inherit bundle
+
+  RAUC_BUNDLE_SLOTS = "rootfs"
+  RAUC_SLOT_rootfs = "my-rootfs-recipe"
+
+  RAUC_KEY_FILE="path/to/development-1.key.pem"
+  RAUC_CERT_FILE="path/to/development-1.key.pem"
+
+For information on how to generate and use the key and certificate files,
+please refert to the RAUC user documentation [1].
+
+For a more detailed explanation on the required and available variables,
+read the notes in the bundle.bbclass file.
+
+4. Build a bundle and the rootfs for your device
+
+  bitbake my-bundle-recipe
+
+IV. Configure Custom Kernel
+===========================
+
+In order to use RAUC on your system, the kernel must support SquashFS and loop
+mounts. For the standard yocto kernel, the meta-rauc layer provides a kernel
+configuration fragment that enables the config options required for this.
+
+If you build your own kernel with a full custom `defconfig` file, you have to
+make sure that you have the options enabled in
+`recipes-kernel/linux/linux-yocto/rauc.cfg` are enabled in your configuration,
+too.
+
+V. References
+=============
+
+[1] RAUC user documentation http://rauc.readthedocs.io/en/latest/
