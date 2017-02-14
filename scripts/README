@@ -1,0 +1,38 @@
+Generate Testing Certificate
+----------------------------
+
+The script `openssl-ca.sh` allows you to create a certifikate and key that you
+can use for a test-setup of RAUC.
+
+To generate the required files, execute
+
+  ./openssl-ca.sh
+
+This will generate a folder `openssl-ca/` that contains the generated openssl
+configuration file and a development certificate and key.
+
+To use them in you BSP to in order to sign and verify bundles, you have to:
+
+1) Make the target rauc package use the generated keyring file:
+
+   Copy the keyring file `dev/ca.cert.pem` into your projects meta layer under
+   `recipes-core/rauc/files` and add a simple rauc .bbappend file
+   `recipes-core/rauc/rauc_%.bbappend` that adds the keyring file to the rauc
+   package search path:
+
+     FILESEXTRAPATHS_prepend := "${THISDIR}/files:"
+
+2) Make your bundle recipe use the generated key and certificate:
+
+   Copy the key file `dev/private/development-1.key.pem` and the cert file
+   `dev/development-1.cert.pem` to your projects meta layer in a global `files`
+   folder.
+
+   In your bundle recipe, let the variables `RAUC_KEY_FILE` and `RAUC_CERT_FILE`
+   point to these key and cert files:
+
+     RAUC_KEY_FILE = "${COREBASE}/meta-<layername>/files/development-1.key.pem"
+     RAUC_CERT_FILE = "${COREBASE}/meta-<layername>/files/development-1.cert.pem"
+
+Now you are able to build and sign bundles that contain a rootfs that will
+allow RAUC to verify the content of further bundles.
