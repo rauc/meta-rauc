@@ -39,7 +39,7 @@ III. Adding the RAUC update framework to your device
   V. References
 
 
-I. Adding the rauc Layer to your Build
+I. Adding the rauc Layer to Your Build
 ======================================
 
 In order to use this layer, you need to make the build system aware of
@@ -67,7 +67,8 @@ If you only intend to build the RAUC host tool, you may simply run
 
 This will place the rauc binary at tmp/deploy/tools/rauc.
 
-III. Adding the RAUC update framework to your device
+
+III. Adding the RAUC Update Framework to Your Device
 ====================================================
 
 To prepare your device for using RAUC as its update handler,
@@ -107,6 +108,7 @@ read the notes in the bundle.bbclass file.
 
   bitbake my-bundle-recipe
 
+
 IV. Configure Custom Kernel
 ===========================
 
@@ -115,9 +117,9 @@ mounts. For the standard yocto kernel, the meta-rauc layer provides a kernel
 configuration fragment that enables the config options required for this.
 
 If you build your own kernel with a full custom `defconfig` file, you have to
-make sure that you have the options enabled in
-`recipes-kernel/linux/linux-yocto/rauc.cfg` are enabled in your configuration,
-too.
+make sure that the options in `recipes-kernel/linux/linux-yocto/rauc.cfg` are
+enabled in your configuration, too.
+
 
 V. References
 =============
