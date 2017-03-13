@@ -1,7 +1,7 @@
 Generate Testing Certificate
 ----------------------------
 
-The script `openssl-ca.sh` allows you to create a certifikate and key that you
+The script `openssl-ca.sh` allows you to create a certificate and key that you
 can use for a test-setup of RAUC.
 
 To generate the required files, execute
@@ -11,7 +11,7 @@ To generate the required files, execute
 This will generate a folder `openssl-ca/` that contains the generated openssl
 configuration file and a development certificate and key.
 
-To use them in you BSP to in order to sign and verify bundles, you have to:
+To use them in your BSP in order to sign and verify bundles, you have to:
 
 1) Make the target rauc package use the generated keyring file:
 
