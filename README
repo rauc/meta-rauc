@@ -95,11 +95,11 @@ configuration.
   RAUC_BUNDLE_SLOTS = "rootfs"
   RAUC_SLOT_rootfs = "my-rootfs-recipe"
 
-  RAUC_KEY_FILE="path/to/development-1.key.pem"
-  RAUC_CERT_FILE="path/to/development-1.key.pem"
+  RAUC_KEY_FILE = "path/to/development-1.key.pem"
+  RAUC_CERT_FILE = "path/to/development-1.cert.pem"
 
 For information on how to generate and use the key and certificate files,
-please refert to the RAUC user documentation [1].
+please refer to the RAUC user documentation [1].
 
 For a more detailed explanation on the required and available variables,
 read the notes in the bundle.bbclass file.
