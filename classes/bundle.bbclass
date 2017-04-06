@@ -74,7 +74,7 @@ python __anonymous () {
         bb.fatal("'RAUC_CERT_FILE' not set. Please set to a valid certificate file location.")
 }
 
-DEPENDS = "rauc-native"
+DEPENDS = "rauc-native squashfs-tools-native"
 
 python do_fetch() {
     import shutil
