@@ -36,7 +36,7 @@ LICENSE = "MIT"
 
 PACKAGE_ARCH = "${MACHINE_ARCH}"
 
-RAUC_IMAGE_FSTYPE ?= "ext4"
+RAUC_IMAGE_FSTYPE ??= "${@(d.getVar('IMAGE_FSTYPES', True) or "").split()[0]}"
 
 do_fetch[cleandirs] = "${S}"
 do_patch[noexec] = "1"
