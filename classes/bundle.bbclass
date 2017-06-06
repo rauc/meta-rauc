@@ -63,8 +63,8 @@ do_fetch[depends] = "${@' '.join([d.getVar(image, True) + ":do_image_complete" f
 
 S = "${WORKDIR}"
 
-RAUC_KEY_FILE ?= ""
-RAUC_CERT_FILE ?= ""
+RAUC_KEY_FILE ??= ""
+RAUC_CERT_FILE ??= ""
 
 python __anonymous () {
     if not d.getVar('RAUC_KEY_FILE', True):
