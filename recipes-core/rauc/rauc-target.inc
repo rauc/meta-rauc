@@ -1,6 +1,8 @@
+RAUC_KEYRING_FILE ??= "file://ca.cert.pem"
+
 SRC_URI_append = " \
   file://system.conf \
-  file://ca.cert.pem \
+  ${RAUC_KEYRING_FILE} \
   file://rauc-mark-good.service \
   "
 
