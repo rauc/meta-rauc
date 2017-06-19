@@ -1,8 +1,9 @@
-RAUC_KEYRING_FILE ??= "file://ca.cert.pem"
+RAUC_KEYRING_FILE ??= "ca.cert.pem"
+RAUC_KEYRING_URI ??= "file://${RAUC_KEYRING_FILE}"
 
 SRC_URI_append = " \
   file://system.conf \
-  ${RAUC_KEYRING_FILE} \
+  ${RAUC_KEYRING_URI} \
   file://rauc-mark-good.service \
   "
 
@@ -23,11 +24,11 @@ do_install () {
         install -m 0644 ${WORKDIR}/system.conf ${D}${sysconfdir}/rauc/system.conf
 
         # Warn if CA file was not overwritten
-        if ! grep -q "^[^#]" ${WORKDIR}/ca.cert.pem; then
-                bbwarn "Please overwrite example ca.cert.pem with a project specific one!"
+        if ! grep -q "^[^#]" ${WORKDIR}/${RAUC_KEYRING_FILE}; then
+                bbwarn "Please overwrite example ca.cert.pem with a project specific one, or set the RAUC_KEYRING_FILE varibale with your file!"
         fi
         install -d ${D}${sysconfdir}/rauc/
-        install -m 0644 ${WORKDIR}/ca.cert.pem ${D}${sysconfdir}/rauc/
+        install -m 0644 ${WORKDIR}/${RAUC_KEYRING_FILE} ${D}${sysconfdir}/rauc/
 
         install -d ${D}${systemd_unitdir}/system/
         install -m 0644 ${WORKDIR}/rauc-mark-good.service ${D}${systemd_unitdir}/system/
