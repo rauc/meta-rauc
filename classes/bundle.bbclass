@@ -58,7 +58,7 @@ RAUC_BUNDLE_BUILD       ??= "${DATETIME}"
 RAUC_BUNDLE_BUILD[vardepsexclude] = "DATETIME"
 
 # Create dependency list from images
-do_fetch[depends] = "${@' '.join([d.getVar(image, True) + ":do_image_complete" for image in \
+do_fetch[depends] = "${@' '.join([d.getVar(image, True) + ":do_build" for image in \
     ['RAUC_SLOT_' + slot for slot in d.getVar('RAUC_BUNDLE_SLOTS', True).split()]])}"
 
 S = "${WORKDIR}"
