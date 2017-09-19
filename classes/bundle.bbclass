@@ -112,7 +112,7 @@ python do_fetch() {
             manifest.write("hooks=%s\n" % hooksflags.get('hooks'))
         manifest.write('\n')
 
-    for slot in d.getVar('RAUC_BUNDLE_SLOTS').split():
+    for slot in (d.getVar('RAUC_BUNDLE_SLOTS') or "").split():
         manifest.write('[image.%s]\n' % slot)
         slotflags = d.getVarFlags('RAUC_SLOT_%s' % slot)
         if slotflags and 'type' in slotflags:
