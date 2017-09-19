@@ -58,8 +58,16 @@ RAUC_BUNDLE_BUILD       ??= "${DATETIME}"
 RAUC_BUNDLE_BUILD[vardepsexclude] = "DATETIME"
 
 # Create dependency list from images
-do_fetch[depends] = "${@' '.join([d.getVar(image) + ":do_image_complete" for image in \
-    ['RAUC_SLOT_' + slot for slot in d.getVar('RAUC_BUNDLE_SLOTS').split()]])}"
+python __anonymous() {
+    for slot in (d.getVar('RAUC_BUNDLE_SLOTS') or "").split():
+        slotflags = d.getVarFlags('RAUC_SLOT_%s' % slot)
+        imgtype = slotflags.get('type') if slotflags else None
+        image = d.getVar('RAUC_SLOT_%s' % slot)
+        if imgtype == 'kernel' or imgtype == 'boot':
+            d.appendVarFlag('do_fetch', 'depends', ' ' + image + ':do_deploy')
+        else:
+            d.appendVarFlag('do_fetch', 'depends', ' ' + image + ':do_image_complete')
+}
 
 S = "${WORKDIR}"
 
