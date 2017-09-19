@@ -69,7 +69,7 @@ python __anonymous() {
             d.appendVarFlag('do_fetch', 'depends', ' ' + image + ':do_image_complete')
 }
 
-S = "${WORKDIR}"
+S = "${WORKDIR}/bundle"
 
 RAUC_KEY_FILE ??= ""
 RAUC_CERT_FILE ??= ""
@@ -89,7 +89,7 @@ python do_fetch() {
 
     machine = d.getVar('MACHINE')
     img_fstype = d.getVar('RAUC_IMAGE_FSTYPE')
-    bundle_path = d.expand("${S}/bundle")
+    bundle_path = d.expand("${S}")
 
     bb.utils.mkdirhier(bundle_path)
     try:
@@ -171,7 +171,7 @@ do_unpack_append() {
     hooksflags = d.getVarFlags('RAUC_BUNDLE_HOOKS')
     if hooksflags and 'file' in hooksflags:
         hf = hooksflags.get('file')
-        dsthook = d.expand("${S}/bundle/%s" % hf)
+        dsthook = d.expand("${S}/%s" % hf)
         shutil.copy(d.expand("${WORKDIR}/%s" % hf), dsthook)
         st = os.stat(dsthook)
         os.chmod(dsthook, st.st_mode | stat.S_IEXEC)
@@ -190,7 +190,7 @@ do_bundle() {
 	${STAGING_DIR_NATIVE}${bindir}/rauc bundle \
 		--cert=${RAUC_CERT_FILE} \
 		--key=${RAUC_KEY_FILE} \
-		${S}/bundle \
+		${S} \
 		${B}/bundle.raucb
 }
 
