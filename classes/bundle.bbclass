@@ -42,7 +42,7 @@ LICENSE = "MIT"
 
 PACKAGE_ARCH = "${MACHINE_ARCH}"
 
-RAUC_IMAGE_FSTYPE ??= "${@(d.getVar('IMAGE_FSTYPES') or "").split()[0]}"
+RAUC_IMAGE_FSTYPE ??= "${@(d.getVar('IMAGE_FSTYPES', True) or "").split()[0]}"
 
 do_fetch[cleandirs] = "${S}"
 do_patch[noexec] = "1"
@@ -65,13 +65,13 @@ RAUC_BUNDLE_BUILD[vardepsexclude] = "DATETIME"
 
 # Create dependency list from images
 python __anonymous() {
-    for slot in (d.getVar('RAUC_BUNDLE_SLOTS') or "").split():
+    for slot in (d.getVar('RAUC_BUNDLE_SLOTS',True ) or "").split():
         slotflags = d.getVarFlags('RAUC_SLOT_%s' % slot)
         imgtype = slotflags.get('type') if slotflags else None
         if not imgtype:
             bb.debug(1, "No [type] given for slot '%s', defaulting to 'image'" % slot)
             imgtype = 'image'
-        image = d.getVar('RAUC_SLOT_%s' % slot)
+        image = d.getVar('RAUC_SLOT_%s' % slot, True)
 
         if not image:
             bb.error("No image set for slot '%s'. Specify via 'RAUC_SLOT_%s = \"<recipe-name>\"'" % (slot, slot))
@@ -98,8 +98,8 @@ DEPENDS = "rauc-native squashfs-tools-native"
 def write_manifest(d):
     import shutil
 
-    machine = d.getVar('MACHINE')
-    img_fstype = d.getVar('RAUC_IMAGE_FSTYPE')
+    machine = d.getVar('MACHINE', True)
+    img_fstype = d.getVar('RAUC_IMAGE_FSTYPE', True)
     bundle_path = d.expand("${S}")
 
     bb.utils.mkdirhier(bundle_path)
@@ -123,7 +123,7 @@ def write_manifest(d):
             manifest.write("hooks=%s\n" % hooksflags.get('hooks'))
         manifest.write('\n')
 
-    for slot in (d.getVar('RAUC_BUNDLE_SLOTS') or "").split():
+    for slot in (d.getVar('RAUC_BUNDLE_SLOTS', True) or "").split():
         slotflags = d.getVarFlags('RAUC_SLOT_%s' % slot)
         if slotflags and 'name' in slotflags:
             imgname = slotflags.get('name')
@@ -139,12 +139,12 @@ def write_manifest(d):
             img_fstype = slotflags.get('fstype')
 
         if imgtype == 'image':
-            imgsource = "%s-%s.%s" % (d.getVar('RAUC_SLOT_%s' % slot), machine, img_fstype)
+            imgsource = "%s-%s.%s" % (d.getVar('RAUC_SLOT_%s' % slot, True), machine, img_fstype)
             imgname = imgsource
         elif imgtype == 'kernel':
             # TODO: Add image type support
             if slotflags and 'file' in slotflags:
-                imgsource = d.getVarFlag('RAUC_SLOT_%s' % slot, 'file')
+                imgsource = d.getVarFlag('RAUC_SLOT_%s' % slot, 'file', True)
             else:
                 imgsource = "%s-%s.bin" % ("zImage", machine)
             imgname = "%s.%s" % (imgsource, "img")
@@ -156,7 +156,7 @@ def write_manifest(d):
             imgname = imgsource
         elif imgtype == 'file':
             if slotflags and 'file' in slotflags:
-                imgsource = d.getVarFlag('RAUC_SLOT_%s' % slot, 'file')
+                imgsource = d.getVarFlag('RAUC_SLOT_%s' % slot, 'file', True)
             else:
                 raise bb.build.FuncFailed('Unknown file for slot: %s' % slot)
             imgname = "%s.%s" % (imgsource, "img")
