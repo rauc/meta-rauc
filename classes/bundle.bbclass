@@ -36,7 +36,7 @@ LICENSE = "MIT"
 
 PACKAGE_ARCH = "${MACHINE_ARCH}"
 
-RAUC_IMAGE_FSTYPE ??= "${@(d.getVar('IMAGE_FSTYPES', True) or "").split()[0]}"
+RAUC_IMAGE_FSTYPE ??= "${@(d.getVar('IMAGE_FSTYPES') or "").split()[0]}"
 
 do_fetch[cleandirs] = "${S}"
 do_patch[noexec] = "1"
@@ -58,8 +58,8 @@ RAUC_BUNDLE_BUILD       ??= "${DATETIME}"
 RAUC_BUNDLE_BUILD[vardepsexclude] = "DATETIME"
 
 # Create dependency list from images
-do_fetch[depends] = "${@' '.join([d.getVar(image, True) + ":do_image_complete" for image in \
-    ['RAUC_SLOT_' + slot for slot in d.getVar('RAUC_BUNDLE_SLOTS', True).split()]])}"
+do_fetch[depends] = "${@' '.join([d.getVar(image) + ":do_image_complete" for image in \
+    ['RAUC_SLOT_' + slot for slot in d.getVar('RAUC_BUNDLE_SLOTS').split()]])}"
 
 S = "${WORKDIR}"
 
@@ -67,10 +67,10 @@ RAUC_KEY_FILE ??= ""
 RAUC_CERT_FILE ??= ""
 
 python __anonymous () {
-    if not d.getVar('RAUC_KEY_FILE', True):
+    if not d.getVar('RAUC_KEY_FILE'):
         bb.fatal("'RAUC_KEY_FILE' not set. Please set to a valid key file location.")
 
-    if not d.getVar('RAUC_CERT_FILE', True):
+    if not d.getVar('RAUC_CERT_FILE'):
         bb.fatal("'RAUC_CERT_FILE' not set. Please set to a valid certificate file location.")
 }
 
@@ -79,8 +79,8 @@ DEPENDS = "rauc-native squashfs-tools-native"
 python do_fetch() {
     import shutil
 
-    machine = d.getVar('MACHINE', True)
-    img_fstype = d.getVar('RAUC_IMAGE_FSTYPE', True)
+    machine = d.getVar('MACHINE')
+    img_fstype = d.getVar('RAUC_IMAGE_FSTYPE')
     bundle_path = d.expand("${S}/bundle")
 
     bb.utils.mkdirhier(bundle_path)
@@ -104,7 +104,7 @@ python do_fetch() {
             manifest.write("hooks=%s\n" % hooksflags.get('hooks'))
         manifest.write('\n')
 
-    for slot in d.getVar('RAUC_BUNDLE_SLOTS', True).split():
+    for slot in d.getVar('RAUC_BUNDLE_SLOTS').split():
         manifest.write('[image.%s]\n' % slot)
         slotflags = d.getVarFlags('RAUC_SLOT_%s' % slot)
         if slotflags and 'type' in slotflags:
@@ -116,12 +116,12 @@ python do_fetch() {
             img_fstype = slotflags.get('fstype')
 
         if imgtype == 'image':
-            imgsource = "%s-%s.%s" % (d.getVar('RAUC_SLOT_%s' % slot, True), machine, img_fstype)
+            imgsource = "%s-%s.%s" % (d.getVar('RAUC_SLOT_%s' % slot), machine, img_fstype)
             imgname = imgsource
         elif imgtype == 'kernel':
             # TODO: Add image type support
             if slotflags and 'file' in slotflags:
-                imgsource = d.getVarFlag('RAUC_SLOT_%s' % slot, 'file', True)
+                imgsource = d.getVarFlag('RAUC_SLOT_%s' % slot, 'file')
             else:
                 imgsource = "%s-%s.bin" % ("zImage", machine)
             imgname = "%s.%s" % (imgsource, "img")
@@ -131,7 +131,7 @@ python do_fetch() {
             imgname = imgsource
         elif imgtype == 'file':
             if slotflags and 'file' in slotflags:
-                imgsource = d.getVarFlag('RAUC_SLOT_%s' % slot, 'file', True)
+                imgsource = d.getVarFlag('RAUC_SLOT_%s' % slot, 'file')
             else:
                 raise bb.build.FuncFailed('Unknown file for slot: %s' % slot)
             imgname = "%s.%s" % (imgsource, "img")
