@@ -177,9 +177,6 @@ do_unpack_append() {
         os.chmod(dsthook, st.st_mode | stat.S_IEXEC)
 }
 
-DEPLOY_DIR_BUNDLE ?= "${DEPLOY_DIR_IMAGE}/bundles"
-DEPLOY_DIR_BUNDLE[doc] = "Points to where rauc bundles will be put in"
-
 BUNDLE_BASENAME = "${PN}"
 BUNDLE_NAME = "${BUNDLE_BASENAME}-${MACHINE}-${DATETIME}"
 # Don't include the DATETIME variable in the sstate package sigantures
@@ -197,12 +194,19 @@ do_bundle() {
 		${B}/bundle.raucb
 }
 
+addtask bundle after do_configure before do_build
+
+inherit deploy
+
 do_deploy() {
-	install -d ${DEPLOY_DIR_BUNDLE}
-	install ${B}/bundle.raucb ${DEPLOY_DIR_BUNDLE}/${BUNDLE_NAME}.raucb
-	ln -sf ${BUNDLE_NAME}.raucb ${DEPLOY_DIR_BUNDLE}/${BUNDLE_LINK_NAME}.raucb
+	if [ -d ${DEPLOY_DIR_IMAGE}/bundles ]; then
+		bbwarn "old-style 'bundles/' deploy subdirectory detected! Note hat newly generated bundles will be installed into root image deploy dir instead."
+	fi
+	install -d ${DEPLOYDIR}
+	install ${B}/bundle.raucb ${DEPLOYDIR}/${BUNDLE_NAME}.raucb
+	ln -sf ${BUNDLE_NAME}.raucb ${DEPLOYDIR}/${BUNDLE_LINK_NAME}.raucb
 }
 
-addtask bundle after do_configure before do_build
 addtask deploy after do_bundle before do_build
 
+do_deploy[cleandirs] = "${DEPLOYDIR}"
