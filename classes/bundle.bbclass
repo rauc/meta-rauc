@@ -38,7 +38,7 @@ PACKAGE_ARCH = "${MACHINE_ARCH}"
 
 RAUC_IMAGE_FSTYPE ??= "${@(d.getVar('IMAGE_FSTYPES') or "").split()[0]}"
 
-do_fetch[cleandirs] = "${S}"
+do_stage[cleandirs] = "${S}"
 do_patch[noexec] = "1"
 do_configure[noexec] = "1"
 do_compile[noexec] = "1"
@@ -64,9 +64,9 @@ python __anonymous() {
         imgtype = slotflags.get('type') if slotflags else None
         image = d.getVar('RAUC_SLOT_%s' % slot)
         if imgtype == 'kernel' or imgtype == 'boot':
-            d.appendVarFlag('do_fetch', 'depends', ' ' + image + ':do_deploy')
+            d.appendVarFlag('do_stage', 'depends', ' ' + image + ':do_deploy')
         else:
-            d.appendVarFlag('do_fetch', 'depends', ' ' + image + ':do_image_complete')
+            d.appendVarFlag('do_stage', 'depends', ' ' + image + ':do_image_complete')
 }
 
 S = "${WORKDIR}"
@@ -84,7 +84,7 @@ python __anonymous () {
 
 DEPENDS = "rauc-native squashfs-tools-native"
 
-python do_fetch() {
+python do_stage() {
     import shutil
 
     machine = d.getVar('MACHINE')
@@ -203,6 +203,7 @@ do_deploy() {
 	ln -sf ${BUNDLE_NAME}.raucb ${DEPLOY_DIR_BUNDLE}/${BUNDLE_LINK_NAME}.raucb
 }
 
+addtask stage  after do_fetch before do_unpack
 addtask bundle after do_configure before do_build
 addtask deploy after do_bundle before do_build
 
