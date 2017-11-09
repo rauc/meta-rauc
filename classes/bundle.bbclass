@@ -64,9 +64,9 @@ python __anonymous() {
         imgtype = slotflags.get('type') if slotflags else None
         image = d.getVar('RAUC_SLOT_%s' % slot)
         if imgtype == 'kernel' or imgtype == 'boot':
-            d.appendVarFlag('do_fetch', 'depends', ' ' + image + ':do_deploy')
+            d.appendVarFlag('do_unpack', 'depends', ' ' + image + ':do_deploy')
         else:
-            d.appendVarFlag('do_fetch', 'depends', ' ' + image + ':do_image_complete')
+            d.appendVarFlag('do_unpack', 'depends', ' ' + image + ':do_image_complete')
 }
 
 S = "${WORKDIR}/bundle"
