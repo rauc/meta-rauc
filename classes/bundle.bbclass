@@ -84,7 +84,7 @@ python __anonymous () {
 
 DEPENDS = "rauc-native squashfs-tools-native"
 
-python do_fetch() {
+def write_manifest(d):
     import shutil
 
     machine = d.getVar('MACHINE')
@@ -161,12 +161,13 @@ python do_fetch() {
             raise bb.build.FuncFailed('Failed creating symlink to %s' % imgname)
 
     manifest.close()
-}
 
 do_unpack_append() {
     import shutil
     import os
     import stat
+
+    write_manifest(d)
 
     hooksflags = d.getVarFlags('RAUC_BUNDLE_HOOKS')
     if hooksflags and 'file' in hooksflags:
