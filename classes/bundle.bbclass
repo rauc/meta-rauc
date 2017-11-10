@@ -24,7 +24,7 @@
 #
 #   RAUC_SLOT_dtb ?= linux-yocto
 #   RAUC_SLOT_dtb[type] ?= "file"
-#   RAUC_SLOT_dtb[file] ?= "am335x-bone.dtb"
+#   RAUC_SLOT_dtb[file] ?= "${MACHINE}.dtb"
 #
 #
 # Additionally you need to provide a certificate and a key file
@@ -36,7 +36,7 @@ LICENSE = "MIT"
 
 PACKAGE_ARCH = "${MACHINE_ARCH}"
 
-RAUC_IMAGE_FSTYPE ?= "ext4"
+RAUC_IMAGE_FSTYPE ??= "${@(d.getVar('IMAGE_FSTYPES', True) or "").split()[0]}"
 
 do_fetch[cleandirs] = "${S}"
 do_patch[noexec] = "1"
@@ -63,8 +63,8 @@ do_fetch[depends] = "${@' '.join([d.getVar(image, True) + ":do_build" for image 
 
 S = "${WORKDIR}"
 
-RAUC_KEY_FILE ?= ""
-RAUC_CERT_FILE ?= ""
+RAUC_KEY_FILE ??= ""
+RAUC_CERT_FILE ??= ""
 
 python __anonymous () {
     if not d.getVar('RAUC_KEY_FILE', True):
@@ -121,7 +121,7 @@ python do_fetch() {
         elif imgtype == 'kernel':
             # TODO: Add image type support
             if slotflags and 'file' in slotflags:
-                imgsource = "%s" % slotflags.get('file')
+                imgsource = d.getVarFlag('RAUC_SLOT_%s' % slot, 'file', True)
             else:
                 imgsource = "%s-%s.bin" % ("zImage", machine)
             imgname = "%s.%s" % (imgsource, "img")
@@ -131,7 +131,7 @@ python do_fetch() {
             imgname = imgsource
         elif imgtype == 'file':
             if slotflags and 'file' in slotflags:
-                imgsource = "%s" % slotflags.get('file')
+                imgsource = d.getVarFlag('RAUC_SLOT_%s' % slot, 'file', True)
             else:
                 raise bb.build.FuncFailed('Unknown file for slot: %s' % slot)
             imgname = "%s.%s" % (imgsource, "img")
