@@ -74,14 +74,6 @@ S = "${WORKDIR}/bundle"
 RAUC_KEY_FILE ??= ""
 RAUC_CERT_FILE ??= ""
 
-python __anonymous () {
-    if not d.getVar('RAUC_KEY_FILE'):
-        bb.fatal("'RAUC_KEY_FILE' not set. Please set to a valid key file location.")
-
-    if not d.getVar('RAUC_CERT_FILE'):
-        bb.fatal("'RAUC_CERT_FILE' not set. Please set to a valid certificate file location.")
-}
-
 DEPENDS = "rauc-native squashfs-tools-native"
 
 def write_manifest(d):
@@ -185,6 +177,14 @@ BUNDLE_NAME[vardepsexclude] = "DATETIME"
 BUNDLE_LINK_NAME = "${BUNDLE_BASENAME}-${MACHINE}"
 
 do_bundle() {
+	if [ -z "${RAUC_KEY_FILE}" ]; then
+		bbfatal "'RAUC_KEY_FILE' not set. Please set to a valid key file location."
+	fi
+
+	if [ -z "${RAUC_CERT_FILE}" ]; then
+		bbfatal "'RAUC_CERT_FILE' not set. Please set to a valid certificate file location."
+	fi
+
 	if [ -e ${B}/bundle.raucb ]; then
 		rm ${B}/bundle.raucb
 	fi
