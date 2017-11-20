@@ -20,6 +20,12 @@ This layer depends on:
   layers: meta-oe
   branch: master
 
+For rauc-hawkbit client:
+
+  URI: git://git.yoctoproject.org/meta-oe
+  layers: meta-python
+  branch: master
+
 
 Patches
 =======
@@ -35,8 +41,9 @@ Table of Contents
   I. Adding the rauc layer to your build
  II. Building RAUC
 III. Adding the RAUC update framework to your device
- IV. Configure Custom Kernel
-  V. References
+ IV. Building RAUC hawkBit Client
+  V. Configure Custom Kernel
+ VI. References
 
 
 I. Adding the rauc Layer to Your Build
@@ -108,8 +115,16 @@ read the notes in the bundle.bbclass file.
 
   bitbake my-bundle-recipe
 
+IV. Building RAUC hawkBit Client
+================================
 
-IV. Configure Custom Kernel
+To build the rauc-hawkbit client that allows interfacing between RAUC and a
+hawkBit deployment server, simply add `rauc-hawkbit` package to your systems
+image recipe:
+
+  IMAGE_INSTALL_append = " rauc-hawkbit"
+
+V. Configure Custom Kernel
 ===========================
 
 In order to use RAUC on your system, the kernel must support SquashFS and loop
@@ -121,7 +136,7 @@ make sure that the options in `recipes-kernel/linux/linux-yocto/rauc.cfg` are
 enabled in your configuration, too.
 
 
-V. References
-=============
+VI. References
+==============
 
 [1] RAUC user documentation http://rauc.readthedocs.io/en/latest/
