@@ -27,6 +27,11 @@
 #   RAUC_SLOT_dtb[type] ?= "file"
 #   RAUC_SLOT_dtb[file] ?= "${MACHINE}.dtb"
 #
+# To use a different image name, e.g. for variants
+#   RAUC_SLOT_dtb ?= linux-yocto
+#   RAUC_SLOT_dtb[name] ?= "dtb.my,compatible"
+#   RAUC_SLOT_dtb[type] ?= "file"
+#   RAUC_SLOT_dtb[file] ?= "${MACHINE}-variant1.dtb"
 #
 # Additionally you need to provide a certificate and a key file
 #
@@ -107,8 +112,12 @@ def write_manifest(d):
         manifest.write('\n')
 
     for slot in (d.getVar('RAUC_BUNDLE_SLOTS') or "").split():
-        manifest.write('[image.%s]\n' % slot)
         slotflags = d.getVarFlags('RAUC_SLOT_%s' % slot)
+        if slotflags and 'name' in slotflags:
+            imgname = slotflags.get('name')
+        else:
+            imgname = slot
+        manifest.write('[image.%s]\n' % imgname)
         if slotflags and 'type' in slotflags:
             imgtype = slotflags.get('type')
         else:
