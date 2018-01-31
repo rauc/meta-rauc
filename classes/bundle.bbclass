@@ -63,6 +63,10 @@ python __anonymous() {
         slotflags = d.getVarFlags('RAUC_SLOT_%s' % slot)
         imgtype = slotflags.get('type') if slotflags else None
         image = d.getVar('RAUC_SLOT_%s' % slot)
+
+        if imgtype is None:
+            bb.fatal('Please specify the type of the RAUC_SLOT_' + slot + ': ' + image )
+
         if imgtype == 'image':
             d.appendVarFlag('do_unpack', 'depends', ' ' + image + ':do_image_complete')
         else:
