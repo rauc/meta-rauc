@@ -21,6 +21,7 @@
 #   
 #   RAUC_SLOT_bootloader ?= "barebox"
 #   RAUC_SLOT_bootloader[type] ?= "boot"
+#   RAUC_SLOT_bootloader[file] ?= "barebox.img"
 #
 #   RAUC_SLOT_dtb ?= linux-yocto
 #   RAUC_SLOT_dtb[type] ?= "file"
@@ -127,8 +128,10 @@ def write_manifest(d):
                 imgsource = "%s-%s.bin" % ("zImage", machine)
             imgname = "%s.%s" % (imgsource, "img")
         elif imgtype == 'boot':
-            # TODO: adapt if barebox produces determinable output images
-            imgsource = "%s" % ("barebox.img")
+            if slotflags and 'file' in slotflags:
+                imgsource = d.getVarFlag('RAUC_SLOT_%s' % slot, 'file')
+            else:
+                imgsource = imgsource = "%s" % ("barebox.img")
             imgname = imgsource
         elif imgtype == 'file':
             if slotflags and 'file' in slotflags:
