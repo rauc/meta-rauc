@@ -171,11 +171,11 @@ do_unpack_append() {
         os.chmod(dsthook, st.st_mode | stat.S_IEXEC)
 }
 
-BUNDLE_BASENAME = "${PN}"
-BUNDLE_NAME = "${BUNDLE_BASENAME}-${MACHINE}-${DATETIME}"
+BUNDLE_BASENAME ??= "${PN}"
+BUNDLE_NAME ??= "${BUNDLE_BASENAME}-${MACHINE}-${DATETIME}"
 # Don't include the DATETIME variable in the sstate package sigantures
 BUNDLE_NAME[vardepsexclude] = "DATETIME"
-BUNDLE_LINK_NAME = "${BUNDLE_BASENAME}-${MACHINE}"
+BUNDLE_LINK_NAME ??= "${BUNDLE_BASENAME}-${MACHINE}"
 
 do_bundle() {
 	if [ -z "${RAUC_KEY_FILE}" ]; then
