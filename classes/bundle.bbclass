@@ -61,8 +61,9 @@ RAUC_BUNDLE_BUILD[vardepsexclude] = "DATETIME"
 python __anonymous() {
     for slot in (d.getVar('RAUC_BUNDLE_SLOTS') or "").split():
         slotflags = d.getVarFlags('RAUC_SLOT_%s' % slot)
-        imgtype = slotflags.get('type') if slotflags else None
+        imgtype = slotflags.get('type') if slotflags else 'image'
         image = d.getVar('RAUC_SLOT_%s' % slot)
+
         if imgtype == 'image':
             d.appendVarFlag('do_unpack', 'depends', ' ' + image + ':do_image_complete')
         else:
