@@ -1,12 +1,12 @@
 require rauc.inc
 
-PR = "r9"
+PR = "r1"
 
 SRC_URI = " \ 
   git://github.com/rauc/rauc.git;protocol=https \
   "
 
-PV = "0.1.1+git${SRCPV}"
+PV = "0.3+git${SRCPV}"
 S = "${WORKDIR}/git"
 
-SRCREV = "4b6453e8678a48aa793c41871e3bfcfdbafce881"
+SRCREV = "419387685f1e5fb0d59aa21d0eb47ddae5120600"
