@@ -131,7 +131,7 @@ def write_manifest(d):
             if slotflags and 'file' in slotflags:
                 imgsource = d.getVarFlag('RAUC_SLOT_%s' % slot, 'file')
             else:
-                imgsource = imgsource = "%s" % ("barebox.img")
+                imgsource = "%s" % ("barebox.img")
             imgname = imgsource
         elif imgtype == 'file':
             if slotflags and 'file' in slotflags:
