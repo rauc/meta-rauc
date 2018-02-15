@@ -61,7 +61,10 @@ RAUC_BUNDLE_BUILD[vardepsexclude] = "DATETIME"
 python __anonymous() {
     for slot in (d.getVar('RAUC_BUNDLE_SLOTS') or "").split():
         slotflags = d.getVarFlags('RAUC_SLOT_%s' % slot)
-        imgtype = slotflags.get('type') if slotflags else 'image'
+        imgtype = slotflags.get('type') if slotflags else None
+        if not imgtype:
+            bb.debug(1, "No [type] given for slot '%s', defaulting to 'image'" % slot)
+            imgtype = 'image'
         image = d.getVar('RAUC_SLOT_%s' % slot)
 
         if imgtype == 'image':
