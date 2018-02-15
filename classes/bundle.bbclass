@@ -73,6 +73,10 @@ python __anonymous() {
             imgtype = 'image'
         image = d.getVar('RAUC_SLOT_%s' % slot)
 
+        if not image:
+            bb.error("No image set for slot '%s'. Specify via 'RAUC_SLOT_%s = \"<recipe-name>\"'" % (slot, slot))
+            return
+
         if imgtype == 'image':
             d.appendVarFlag('do_unpack', 'depends', ' ' + image + ':do_image_complete')
         else:
