@@ -77,6 +77,11 @@ python __anonymous() {
             bb.error("No image set for slot '%s'. Specify via 'RAUC_SLOT_%s = \"<recipe-name>\"'" % (slot, slot))
             return
 
+        depends = slotflags.get('depends') if slotflags else None
+        if depends:
+            d.appendVarFlag('do_unpack', 'depends', ' ' + depends)
+            continue
+
         if imgtype == 'image':
             d.appendVarFlag('do_unpack', 'depends', ' ' + image + ':do_image_complete')
         else:
