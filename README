@@ -26,6 +26,11 @@ For rauc-hawkbit client:
   layers: meta-python
   branch: master
 
+For casync:
+
+  URI: git://git.yoctoproject.org/meta-oe
+  layers: meta-filesystems
+  branch: master
 
 Patches
 =======
