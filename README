@@ -16,10 +16,6 @@ This layer depends on:
   layers: meta
   branch: master
 
-  URI: git://git.yoctoproject.org/meta-oe
-  layers: meta-oe
-  branch: master
-
 For rauc-hawkbit client:
 
   URI: git://git.yoctoproject.org/meta-oe
