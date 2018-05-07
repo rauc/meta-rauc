@@ -6,9 +6,9 @@ SRC_URI = " \
   git://github.com/rauc/rauc.git;protocol=https \
   "
 
-PV = "0.3+git${SRCPV}"
+PV = "0.4+git${SRCPV}"
 S = "${WORKDIR}/git"
 
-SRCREV = "419387685f1e5fb0d59aa21d0eb47ddae5120600"
+SRCREV = "f8b8bd2188d241c5ccdf71ad6b9e1186e56e6a38"
 
 DEFAULT_PREFERENCE = "-1"
