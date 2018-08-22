@@ -40,7 +40,7 @@ PACKAGES =+ "${PN}-mark-good"
 RDEPENDS_${PN} += "${@bb.utils.contains("PREFERRED_PROVIDER_virtual/bootloader", "barebox", "dt-utils-barebox-state", "",d)}"
 RDEPENDS_${PN} += "${@bb.utils.contains("PREFERRED_PROVIDER_virtual/bootloader", "u-boot", "u-boot-fw-utils", "",d)}"
 
-RRECOMMENDS_${PN}_append = " mtd-utils ${PN}-mark-good"
+RRECOMMENDS_${PN}_append = " ${PN}-mark-good"
 
 FILES_${PN}-mark-good = "${systemd_unitdir}/system/rauc-mark-good.service"
 
