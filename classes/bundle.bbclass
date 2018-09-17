@@ -65,6 +65,7 @@ RAUC_BUNDLE_BUILD[vardepsexclude] = "DATETIME"
 
 # Create dependency list from images
 python __anonymous() {
+    d.appendVarFlag('do_unpack', 'vardeps', ' RAUC_BUNDLE_HOOKS')
     for slot in (d.getVar('RAUC_BUNDLE_SLOTS') or "").split():
         slotflags = d.getVarFlags('RAUC_SLOT_%s' % slot)
         imgtype = slotflags.get('type') if slotflags else None
@@ -77,6 +78,7 @@ python __anonymous() {
             bb.error("No image set for slot '%s'. Specify via 'RAUC_SLOT_%s = \"<recipe-name>\"'" % (slot, slot))
             return
 
+        d.appendVarFlag('do_unpack', 'vardeps', ' RAUC_SLOT_%s' % slot)
         depends = slotflags.get('depends') if slotflags else None
         if depends:
             d.appendVarFlag('do_unpack', 'depends', ' ' + depends)
