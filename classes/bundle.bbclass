@@ -91,6 +91,7 @@ python __anonymous() {
 }
 
 S = "${WORKDIR}/bundle"
+B = "${WORKDIR}/build"
 
 RAUC_KEY_FILE ??= ""
 RAUC_CERT_FILE ??= ""
@@ -222,6 +223,7 @@ do_bundle() {
 		${S} \
 		${B}/bundle.raucb
 }
+do_bundle[dirs] = "${B}"
 
 addtask bundle after do_configure before do_build
 
