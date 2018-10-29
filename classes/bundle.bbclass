@@ -21,11 +21,17 @@
 #   
 #   RAUC_SLOT_bootloader ?= "barebox"
 #   RAUC_SLOT_bootloader[type] ?= "boot"
+#   RAUC_SLOT_bootloader[file] ?= "barebox.img"
 #
 #   RAUC_SLOT_dtb ?= linux-yocto
 #   RAUC_SLOT_dtb[type] ?= "file"
-#   RAUC_SLOT_dtb[file] ?= "am335x-bone.dtb"
+#   RAUC_SLOT_dtb[file] ?= "${MACHINE}.dtb"
 #
+# To use a different image name, e.g. for variants
+#   RAUC_SLOT_dtb ?= linux-yocto
+#   RAUC_SLOT_dtb[name] ?= "dtb.my,compatible"
+#   RAUC_SLOT_dtb[type] ?= "file"
+#   RAUC_SLOT_dtb[file] ?= "${MACHINE}-variant1.dtb"
 #
 # Additionally you need to provide a certificate and a key file
 #
@@ -36,7 +42,7 @@ LICENSE = "MIT"
 
 PACKAGE_ARCH = "${MACHINE_ARCH}"
 
-RAUC_IMAGE_FSTYPE ?= "ext4"
+RAUC_IMAGE_FSTYPE ??= "${@(d.getVar('IMAGE_FSTYPES') or "").split()[0]}"
 
 do_fetch[cleandirs] = "${S}"
 do_patch[noexec] = "1"
@@ -58,30 +64,43 @@ RAUC_BUNDLE_BUILD       ??= "${DATETIME}"
 RAUC_BUNDLE_BUILD[vardepsexclude] = "DATETIME"
 
 # Create dependency list from images
-do_fetch[depends] = "${@' '.join([d.getVar(image, True) + ":do_build" for image in \
-    ['RAUC_SLOT_' + slot for slot in d.getVar('RAUC_BUNDLE_SLOTS', True).split()]])}"
+python __anonymous() {
+    for slot in (d.getVar('RAUC_BUNDLE_SLOTS') or "").split():
+        slotflags = d.getVarFlags('RAUC_SLOT_%s' % slot)
+        imgtype = slotflags.get('type') if slotflags else None
+        if not imgtype:
+            bb.debug(1, "No [type] given for slot '%s', defaulting to 'image'" % slot)
+            imgtype = 'image'
+        image = d.getVar('RAUC_SLOT_%s' % slot)
 
-S = "${WORKDIR}"
+        if not image:
+            bb.error("No image set for slot '%s'. Specify via 'RAUC_SLOT_%s = \"<recipe-name>\"'" % (slot, slot))
+            return
 
-RAUC_KEY_FILE ?= ""
-RAUC_CERT_FILE ?= ""
+        depends = slotflags.get('depends') if slotflags else None
+        if depends:
+            d.appendVarFlag('do_unpack', 'depends', ' ' + depends)
+            continue
 
-python __anonymous () {
-    if not d.getVar('RAUC_KEY_FILE', True):
-        bb.fatal("'RAUC_KEY_FILE' not set. Please set to a valid key file location.")
-
-    if not d.getVar('RAUC_CERT_FILE', True):
-        bb.fatal("'RAUC_CERT_FILE' not set. Please set to a valid certificate file location.")
+        if imgtype == 'image':
+            d.appendVarFlag('do_unpack', 'depends', ' ' + image + ':do_image_complete')
+        else:
+            d.appendVarFlag('do_unpack', 'depends', ' ' + image + ':do_deploy')
 }
+
+S = "${WORKDIR}/bundle"
+
+RAUC_KEY_FILE ??= ""
+RAUC_CERT_FILE ??= ""
 
 DEPENDS = "rauc-native squashfs-tools-native"
 
-python do_fetch() {
+def write_manifest(d):
     import shutil
 
-    machine = d.getVar('MACHINE', True)
-    img_fstype = d.getVar('RAUC_IMAGE_FSTYPE', True)
-    bundle_path = d.expand("${S}/bundle")
+    machine = d.getVar('MACHINE')
+    img_fstype = d.getVar('RAUC_IMAGE_FSTYPE')
+    bundle_path = d.expand("${S}")
 
     bb.utils.mkdirhier(bundle_path)
     try:
@@ -104,9 +123,13 @@ python do_fetch() {
             manifest.write("hooks=%s\n" % hooksflags.get('hooks'))
         manifest.write('\n')
 
-    for slot in d.getVar('RAUC_BUNDLE_SLOTS', True).split():
-        manifest.write('[image.%s]\n' % slot)
+    for slot in (d.getVar('RAUC_BUNDLE_SLOTS') or "").split():
         slotflags = d.getVarFlags('RAUC_SLOT_%s' % slot)
+        if slotflags and 'name' in slotflags:
+            imgname = slotflags.get('name')
+        else:
+            imgname = slot
+        manifest.write('[image.%s]\n' % imgname)
         if slotflags and 'type' in slotflags:
             imgtype = slotflags.get('type')
         else:
@@ -116,22 +139,24 @@ python do_fetch() {
             img_fstype = slotflags.get('fstype')
 
         if imgtype == 'image':
-            imgsource = "%s-%s.%s" % (d.getVar('RAUC_SLOT_%s' % slot, True), machine, img_fstype)
+            imgsource = "%s-%s.%s" % (d.getVar('RAUC_SLOT_%s' % slot), machine, img_fstype)
             imgname = imgsource
         elif imgtype == 'kernel':
             # TODO: Add image type support
             if slotflags and 'file' in slotflags:
-                imgsource = "%s" % slotflags.get('file')
+                imgsource = d.getVarFlag('RAUC_SLOT_%s' % slot, 'file')
             else:
                 imgsource = "%s-%s.bin" % ("zImage", machine)
             imgname = "%s.%s" % (imgsource, "img")
         elif imgtype == 'boot':
-            # TODO: adapt if barebox produces determinable output images
-            imgsource = "%s" % ("barebox.img")
+            if slotflags and 'file' in slotflags:
+                imgsource = d.getVarFlag('RAUC_SLOT_%s' % slot, 'file')
+            else:
+                imgsource = "%s" % ("barebox.img")
             imgname = imgsource
         elif imgtype == 'file':
             if slotflags and 'file' in slotflags:
-                imgsource = "%s" % slotflags.get('file')
+                imgsource = d.getVarFlag('RAUC_SLOT_%s' % slot, 'file')
             else:
                 raise bb.build.FuncFailed('Unknown file for slot: %s' % slot)
             imgname = "%s.%s" % (imgsource, "img")
@@ -153,48 +178,62 @@ python do_fetch() {
             raise bb.build.FuncFailed('Failed creating symlink to %s' % imgname)
 
     manifest.close()
-}
 
 do_unpack_append() {
     import shutil
     import os
     import stat
 
+    write_manifest(d)
+
     hooksflags = d.getVarFlags('RAUC_BUNDLE_HOOKS')
     if hooksflags and 'file' in hooksflags:
         hf = hooksflags.get('file')
-        dsthook = d.expand("${S}/bundle/%s" % hf)
+        dsthook = d.expand("${S}/%s" % hf)
         shutil.copy(d.expand("${WORKDIR}/%s" % hf), dsthook)
         st = os.stat(dsthook)
         os.chmod(dsthook, st.st_mode | stat.S_IEXEC)
 }
 
-DEPLOY_DIR_BUNDLE ?= "${DEPLOY_DIR_IMAGE}/bundles"
-DEPLOY_DIR_BUNDLE[doc] = "Points to where rauc bundles will be put in"
-
-BUNDLE_BASENAME = "${PN}"
-BUNDLE_NAME = "${BUNDLE_BASENAME}-${MACHINE}-${DATETIME}"
+BUNDLE_BASENAME ??= "${PN}"
+BUNDLE_NAME ??= "${BUNDLE_BASENAME}-${MACHINE}-${DATETIME}"
 # Don't include the DATETIME variable in the sstate package sigantures
 BUNDLE_NAME[vardepsexclude] = "DATETIME"
-BUNDLE_LINK_NAME = "${BUNDLE_BASENAME}-${MACHINE}"
+BUNDLE_LINK_NAME ??= "${BUNDLE_BASENAME}-${MACHINE}"
 
 do_bundle() {
+	if [ -z "${RAUC_KEY_FILE}" ]; then
+		bbfatal "'RAUC_KEY_FILE' not set. Please set to a valid key file location."
+	fi
+
+	if [ -z "${RAUC_CERT_FILE}" ]; then
+		bbfatal "'RAUC_CERT_FILE' not set. Please set to a valid certificate file location."
+	fi
+
 	if [ -e ${B}/bundle.raucb ]; then
 		rm ${B}/bundle.raucb
 	fi
 	${STAGING_DIR_NATIVE}${bindir}/rauc bundle \
+		--debug \
 		--cert=${RAUC_CERT_FILE} \
 		--key=${RAUC_KEY_FILE} \
-		${S}/bundle \
+		${S} \
 		${B}/bundle.raucb
 }
 
+addtask bundle after do_configure before do_build
+
+inherit deploy
+
 do_deploy() {
-	install -d ${DEPLOY_DIR_BUNDLE}
-	install ${B}/bundle.raucb ${DEPLOY_DIR_BUNDLE}/${BUNDLE_NAME}.raucb
-	ln -sf ${BUNDLE_NAME}.raucb ${DEPLOY_DIR_BUNDLE}/${BUNDLE_LINK_NAME}.raucb
+	if [ -d ${DEPLOY_DIR_IMAGE}/bundles ]; then
+		bbwarn "old-style 'bundles/' deploy subdirectory detected! Note hat newly generated bundles will be installed into root image deploy dir instead."
+	fi
+	install -d ${DEPLOYDIR}
+	install ${B}/bundle.raucb ${DEPLOYDIR}/${BUNDLE_NAME}.raucb
+	ln -sf ${BUNDLE_NAME}.raucb ${DEPLOYDIR}/${BUNDLE_LINK_NAME}.raucb
 }
 
-addtask bundle after do_configure before do_build
 addtask deploy after do_bundle before do_build
 
+do_deploy[cleandirs] = "${DEPLOYDIR}"
