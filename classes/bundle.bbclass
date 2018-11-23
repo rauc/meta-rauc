@@ -90,8 +90,9 @@ python __anonymous() {
             d.appendVarFlag('do_unpack', 'depends', ' ' + image + ':do_deploy')
 }
 
-S = "${WORKDIR}/bundle"
+S = "${WORKDIR}"
 B = "${WORKDIR}/build"
+BUNDLE_DIR = "${S}/bundle"
 
 RAUC_KEY_FILE ??= ""
 RAUC_CERT_FILE ??= ""
@@ -103,7 +104,7 @@ def write_manifest(d):
 
     machine = d.getVar('MACHINE')
     img_fstype = d.getVar('RAUC_IMAGE_FSTYPE')
-    bundle_path = d.expand("${S}")
+    bundle_path = d.expand("${BUNDLE_DIR}")
 
     bb.utils.mkdirhier(bundle_path)
     try:
@@ -192,7 +193,7 @@ do_unpack_append() {
     hooksflags = d.getVarFlags('RAUC_BUNDLE_HOOKS')
     if hooksflags and 'file' in hooksflags:
         hf = hooksflags.get('file')
-        dsthook = d.expand("${S}/%s" % hf)
+        dsthook = d.expand("${BUNDLE_DIR}/%s" % hf)
         shutil.copy(d.expand("${WORKDIR}/%s" % hf), dsthook)
         st = os.stat(dsthook)
         os.chmod(dsthook, st.st_mode | stat.S_IEXEC)
@@ -220,7 +221,7 @@ do_bundle() {
 		--debug \
 		--cert=${RAUC_CERT_FILE} \
 		--key=${RAUC_KEY_FILE} \
-		${S} \
+		${BUNDLE_DIR} \
 		${B}/bundle.raucb
 }
 do_bundle[dirs] = "${B}"
