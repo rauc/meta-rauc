@@ -3,6 +3,8 @@ LIC_FILES_CHKSUM = "file://COPYING;md5=4fbd65380cdd255951079008b364516c"
 
 SUMMARY = "hawkBit client for RAUC"
 
+DEPENDS = "python3-setuptools-scm-native"
+
 SRC_URI = "git://github.com/rauc/rauc-hawkbit.git;protocol=https"
 
 PV = "0.1.0+git${SRCPV}"
