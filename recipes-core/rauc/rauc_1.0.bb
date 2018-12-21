@@ -1,2 +1,2 @@
-require rauc-0.4.inc
+require rauc-1.0.inc
 require rauc-target.inc
