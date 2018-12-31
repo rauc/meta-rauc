@@ -1,24 +1,24 @@
 # Class for creating rauc bundles
 #
 # Description:
-# 
+#
 # You have to set the slot images in your recipe file following this example:
 #
 #   RAUC_BUNDLE_COMPATIBLE ?= "My Super Product"
 #   RAUC_BUNDLE_VERSION ?= "v2015-06-07-1"
-#   
+#
 #   RAUC_BUNDLE_HOOKS[file] ?= "hook.sh"
 #   RAUC_BUNDLE_HOOKS[hooks] ?= "install-check"
 #
 #   RAUC_BUNDLE_SLOTS ?= "rootfs kernel dtb bootloader"
-#   
+#
 #   RAUC_SLOT_rootfs ?= "core-image-minimal"
 #   RAUC_SLOT_rootfs[fstype] = "ext4"
 #   RAUC_SLOT_rootfs[hooks] ?= "install;post-install"
-#   
+#
 #   RAUC_SLOT_kernel ?= "linux-yocto"
 #   RAUC_SLOT_kernel[type] ?= "kernel"
-#   
+#
 #   RAUC_SLOT_bootloader ?= "barebox"
 #   RAUC_SLOT_bootloader[type] ?= "boot"
 #   RAUC_SLOT_bootloader[file] ?= "barebox.img"
@@ -32,6 +32,17 @@
 #   RAUC_SLOT_dtb[name] ?= "dtb.my,compatible"
 #   RAUC_SLOT_dtb[type] ?= "file"
 #   RAUC_SLOT_dtb[file] ?= "${MACHINE}-variant1.dtb"
+#
+# You can attach extra artifacts to your bundle as well
+#   RAUC_BUNDLE_EXTRAS ?= "upgrade-hooks-recipe dummy-source"
+#
+#   RAUC_BUNDLE_EXTRA_*[type] can be 'artifact' (default) or 'source'
+#
+#   RAUC_BUNDLE_EXTRA_upgrade-hooks-recipe = "my_recipe"
+#   RAUC_BUNDLE_EXTRA_upgrade-hooks-recipe[files] = "upgrade-hooks.tar foo.bar"
+#
+#   RAUC_BUNDLE_EXTRA_dummy_source[type] = "source"
+#   RAUC_BUNDLE_EXTRA_dummy_source[files] = "source_script.sh"
 #
 # Additionally you need to provide a certificate and a key file
 #
@@ -88,6 +99,16 @@ python __anonymous() {
             d.appendVarFlag('do_unpack', 'depends', ' ' + image + ':do_image_complete')
         else:
             d.appendVarFlag('do_unpack', 'depends', ' ' + image + ':do_deploy')
+
+    for extra in(d.getVar('RAUC_BUNDLE_EXTRAS') or "").split():
+        extraflags = d.getVarFlags('RAUC_EXTRA_%s' % extra)
+        depends = extraflags.get('depends') if extraflags else None
+        targettype = extraflags.get('type') if extraflags else None
+        target = d.getVar('RAUC_EXTRA_%s' % extra)
+        if depends:
+            d.appendVarFlag('do_unpack', 'depends', ' ' + depends)
+        elif target and (not targettype or targettype == 'artifact'):
+            d.appendVarFlag('do_unpack', 'depends', ' ' + target + ':do_deploy')
 }
 
 S = "${WORKDIR}"
@@ -200,6 +221,30 @@ do_unpack_append() {
         shutil.copy(d.expand("${WORKDIR}/%s" % hf), dsthook)
         st = os.stat(dsthook)
         os.chmod(dsthook, st.st_mode | stat.S_IEXEC)
+
+    bundle_path = d.expand("${BUNDLE_DIR}")
+    if not os.path.exists(bundle_path):
+        raise bb.build.FuncFailed('%s does not exist!' % bundle_path)
+    for extra in (d.getVar('RAUC_BUNDLE_EXTRAS') or "").split():
+        extraflags = d.getVarFlags('RAUC_EXTRA_%s' % extra)
+        extratype = extraflags.get('type') if extraflags and 'type' in extraflags else None
+        if not extratype:
+            bb.debug(1, "No type given for extra '%s', defaulting to 'artifact'" % extra)
+            extratype = 'artifact'
+        if extratype == 'artifact':
+            for filename in ((extraflags.get('files') if extraflags else None) or "").split():
+                srcpath = d.expand("${DEPLOY_DIR_IMAGE}/%s") % filename
+                dstpath = '%s/%s' % (bundle_path, filename)
+                shutil.copy(srcpath, dstpath)
+                st = os.stat(srcpath)
+                os.chmod(dstpath, st.st_mode | stat.S_IEXEC)
+        elif extratype == 'source':
+            for filename in ((extraflags.get('files') if extraflags else None) or "").split():
+                srcpath = d.expand("${WORKDIR}/%s" % filename)
+                dstpath = '%s/%s' % (bundle_path, filename)
+                shutil.copy(srcpath, dstpath)
+                st = os.stat(srcpath)
+                os.chmod(dstpath, st.st_mode | stat.S_IEXEC)
 }
 
 BUNDLE_BASENAME ??= "${PN}"
