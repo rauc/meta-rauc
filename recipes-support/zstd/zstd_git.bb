@@ -6,7 +6,7 @@ LIC_FILES_CHKSUM = "file://LICENSE;md5=c7f0b161edbe52f5f345a3d1311d0b32 \
 SRCREV = "f3a8bd553a865c59f1bd6e1f68bf182cf75a8f00"
 PV = "1.33+git${SRCPV}"
 
-SRC_URI = "git://github.com/facebook/zstd.git;protocol=https"
+SRC_URI = "git://github.com/facebook/zstd.git;protocol=https;nobranch=1"
 
 S = "${WORKDIR}/git"
 
