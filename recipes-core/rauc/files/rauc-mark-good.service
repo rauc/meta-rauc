@@ -1,5 +1,7 @@
 [Unit]
 Description=Rauc Good-marking Service
+After=boot-complete.target
+Requires=boot-complete.target
 
 [Service]
 ExecStart=@BINDIR@/rauc status mark-good
