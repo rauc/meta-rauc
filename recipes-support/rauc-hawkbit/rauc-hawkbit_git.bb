@@ -7,8 +7,8 @@ DEPENDS = "python3-setuptools-scm-native"
 
 SRC_URI = "git://github.com/rauc/rauc-hawkbit.git;protocol=https"
 
-PV = "0.1.0+git${SRCPV}"
-SRCREV = "79421c1c0b1480da70c426f782585fa66416eed0"
+PV = "0.1.0-9+git${SRCPV}"
+SRCREV = "6a1e79b0b7c83da866e0602201db49d6e74d7dd2"
 
 S = "${WORKDIR}/git"
 
