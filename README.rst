@@ -7,7 +7,7 @@ Please see the corresponding sections below for details.
 Dependencies
 ============
 
-This layer depends on:
+This layer depends on::
 
   URI: git://git.openembedded.org/bitbake
   branch: master
@@ -16,13 +16,13 @@ This layer depends on:
   layers: meta
   branch: master
 
-For rauc-hawkbit client:
+For rauc-hawkbit client::
 
   URI: git://git.yoctoproject.org/meta-oe
   layers: meta-python
   branch: master
 
-For fuse-support in casync (the default):
+For fuse-support in casync (the default)::
 
   URI: git://git.yoctoproject.org/meta-oe
   layers: meta-filesystems
@@ -39,12 +39,12 @@ Maintainer: Enrico Joerns <ejo@pengutronix.de>
 Table of Contents
 =================
 
-  I. Adding the rauc layer to your build
- II. Building RAUC
+I.   Adding the rauc layer to your build
+II.  Building RAUC
 III. Adding the RAUC update framework to your device
- IV. Building RAUC hawkBit Client
-  V. Configure Custom Kernel
- VI. References
+IV.  Building RAUC hawkBit Client
+V.   Configure Custom Kernel
+VI.  References
 
 
 I. Adding the rauc Layer to Your Build
@@ -56,7 +56,7 @@ it.
 Assuming the rauc layer exists at the top-level of your
 yocto build tree, you can add it to the build system by adding the
 location of the rauc layer to bblayers.conf, along with any
-other layers needed. e.g.:
+other layers needed. e.g.::
 
   BBLAYERS ?= " \
     /path/to/yocto/meta \
@@ -69,7 +69,7 @@ other layers needed. e.g.:
 II. Building RAUC
 =================
 
-If you only intend to build the RAUC host tool, you may simply run
+If you only intend to build the RAUC host tool, you may simply run::
 
   bitbake rauc-native
 
@@ -82,58 +82,58 @@ III. Adding the RAUC Update Framework to Your Device
 To prepare your device for using RAUC as its update handler,
 you have to follow at least the following steps:
 
-1. Add the `rauc` package to your systems image recipe:
+1. Add the `rauc` package to your systems image recipe::
 
-  IMAGE_INSTALL_append = " rauc"
+     IMAGE_INSTALL_append = " rauc"
 
-2. Add a rauc_%.bbappend in your device-specific (BSP) layer
-that installs your RAUC system configuration file under
-/etc/rauc/system.conf. For information on how to write the RAUC
-update file, please refer to the RAUC user documentation [1].
+2. Add a ``rauc_%.bbappend`` in your device-specific (BSP) layer
+   that installs your RAUC system configuration file under
+   ``/etc/rauc/system.conf``. For information on how to write the RAUC
+   update file, please refer to the RAUC user documentation [1]::
 
-  FILESEXTRAPATHS_prepend := "${THISDIR}/files:"
-  SRC_URI_append := " file://system.conf"
+     FILESEXTRAPATHS_prepend := "${THISDIR}/files:"
+     SRC_URI_append := " file://system.conf"
 
 3. Create a bundle recipe for your device by adding a recipe
-that inherits the `bundle` class and adds all desired
-configuration.
+   that inherits the `bundle` class and adds all desired
+   configuration::
 
-  inherit bundle
+     inherit bundle
 
-  RAUC_BUNDLE_SLOTS = "rootfs"
-  RAUC_SLOT_rootfs = "my-rootfs-recipe"
+     RAUC_BUNDLE_SLOTS = "rootfs"
+     RAUC_SLOT_rootfs = "my-rootfs-recipe"
 
-  RAUC_KEY_FILE = "path/to/development-1.key.pem"
-  RAUC_CERT_FILE = "path/to/development-1.cert.pem"
+     RAUC_KEY_FILE = "path/to/development-1.key.pem"
+     RAUC_CERT_FILE = "path/to/development-1.cert.pem"
 
-For information on how to generate and use the key and certificate files,
-please refer to the RAUC user documentation [1].
+   For information on how to generate and use the key and certificate files,
+   please refer to the RAUC user documentation [1].
 
-For a more detailed explanation on the required and available variables,
-read the notes in the bundle.bbclass file.
+   For a more detailed explanation on the required and available variables,
+   read the notes in the bundle.bbclass file.
 
-4. Build a bundle and the rootfs for your device
+4. Build a bundle and the rootfs for your device::
 
-  bitbake my-bundle-recipe
+     bitbake my-bundle-recipe
 
 IV. Building RAUC hawkBit Client
 ================================
 
 To build the rauc-hawkbit client that allows interfacing between RAUC and a
-hawkBit deployment server, simply add `rauc-hawkbit` package to your systems
-image recipe:
+hawkBit deployment server, simply add ``rauc-hawkbit`` package to your systems
+image recipe::
 
-  IMAGE_INSTALL_append = " rauc-hawkbit"
+    IMAGE_INSTALL_append = " rauc-hawkbit"
 
 V. Configure Custom Kernel
-===========================
+==========================
 
 In order to use RAUC on your system, the kernel must support SquashFS and loop
 mounts. For the standard yocto kernel, the meta-rauc layer provides a kernel
 configuration fragment that enables the config options required for this.
 
-If you build your own kernel with a full custom `defconfig` file, you have to
-make sure that the options in `recipes-kernel/linux/linux-yocto/rauc.cfg` are
+If you build your own kernel with a full custom ``defconfig`` file, you have to
+make sure that the options in ``recipes-kernel/linux/linux-yocto/rauc.cfg`` are
 enabled in your configuration, too.
 
 
