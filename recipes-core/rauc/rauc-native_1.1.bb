@@ -1,4 +1,4 @@
-require rauc-1.0.inc
+require rauc-1.1.inc
 
 inherit native deploy
 
