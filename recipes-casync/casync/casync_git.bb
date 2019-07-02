@@ -16,11 +16,12 @@ S = "${WORKDIR}/git"
 
 inherit meson
 
-EXTRA_OEMESON += "-Dselinux=false -Dman=false"
+EXTRA_OEMESON += "-Dselinux=false -Dman=false -Dudevrulesdir=${nonarch_base_libdir}/udev/rules.d/"
 
-BBCLASSEXTEND = "native"
+BBCLASSEXTEND = "native nativesdk"
 
 PACKAGECONFIG_class-native = ""
+PACKAGECONFIG_class-nativesdk = ""
 PACKAGECONFIG ?= "fuse udev"
 
 PACKAGECONFIG[fuse] = "-Dfuse=true,-Dfuse=false,fuse"
