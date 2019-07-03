@@ -4,7 +4,6 @@ LICENSE = "LGPLv2.1"
 LIC_FILES_CHKSUM = "file://LICENSE.LGPL2.1;md5=4fbd65380cdd255951079008b364516c"
 
 DEPENDS = "xz curl openssl acl zstd"
-DEPENDS_append_class-target = " udev"
 
 SRCREV = "a8f6c841ccfe59ca8c68aad64df170b64042dce8"
 PV = "2+git${SRCPV}"
@@ -18,11 +17,13 @@ S = "${WORKDIR}/git"
 inherit meson
 
 EXTRA_OEMESON += "-Dselinux=false -Dman=false"
-EXTRA_OEMESON_append_class-native = " -Dudev=false"
 
 BBCLASSEXTEND = "native"
 
-PACKAGECONFIG ?= "fuse"
+PACKAGECONFIG_class-native = ""
+PACKAGECONFIG ?= "fuse udev"
+
 PACKAGECONFIG[fuse] = "-Dfuse=true,-Dfuse=false,fuse"
+PACKAGECONFIG[udev] = "-Dudev=true,-Dudev=false,udev"
 
 FILES_${PN} += "${datadir}/bash-completion"
