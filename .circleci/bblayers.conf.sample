@@ -1,0 +1,12 @@
+POKY_BBLAYERS_CONF_VERSION = "2"
+BBPATH = "${TOPDIR}"
+BBFILES ?= ""
+BBLAYERS ?= " \
+  ##OEROOT##/meta \
+  ##OEROOT##/meta-poky \
+  ##OEROOT##/meta-yocto-bsp \
+  ##OEROOT##/../meta-rauc \
+  ##OEROOT##/../meta-oe/meta-oe \
+  ##OEROOT##/../meta-oe/meta-python \
+  ##OEROOT##/../meta-oe/meta-filesystems \
+  "
