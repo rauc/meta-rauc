@@ -40,6 +40,12 @@ jobs:
       - run:
           name: Build rauc-hawkbit
           command: source poky/oe-init-build-env build && bitbake rauc-hawkbit
+      - run:
+          name: Build casync
+          command: source poky/oe-init-build-env build && bitbake casync
+      - run:
+          name: Build casync-native
+          command: source poky/oe-init-build-env build && bitbake casync-native
       - save_cache:
           key: sstate-test-{{ .Branch }}-{{ .Revision }}
           paths:
