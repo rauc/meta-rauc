@@ -17,6 +17,7 @@ PACKAGECONFIG_append_pn-qemu-system-native = " sdl"
 PACKAGECONFIG_append_pn-nativesdk-qemu = " sdl"
 CONF_VERSION = "1"
 
+SSTATE_DIR ?= "${TOPDIR}/sstate-cache"
 SSTATE_MIRRORS = "\
 file://.* http://sstate.yoctoproject.org/dev/PATH;downloadfilename=PATH \n \
 file://.* http://sstate.yoctoproject.org/2.6/PATH;downloadfilename=PATH \n \

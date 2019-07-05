@@ -10,6 +10,12 @@ jobs:
           LANGUAGE: en_US.UTF-8
     steps:
       - checkout
+      - restore_cache:
+          keys:
+            - sstate-test-{{ .Branch }}-{{ .Revision }}
+            - sstate-test-{{ .Branch }}-
+            - sstate-test-master-
+            - sstate-test-
       - run:
           name: Clone poky
           command: git clone git://git.yoctoproject.org/poky
@@ -28,6 +34,10 @@ jobs:
       - run:
           name: Run bitbake
           command: source poky/oe-init-build-env build && bitbake rauc
+      - save_cache:
+          key: sstate-test-{{ .Branch }}-{{ .Revision }}
+          paths:
+            - "build/sstate-cache/"
 
 
 workflows:
