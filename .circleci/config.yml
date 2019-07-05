@@ -32,8 +32,14 @@ jobs:
           name: Initialize build directory
           command: TEMPLATECONF=../meta-this/conf source poky/oe-init-build-env build
       - run:
-          name: Run bitbake
+          name: Build rauc
           command: source poky/oe-init-build-env build && bitbake rauc
+      - run:
+          name: Build rauc-native
+          command: source poky/oe-init-build-env build && bitbake rauc-native
+      - run:
+          name: Build rauc-hawkbit
+          command: source poky/oe-init-build-env build && bitbake rauc-hawkbit
       - save_cache:
           key: sstate-test-{{ .Branch }}-{{ .Revision }}
           paths:
