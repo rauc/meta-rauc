@@ -1,0 +1,52 @@
+version: 2.1
+
+jobs:
+  build:
+    docker:
+      - image: crops/yocto:ubuntu-18.10-builder
+        environment:
+          LC_ALL: en_US.UTF-8
+          LANG: en_US.UTF-8
+          LANGUAGE: en_US.UTF-8
+    steps:
+      - checkout
+      - restore_cache:
+          keys:
+            - sstate-test-{{ .Branch }}-{{ .Revision }}
+            - sstate-test-{{ .Branch }}-
+            - sstate-test-master-
+            - sstate-test-
+      - run:
+          name: Clone poky
+          command: git clone git://git.yoctoproject.org/poky
+      - run:
+          name: Clone meta-oe
+          command: git clone https://github.com/openembedded/meta-openembedded.git meta-oe
+      - run:
+          name: Link meta-rauc
+          command: ln -sf . meta-rauc
+      - run:
+          name: Create meta-this
+          command: mkdir -p meta-this/conf/ && cp .circleci/*.sample meta-this/conf/.
+      - run:
+          name: Initialize build directory
+          command: TEMPLATECONF=../meta-this/conf source poky/oe-init-build-env build
+      - run:
+          name: Build rauc
+          command: source poky/oe-init-build-env build && bitbake rauc
+      - run:
+          name: Build rauc-native
+          command: source poky/oe-init-build-env build && bitbake rauc-native
+      - run:
+          name: Build rauc-hawkbit
+          command: source poky/oe-init-build-env build && bitbake rauc-hawkbit
+      - save_cache:
+          key: sstate-test-{{ .Branch }}-{{ .Revision }}
+          paths:
+            - "build/sstate-cache/"
+
+
+workflows:
+  workflow:
+    jobs:
+      - build
