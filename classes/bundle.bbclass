@@ -42,6 +42,9 @@ LICENSE = "MIT"
 
 PACKAGE_ARCH = "${MACHINE_ARCH}"
 
+PACKAGES = ""
+INHIBIT_DEFAULT_DEPS = "1"
+
 RAUC_IMAGE_FSTYPE ??= "${@(d.getVar('IMAGE_FSTYPES') or "").split()[0]}"
 
 do_fetch[cleandirs] = "${S}"
