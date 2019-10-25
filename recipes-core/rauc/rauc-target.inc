@@ -43,6 +43,8 @@ do_install () {
         install -m 755 "${WORKDIR}/rauc-mark-good.init" "${D}${sysconfdir}/init.d/rauc-mark-good"
 }
 
+do_install[vardeps] = "RAUC_KEYRING_FILE"
+
 PACKAGES =+ "${PN}-mark-good"
 
 RDEPENDS_${PN} += "${@bb.utils.contains("PREFERRED_PROVIDER_virtual/bootloader", "barebox", "dt-utils-barebox-state", "",d)}"
