@@ -14,7 +14,7 @@ EXTRA_OECONF += "\
 
 RRECOMMENDS_${PN} = "squashfs-tools"
 
-PACKAGECONFIG[service] = "--enable-service,--enable-service=no,,${PN}-service"
+PACKAGECONFIG[service] = "--enable-service,--enable-service=no,dbus,${PN}-service"
 PACKAGECONFIG[network] = "--enable-network,--enable-network=no,curl"
 PACKAGECONFIG[json]    = "--enable-json,--enable-json=no,json-glib"
 
