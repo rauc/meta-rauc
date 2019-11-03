@@ -45,8 +45,24 @@ do_install () {
 
 PACKAGES =+ "${PN}-mark-good"
 
-RDEPENDS_${PN} += "${@"dt-utils-barebox-state" if "barebox" in d.getVar("PREFERRED_PROVIDER_virtual/bootloader") else ""}"
-RDEPENDS_${PN} += "${@"u-boot-fw-utils" if "u-boot" in d.getVar("PREFERRED_PROVIDER_virtual/bootloader") else ""}"
+# some magic to get the tool to interact with bootloader storage
+python __anonymous () {
+    bootloader = d.getVar("PREFERRED_PROVIDER_virtual/bootloader")
+
+    if not bootloader:
+        return
+
+    if "barebox" in bootloader:
+        boothelper = " dt-utils-barebox-state"
+    elif "u-boot" in bootloader:
+        boothelper = " u-boot-fw-utils"
+    elif "grub" in bootloader:
+        boothelper = " grub-editenv"
+    else:
+        return
+
+    d.appendVar("RDEPENDS_%s" % d.getVar('PN'), boothelper)
+}
 
 RRECOMMENDS_${PN}_append = " ${PN}-mark-good"
 
