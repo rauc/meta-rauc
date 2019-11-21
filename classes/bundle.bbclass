@@ -183,7 +183,6 @@ def write_manifest(d):
         else:
             raise bb.build.FuncFailed('Unknown image type: %s' % imgtype)
 
-        print(imgname)
         manifest.write("filename=%s\n" % imgname)
         if slotflags and 'hooks' in slotflags:
             manifest.write("hooks=%s\n" % slotflags.get('hooks'))
@@ -193,6 +192,7 @@ def write_manifest(d):
         # Set or update symlinks to image files
         if os.path.lexists(bundle_imgpath):
             bb.utils.remove(bundle_imgpath)
+        bb.note("adding image to bundle dir: '%s'" % imgname)
         shutil.copy(d.expand("${DEPLOY_DIR_IMAGE}/%s") % imgsource, bundle_imgpath)
         if not os.path.exists(bundle_imgpath):
             raise bb.build.FuncFailed('Failed creating symlink to %s' % imgname)
@@ -210,6 +210,7 @@ do_unpack_append() {
     if hooksflags and 'file' in hooksflags:
         hf = hooksflags.get('file')
         dsthook = d.expand("${BUNDLE_DIR}/%s" % hf)
+        bb.note("adding hook file to bundle dir: '%s'" % hf)
         shutil.copy(d.expand("${WORKDIR}/%s" % hf), dsthook)
         st = os.stat(dsthook)
         os.chmod(dsthook, st.st_mode | stat.S_IEXEC)
