@@ -133,10 +133,10 @@ def write_manifest(d):
     for slot in (d.getVar('RAUC_BUNDLE_SLOTS') or "").split():
         slotflags = d.getVarFlags('RAUC_SLOT_%s' % slot)
         if slotflags and 'name' in slotflags:
-            imgname = slotflags.get('name')
+            slotname = slotflags.get('name')
         else:
-            imgname = slot
-        manifest.write('[image.%s]\n' % imgname)
+            slotname = slot
+        manifest.write('[image.%s]\n' % slotname)
         if slotflags and 'type' in slotflags:
             imgtype = slotflags.get('type')
         else:
