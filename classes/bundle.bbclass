@@ -249,9 +249,6 @@ addtask bundle after do_configure before do_build
 inherit deploy
 
 do_deploy() {
-	if [ -d ${DEPLOY_DIR_IMAGE}/bundles ]; then
-		bbwarn "old-style 'bundles/' deploy subdirectory detected! Note hat newly generated bundles will be installed into root image deploy dir instead."
-	fi
 	install -d ${DEPLOYDIR}
 	install ${B}/bundle.raucb ${DEPLOYDIR}/${BUNDLE_NAME}.raucb
 	ln -sf ${BUNDLE_NAME}.raucb ${DEPLOYDIR}/${BUNDLE_LINK_NAME}.raucb
