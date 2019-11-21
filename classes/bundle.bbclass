@@ -46,6 +46,7 @@ PACKAGES = ""
 INHIBIT_DEFAULT_DEPS = "1"
 
 RAUC_IMAGE_FSTYPE ??= "${@(d.getVar('IMAGE_FSTYPES') or "").split()[0]}"
+RAUC_IMAGE_FSTYPE[doc] = "Specifies the default file name extension to expect for collecting image artifacts. Defaults to first element set in IMAGE_FSTYPES."
 
 do_fetch[cleandirs] = "${S}"
 do_patch[noexec] = "1"
@@ -65,6 +66,13 @@ RAUC_BUNDLE_VERSION     ??= "${PV}"
 RAUC_BUNDLE_DESCRIPTION ??= "${SUMMARY}"
 RAUC_BUNDLE_BUILD       ??= "${DATETIME}"
 RAUC_BUNDLE_BUILD[vardepsexclude] = "DATETIME"
+RAUC_BUNDLE_COMPATIBLE[doc] = "Specifies the mandatory bundle compatible string. See RAUC documentation for more details."
+RAUC_BUNDLE_VERSION[doc] = "Specifies the bundle version string. See RAUC documentation for more details."
+RAUC_BUNDLE_DESCRIPTION[doc] = "Specifies the bundle description string. See RAUC documentation for more details."
+RAUC_BUNDLE_BUILD[doc] = "Specifies the bundle build stamp. See RAUC documentation for more details."
+
+RAUC_BUNDLE_SLOTS[doc] = "Space-separated list of slot classes to include in bundle (manifest)"
+RAUC_BUNDLE_HOOKS[doc] = "Allows to specify an additional hook executable and bundle hooks (via varflags '[file'] and ['hooks'])"
 
 # Create dependency list from images
 python __anonymous() {
@@ -98,7 +106,9 @@ B = "${WORKDIR}/build"
 BUNDLE_DIR = "${S}/bundle"
 
 RAUC_KEY_FILE ??= ""
+RAUC_KEY_FILE[doc] = "Specifies the path to the RAUC key file used for signing. Use COREBASE to reference files located in any shared BSP folder."
 RAUC_CERT_FILE ??= ""
+RAUC_CERT_FILE[doc] = "Specifies the path to the RAUC cert file used for signing. Use COREBASE to reference files located in any shared BSP folder."
 
 DEPENDS = "rauc-native squashfs-tools-native"
 
@@ -206,7 +216,9 @@ do_unpack_append() {
 }
 
 BUNDLE_BASENAME ??= "${PN}"
+BUNDLE_BASENAME[doc] = "Specifies desired output base name of generated bundle."
 BUNDLE_NAME ??= "${BUNDLE_BASENAME}-${MACHINE}-${DATETIME}"
+BUNDLE_NAME[doc] = "Specifies desired full output name of generated bundle."
 # Don't include the DATETIME variable in the sstate package sigantures
 BUNDLE_NAME[vardepsexclude] = "DATETIME"
 BUNDLE_LINK_NAME ??= "${BUNDLE_BASENAME}-${MACHINE}"
