@@ -46,6 +46,7 @@ PACKAGES = ""
 INHIBIT_DEFAULT_DEPS = "1"
 
 RAUC_IMAGE_FSTYPE ??= "${@(d.getVar('IMAGE_FSTYPES') or "").split()[0]}"
+RAUC_IMAGE_FSTYPE[doc] = "Specifies the default file name extension to expect for collecting image artifacts. Defaults to first element set in IMAGE_FSTYPES."
 
 do_fetch[cleandirs] = "${S}"
 do_patch[noexec] = "1"
@@ -65,6 +66,13 @@ RAUC_BUNDLE_VERSION     ??= "${PV}"
 RAUC_BUNDLE_DESCRIPTION ??= "${SUMMARY}"
 RAUC_BUNDLE_BUILD       ??= "${DATETIME}"
 RAUC_BUNDLE_BUILD[vardepsexclude] = "DATETIME"
+RAUC_BUNDLE_COMPATIBLE[doc] = "Specifies the mandatory bundle compatible string. See RAUC documentation for more details."
+RAUC_BUNDLE_VERSION[doc] = "Specifies the bundle version string. See RAUC documentation for more details."
+RAUC_BUNDLE_DESCRIPTION[doc] = "Specifies the bundle description string. See RAUC documentation for more details."
+RAUC_BUNDLE_BUILD[doc] = "Specifies the bundle build stamp. See RAUC documentation for more details."
+
+RAUC_BUNDLE_SLOTS[doc] = "Space-separated list of slot classes to include in bundle (manifest)"
+RAUC_BUNDLE_HOOKS[doc] = "Allows to specify an additional hook executable and bundle hooks (via varflags '[file'] and ['hooks'])"
 
 # Create dependency list from images
 python __anonymous() {
@@ -98,7 +106,9 @@ B = "${WORKDIR}/build"
 BUNDLE_DIR = "${S}/bundle"
 
 RAUC_KEY_FILE ??= ""
+RAUC_KEY_FILE[doc] = "Specifies the path to the RAUC key file used for signing. Use COREBASE to reference files located in any shared BSP folder."
 RAUC_CERT_FILE ??= ""
+RAUC_CERT_FILE[doc] = "Specifies the path to the RAUC cert file used for signing. Use COREBASE to reference files located in any shared BSP folder."
 
 DEPENDS = "rauc-native squashfs-tools-native"
 
@@ -133,10 +143,10 @@ def write_manifest(d):
     for slot in (d.getVar('RAUC_BUNDLE_SLOTS') or "").split():
         slotflags = d.getVarFlags('RAUC_SLOT_%s' % slot)
         if slotflags and 'name' in slotflags:
-            imgname = slotflags.get('name')
+            slotname = slotflags.get('name')
         else:
-            imgname = slot
-        manifest.write('[image.%s]\n' % imgname)
+            slotname = slot
+        manifest.write('[image.%s]\n' % slotname)
         if slotflags and 'type' in slotflags:
             imgtype = slotflags.get('type')
         else:
@@ -173,7 +183,6 @@ def write_manifest(d):
         else:
             raise bb.build.FuncFailed('Unknown image type: %s' % imgtype)
 
-        print(imgname)
         manifest.write("filename=%s\n" % imgname)
         if slotflags and 'hooks' in slotflags:
             manifest.write("hooks=%s\n" % slotflags.get('hooks'))
@@ -183,6 +192,7 @@ def write_manifest(d):
         # Set or update symlinks to image files
         if os.path.lexists(bundle_imgpath):
             bb.utils.remove(bundle_imgpath)
+        bb.note("adding image to bundle dir: '%s'" % imgname)
         shutil.copy(d.expand("${DEPLOY_DIR_IMAGE}/%s") % imgsource, bundle_imgpath)
         if not os.path.exists(bundle_imgpath):
             raise bb.build.FuncFailed('Failed creating symlink to %s' % imgname)
@@ -200,13 +210,16 @@ do_unpack_append() {
     if hooksflags and 'file' in hooksflags:
         hf = hooksflags.get('file')
         dsthook = d.expand("${BUNDLE_DIR}/%s" % hf)
+        bb.note("adding hook file to bundle dir: '%s'" % hf)
         shutil.copy(d.expand("${WORKDIR}/%s" % hf), dsthook)
         st = os.stat(dsthook)
         os.chmod(dsthook, st.st_mode | stat.S_IEXEC)
 }
 
 BUNDLE_BASENAME ??= "${PN}"
+BUNDLE_BASENAME[doc] = "Specifies desired output base name of generated bundle."
 BUNDLE_NAME ??= "${BUNDLE_BASENAME}-${MACHINE}-${DATETIME}"
+BUNDLE_NAME[doc] = "Specifies desired full output name of generated bundle."
 # Don't include the DATETIME variable in the sstate package sigantures
 BUNDLE_NAME[vardepsexclude] = "DATETIME"
 BUNDLE_LINK_NAME ??= "${BUNDLE_BASENAME}-${MACHINE}"
@@ -237,9 +250,6 @@ addtask bundle after do_configure before do_build
 inherit deploy
 
 do_deploy() {
-	if [ -d ${DEPLOY_DIR_IMAGE}/bundles ]; then
-		bbwarn "old-style 'bundles/' deploy subdirectory detected! Note hat newly generated bundles will be installed into root image deploy dir instead."
-	fi
 	install -d ${DEPLOYDIR}
 	install ${B}/bundle.raucb ${DEPLOYDIR}/${BUNDLE_NAME}.raucb
 	ln -sf ${BUNDLE_NAME}.raucb ${DEPLOYDIR}/${BUNDLE_LINK_NAME}.raucb
