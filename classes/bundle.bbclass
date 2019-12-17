@@ -260,6 +260,8 @@ BUNDLE_NAME[doc] = "Specifies desired full output name of generated bundle."
 # Don't include the DATETIME variable in the sstate package sigantures
 BUNDLE_NAME[vardepsexclude] = "DATETIME"
 BUNDLE_LINK_NAME ??= "${BUNDLE_BASENAME}-${MACHINE}"
+BUNDLE_EXTENSION ??= ".raucb"
+BUNDLE_EXTENSION[doc] = "Specifies desired custom filename extension of generated bundle"
 
 do_bundle() {
 	if [ -z "${RAUC_KEY_FILE}" ]; then
@@ -288,8 +290,8 @@ inherit deploy
 
 do_deploy() {
 	install -d ${DEPLOYDIR}
-	install ${B}/bundle.raucb ${DEPLOYDIR}/${BUNDLE_NAME}.raucb
-	ln -sf ${BUNDLE_NAME}.raucb ${DEPLOYDIR}/${BUNDLE_LINK_NAME}.raucb
+	install ${B}/bundle.raucb ${DEPLOYDIR}/${BUNDLE_NAME}${BUNDLE_EXTENSION}
+	ln -sf ${BUNDLE_NAME}${BUNDLE_EXTENSION} ${DEPLOYDIR}/${BUNDLE_LINK_NAME}${BUNDLE_EXTENSION}
 }
 
 addtask deploy after do_bundle before do_build
