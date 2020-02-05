@@ -164,12 +164,16 @@ def write_manifest(d):
     manifest.write('\n')
 
     hooksflags = d.getVarFlags('RAUC_BUNDLE_HOOKS')
-    if hooksflags and 'file' in hooksflags:
+    have_hookfile = False
+    if 'file' in hooksflags:
+        have_hookfile = True
         manifest.write('[hooks]\n')
         manifest.write("filename=%s\n" % hooksflags.get('file'))
         if 'hooks' in hooksflags:
             manifest.write("hooks=%s\n" % hooksflags.get('hooks'))
         manifest.write('\n')
+    elif 'hooks' in hooksflags:
+        bb.warn("Suspicious use of RAUC_BUNDLE_HOOKS[hooks] without RAUC_BUNDLE_HOOKS[file]")
 
     for slot in (d.getVar('RAUC_BUNDLE_SLOTS') or "").split():
         slotflags = d.getVarFlags('RAUC_SLOT_%s' % slot)
@@ -219,6 +223,8 @@ def write_manifest(d):
 
         manifest.write("filename=%s\n" % imgname)
         if slotflags and 'hooks' in slotflags:
+            if not have_hookfile:
+                bb.warn("A hook is defined for slot %s, but RAUC_BUNDLE_HOOKS[file] is not defined" % slot)
             manifest.write("hooks=%s\n" % slotflags.get('hooks'))
         manifest.write("\n")
 
