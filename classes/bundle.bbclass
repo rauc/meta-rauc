@@ -62,7 +62,6 @@ RAUC_IMAGE_FSTYPE[doc] = "Specifies the default file name extension to expect fo
 
 do_fetch[cleandirs] = "${S}"
 do_patch[noexec] = "1"
-do_configure[noexec] = "1"
 do_compile[noexec] = "1"
 do_install[noexec] = "1"
 do_populate_sysroot[noexec] = "1"
@@ -220,7 +219,7 @@ def write_manifest(d):
 
     manifest.close()
 
-do_unpack_append() {
+python do_configure() {
     import shutil
     import os
     import stat
