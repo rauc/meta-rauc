@@ -1,24 +1,24 @@
 # Class for creating rauc bundles
 #
 # Description:
-# 
+#
 # You have to set the slot images in your recipe file following this example:
 #
 #   RAUC_BUNDLE_COMPATIBLE ?= "My Super Product"
 #   RAUC_BUNDLE_VERSION ?= "v2015-06-07-1"
-#   
+#
 #   RAUC_BUNDLE_HOOKS[file] ?= "hook.sh"
 #   RAUC_BUNDLE_HOOKS[hooks] ?= "install-check"
 #
 #   RAUC_BUNDLE_SLOTS ?= "rootfs kernel dtb bootloader"
-#   
+#
 #   RAUC_SLOT_rootfs ?= "core-image-minimal"
 #   RAUC_SLOT_rootfs[fstype] = "ext4"
 #   RAUC_SLOT_rootfs[hooks] ?= "install;post-install"
-#   
+#
 #   RAUC_SLOT_kernel ?= "linux-yocto"
 #   RAUC_SLOT_kernel[type] ?= "kernel"
-#   
+#
 #   RAUC_SLOT_bootloader ?= "barebox"
 #   RAUC_SLOT_bootloader[type] ?= "boot"
 #   RAUC_SLOT_bootloader[file] ?= "barebox.img"
@@ -32,6 +32,9 @@
 #   RAUC_SLOT_dtb[name] ?= "dtb.my,compatible"
 #   RAUC_SLOT_dtb[type] ?= "file"
 #   RAUC_SLOT_dtb[file] ?= "${MACHINE}-variant1.dtb"
+#
+# Extra arguments may be passed to the bundle command with BUNDLE_ARGS eg:
+#   BUNDLE_ARGS += " --intermediate=${CERT_PATH}/rauc/ca.cert.pem"
 #
 # Additionally you need to provide a certificate and a key file
 #
@@ -95,7 +98,12 @@ B = "${WORKDIR}/build"
 BUNDLE_DIR = "${S}/bundle"
 
 RAUC_KEY_FILE ??= ""
+RAUC_KEY_FILE[doc] = "Specifies the path to the RAUC key file used for signing. Use COREBASE to reference files located in any shared BSP folder."
 RAUC_CERT_FILE ??= ""
+RAUC_CERT_FILE[doc] = "Specifies the path to the RAUC cert file used for signing. Use COREBASE to reference files located in any shared BSP folder."
+BUNDLE_ARGS ??= ""
+BUNDLE_ARGS[doc] = "Specifies any extra arguments to pass to the rauc bundle command."
+
 
 DEPENDS = "rauc-native squashfs-tools-native"
 
@@ -222,8 +230,9 @@ do_bundle() {
 	fi
 	${STAGING_DIR_NATIVE}${bindir}/rauc bundle \
 		--debug \
-		--cert=${RAUC_CERT_FILE} \
-		--key=${RAUC_KEY_FILE} \
+		--cert="${RAUC_CERT_FILE}" \
+		--key="${RAUC_KEY_FILE}" \
+		${BUNDLE_ARGS} \
 		${BUNDLE_DIR} \
 		${B}/bundle.raucb
 }
