@@ -49,6 +49,9 @@
 #   RAUC_BUNDLE_EXTRA_DEPENDS += "myfile-recipe-pn"
 #   RAUC_BUNDLE_EXTRA_FILES += "myfile.img"
 #
+# Extra arguments may be passed to the bundle command with BUNDLE_ARGS eg:
+#   BUNDLE_ARGS += ' --mksquashfs-args="-comp zstd -Xcompression-level 22" '
+#
 # Additionally you need to provide a certificate and a key file
 #
 #   RAUC_KEY_FILE ?= "development-1.key.pem"
@@ -134,6 +137,9 @@ RAUC_KEY_FILE ??= ""
 RAUC_KEY_FILE[doc] = "Specifies the path to the RAUC key file used for signing. Use COREBASE to reference files located in any shared BSP folder."
 RAUC_CERT_FILE ??= ""
 RAUC_CERT_FILE[doc] = "Specifies the path to the RAUC cert file used for signing. Use COREBASE to reference files located in any shared BSP folder."
+BUNDLE_ARGS ??= ""
+BUNDLE_ARGS[doc] = "Specifies any extra arguments to pass to the rauc bundle command."
+
 
 DEPENDS = "rauc-native squashfs-tools-native"
 
@@ -286,6 +292,7 @@ do_bundle() {
 		--debug \
 		--cert="${RAUC_CERT_FILE}" \
 		--key="${RAUC_KEY_FILE}" \
+		${BUNDLE_ARGS} \
 		${BUNDLE_DIR} \
 		${B}/bundle.raucb
 }
