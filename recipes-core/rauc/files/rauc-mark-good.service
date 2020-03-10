@@ -2,6 +2,7 @@
 Description=Rauc Good-marking Service
 
 [Service]
+Type=oneshot
 ExecStart=@BINDIR@/rauc status mark-good
 
 [Install]
