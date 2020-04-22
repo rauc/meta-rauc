@@ -14,6 +14,7 @@ EXTRA_OECONF += "\
 
 RRECOMMENDS_${PN} = "squashfs-tools"
 
+PACKAGECONFIG[nocreate]  = "--disable-create,--enable-create,"
 PACKAGECONFIG[service] = "--enable-service,--enable-service=no,dbus,${PN}-service"
 PACKAGECONFIG[network] = "--enable-network,--enable-network=no,curl"
 PACKAGECONFIG[json]    = "--enable-json,--enable-json=no,json-glib"
@@ -26,4 +27,8 @@ FILES_${PN}-service = "\
   ${systemd_unitdir}/system/rauc.service \
   ${datadir}/dbus-1/system.d/de.pengutronix.rauc.conf \
   ${datadir}/dbus-1/system-services/de.pengutronix.rauc.service \
+  "
+
+FILES_${PN}-dev += "\
+  ${datadir}/dbus-1/interfaces/de.pengutronix.rauc.Installer.xml \
   "
