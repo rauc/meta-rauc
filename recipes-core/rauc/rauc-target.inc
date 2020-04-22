@@ -68,4 +68,4 @@ RRECOMMENDS_${PN}_append = " ${PN}-mark-good"
 
 FILES_${PN}-mark-good = "${systemd_unitdir}/system/rauc-mark-good.service ${sysconfdir}/init.d/rauc-mark-good"
 
-PACKAGECONFIG ??= "service network json"
+PACKAGECONFIG ??= "service network json nocreate"
