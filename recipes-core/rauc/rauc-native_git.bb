@@ -2,8 +2,6 @@ require rauc-git.inc
 
 inherit native deploy
 
-do_deploy[sstate-outputdirs] = "${DEPLOY_DIR_TOOLS}"
-
 do_deploy() {
     install -d ${DEPLOYDIR}
     install -m 0755 ${B}/rauc ${DEPLOYDIR}/rauc-${PV}
