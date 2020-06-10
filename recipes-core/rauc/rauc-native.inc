@@ -1,5 +1,7 @@
 inherit native deploy
 
+DEPENDS = "openssl-native glib-2.0-native"
+
 do_deploy[sstate-outputdirs] = "${DEPLOY_DIR_TOOLS}"
 
 do_deploy() {
