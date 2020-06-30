@@ -1,6 +1,8 @@
 RAUC_KEYRING_FILE ??= "ca.cert.pem"
 RAUC_KEYRING_URI ??= "file://${RAUC_KEYRING_FILE}"
 
+RRECOMMENDS_${PN} = "squashfs-tools"
+
 SRC_URI_append = " \
   file://system.conf \
   ${RAUC_KEYRING_URI} \

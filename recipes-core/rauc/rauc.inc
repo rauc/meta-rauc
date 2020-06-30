@@ -12,8 +12,6 @@ EXTRA_OECONF += "\
         --with-dbussystemservicedir=${datadir}/dbus-1/system-services \
         "
 
-RRECOMMENDS_${PN} = "squashfs-tools"
-
 PACKAGECONFIG[nocreate]  = "--disable-create,--enable-create,"
 PACKAGECONFIG[service] = "--enable-service,--enable-service=no,dbus,${PN}-service"
 PACKAGECONFIG[network] = "--enable-network,--enable-network=no,curl"
