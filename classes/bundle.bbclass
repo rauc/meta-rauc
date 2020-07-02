@@ -56,6 +56,10 @@
 #
 #   RAUC_KEY_FILE ?= "development-1.key.pem"
 #   RAUC_CERT_FILE ?= "development-1.cert.pem"
+#
+# For bundle signature verification a keyring file must be provided
+#
+#   RAUC_KEYRING_FILE ?= "ca.cert.pem"
 
 LICENSE = "MIT"
 
@@ -137,6 +141,8 @@ RAUC_KEY_FILE ??= ""
 RAUC_KEY_FILE[doc] = "Specifies the path to the RAUC key file used for signing. Use COREBASE to reference files located in any shared BSP folder."
 RAUC_CERT_FILE ??= ""
 RAUC_CERT_FILE[doc] = "Specifies the path to the RAUC cert file used for signing. Use COREBASE to reference files located in any shared BSP folder."
+RAUC_KEYRING_FILE ??= ""
+RAUC_KEYRING_FILE[doc] = "Specifies the path to the RAUC keyring file used for bundle signature verification. Use COREBASE to reference files located in any shared BSP folder."
 BUNDLE_ARGS ??= ""
 BUNDLE_ARGS[doc] = "Specifies any extra arguments to pass to the rauc bundle command."
 
