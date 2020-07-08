@@ -52,10 +52,21 @@
 # Extra arguments may be passed to the bundle command with BUNDLE_ARGS eg:
 #   BUNDLE_ARGS += ' --mksquashfs-args="-comp zstd -Xcompression-level 22" '
 #
+# Likewise, extra arguments can be passed to the convert command with
+# CONVERTS_ARGS.
+#
 # Additionally you need to provide a certificate and a key file
 #
 #   RAUC_KEY_FILE ?= "development-1.key.pem"
 #   RAUC_CERT_FILE ?= "development-1.cert.pem"
+#
+# For bundle signature verification a keyring file must be provided
+#
+#   RAUC_KEYRING_FILE ?= "ca.cert.pem"
+#
+# Enable building casync bundles with
+#
+#   RAUC_CASYNC_BUNDLE = "1"
 
 LICENSE = "MIT"
 
@@ -94,6 +105,8 @@ RAUC_BUNDLE_HOOKS[doc] = "Allows to specify an additional hook executable and bu
 
 RAUC_BUNDLE_EXTRA_FILES[doc] = "Specifies list of additional files to add to bundle. Files must either be located in WORKDIR (added by SRC_URI) or DEPLOY_DIR_IMAGE (assured by RAUC_BUNDLE_EXTRA_DEPENDS)"
 RAUC_BUNDLE_EXTRA_DEPENDS[doc] = "Specifies list of recipes that create artifacts in DEPLOY_DIR_IMAGE. For recipes not depending on do_deploy task also <recipename>:do_<taskname> notation is supported"
+
+RAUC_CASYNC_BUNDLE ??= "0"
 
 # Create dependency list from images
 python __anonymous() {
@@ -136,11 +149,16 @@ RAUC_KEY_FILE ??= ""
 RAUC_KEY_FILE[doc] = "Specifies the path to the RAUC key file used for signing. Use COREBASE to reference files located in any shared BSP folder."
 RAUC_CERT_FILE ??= ""
 RAUC_CERT_FILE[doc] = "Specifies the path to the RAUC cert file used for signing. Use COREBASE to reference files located in any shared BSP folder."
+RAUC_KEYRING_FILE ??= ""
+RAUC_KEYRING_FILE[doc] = "Specifies the path to the RAUC keyring file used for bundle signature verification. Use COREBASE to reference files located in any shared BSP folder."
 BUNDLE_ARGS ??= ""
 BUNDLE_ARGS[doc] = "Specifies any extra arguments to pass to the rauc bundle command."
+CONVERT_ARGS ??= ""
+CONVERT_ARGS[doc] = "Specifies any extra arguments to pass to the rauc convert command."
 
 
 DEPENDS = "rauc-native squashfs-tools-native"
+DEPENDS += "${@bb.utils.contains('RAUC_CASYNC_BUNDLE', '1', 'virtual/fakeroot-native casync-native', '', d)}"
 
 def write_manifest(d):
     import shutil
@@ -290,9 +308,6 @@ do_bundle() {
 		bbfatal "'RAUC_CERT_FILE' not set. Please set to a valid certificate file location."
 	fi
 
-	if [ -e ${B}/bundle.raucb ]; then
-		rm ${B}/bundle.raucb
-	fi
 	${STAGING_DIR_NATIVE}${bindir}/rauc bundle \
 		--debug \
 		--cert="${RAUC_CERT_FILE}" \
@@ -300,8 +315,30 @@ do_bundle() {
 		${BUNDLE_ARGS} \
 		${BUNDLE_DIR} \
 		${B}/bundle.raucb
+
+	if [ ${RAUC_CASYNC_BUNDLE} -eq 1 ]; then
+		if [ -z "${RAUC_KEYRING_FILE}" ]; then
+			bbfatal "'RAUC_KEYRING_FILE' not set. Please set a valid keyring file location."
+		fi
+
+		# There is no package providing a binary named "fakeroot" but instead a
+		# replacement named "pseudo". But casync requires fakeroot to be
+		# installed, thus make a symlink.
+		if ! [ -x "$(command -v fakeroot)" ]; then
+			ln -sf ${STAGING_DIR_NATIVE}${bindir}/pseudo ${STAGING_DIR_NATIVE}${bindir}/fakeroot
+		fi
+		PSEUDO_PREFIX=${STAGING_DIR_NATIVE}/usr ${STAGING_DIR_NATIVE}${bindir}/rauc convert \
+			--debug \
+			--cert=${RAUC_CERT_FILE} \
+			--key=${RAUC_KEY_FILE} \
+			--keyring=${RAUC_KEYRING_FILE} \
+			${CONVERT_ARGS} \
+			${B}/bundle.raucb \
+			${B}/casync-bundle.raucb
+	fi
 }
 do_bundle[dirs] = "${B}"
+do_bundle[cleandirs] = "${B}"
 
 addtask bundle after do_configure before do_build
 
@@ -311,6 +348,13 @@ do_deploy() {
 	install -d ${DEPLOYDIR}
 	install -m 0644 ${B}/bundle.raucb ${DEPLOYDIR}/${BUNDLE_NAME}${BUNDLE_EXTENSION}
 	ln -sf ${BUNDLE_NAME}${BUNDLE_EXTENSION} ${DEPLOYDIR}/${BUNDLE_LINK_NAME}${BUNDLE_EXTENSION}
+
+	if [ ${RAUC_CASYNC_BUNDLE} -eq 1 ]; then
+		install ${B}/casync-bundle${BUNDLE_EXTENSION} ${DEPLOYDIR}/casync-${BUNDLE_NAME}${BUNDLE_EXTENSION}
+		cp -r ${B}/casync-bundle.castr ${DEPLOYDIR}/casync-${BUNDLE_NAME}.castr
+		ln -sf casync-${BUNDLE_NAME}${BUNDLE_EXTENSION} ${DEPLOYDIR}/casync-${BUNDLE_LINK_NAME}${BUNDLE_EXTENSION}
+		ln -sf casync-${BUNDLE_NAME}.castr ${DEPLOYDIR}/casync-${BUNDLE_LINK_NAME}.castr
+	fi
 }
 
 addtask deploy after do_bundle before do_build
