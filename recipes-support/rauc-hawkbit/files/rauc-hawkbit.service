@@ -1,0 +1,9 @@
+[Unit]
+Description=rauc-hawkbit client service
+Requires=rauc.service
+
+[Service]
+ExecStart=@BINDIR@/rauc-hawkbit-client -c @SYSCONFDIR@/rauc-hawkbit/config.cfg
+
+[Install]
+WantedBy=multi-user.target
