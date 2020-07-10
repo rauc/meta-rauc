@@ -10,8 +10,8 @@ SRC_URI = " \
     file://rauc-hawkbit.service \
 "
 
-PV = "0.1.0-9+git${SRCPV}"
-SRCREV = "6a1e79b0b7c83da866e0602201db49d6e74d7dd2"
+PV = "0.2.0+git${SRCPV}"
+SRCREV = "47bebb4a011768817f13f7796ec1b4e67edaffc5"
 
 S = "${WORKDIR}/git"
 
