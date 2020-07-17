@@ -86,9 +86,9 @@ do_populate_sysroot[noexec] = "1"
 do_package[noexec] = "1"
 do_package_qa[noexec] = "1"
 do_packagedata[noexec] = "1"
-do_package_write_ipk[noexec] = "1"
-do_package_write_deb[noexec] = "1"
-do_package_write_rpm[noexec] = "1"
+deltask do_package_write_ipk
+deltask do_package_write_deb
+deltask do_package_write_rpm
 
 RAUC_BUNDLE_COMPATIBLE  ??= "${MACHINE}-${TARGET_VENDOR}"
 RAUC_BUNDLE_VERSION     ??= "${PV}"
