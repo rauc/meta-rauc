@@ -1,2 +1,2 @@
-require rauc-1.3.inc
+require rauc-1.4.inc
 require rauc-native.inc
