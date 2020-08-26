@@ -236,7 +236,7 @@ def write_manifest(d):
             raise bb.build.FuncFailed('Unknown image type: %s' % imgtype)
 
         if slotflags and 'rename' in slotflags:
-            imgname = slotflags.get('rename')
+            imgname = d.getVarFlag('RAUC_SLOT_%s' % slot, 'rename')
 
         manifest.write("filename=%s\n" % imgname)
         if slotflags and 'hooks' in slotflags:
