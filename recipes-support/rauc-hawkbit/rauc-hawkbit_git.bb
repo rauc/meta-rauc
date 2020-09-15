@@ -14,4 +14,4 @@ S = "${WORKDIR}/git"
 
 inherit setuptools3
 
-RDEPENDS_${PN} += "python3-aiohttp python3-gbulb"
+RDEPENDS_${PN} += "python3-aiohttp python3-gbulb python3-netserver"
