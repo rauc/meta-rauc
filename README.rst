@@ -36,17 +36,6 @@ Please submit patches via GitHub pull request on https://github.com/rauc/meta-ra
 Maintainer: Enrico Joerns <ejo@pengutronix.de>
 
 
-Table of Contents
-=================
-
-I.   Adding the rauc layer to your build
-II.  Building RAUC
-III. Adding the RAUC update framework to your device
-IV.  Building RAUC hawkBit Client
-V.   Configure Custom Kernel
-VI.  References
-
-
 I. Adding the rauc Layer to Your Build
 ======================================
 
