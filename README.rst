@@ -105,14 +105,28 @@ you have to follow at least the following steps:
 
      bitbake my-bundle-recipe
 
-IV. Building RAUC hawkBit Client
-================================
+IV. Building The RAUC hawkBit Clients
+=====================================
 
-To build the rauc-hawkbit client that allows interfacing between RAUC and a
-hawkBit deployment server, simply add ``rauc-hawkbit`` package to your systems
-image recipe::
+This layer offers support for two clients that interface between RAUC and the
+hawkBit deployment server:
 
-    IMAGE_INSTALL_append = " rauc-hawkbit"
+* rauc-hawkbit (python implementation)
+* rauc-hawkbit-updater (C implementation)
+
+To use ``rauc-hawkbit`` as a standalone service add to your systems image
+recipe::
+
+    IMAGE_INSTALL_append = " rauc-hawkbit-service"
+
+To use it as a python library in your demo application instead, simply add to
+your recipe::
+
+    DEPENDS += "rauc-hawkbit"
+
+To use ``rauc-hawkbit-updater`` in your system add to your image recipe::
+
+    IMAGE_INSTALL_append = " rauc-hawkbit-updater"
 
 V. Configure Custom Kernel
 ==========================
