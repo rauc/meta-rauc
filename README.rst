@@ -80,7 +80,7 @@ you have to follow at least the following steps:
 2. Add a ``rauc_%.bbappend`` in your device-specific (BSP) layer
    that installs your RAUC system configuration file under
    ``/etc/rauc/system.conf``. For information on how to write the RAUC
-   update file, please refer to the RAUC user documentation [1]::
+   update file, please refer to the RAUC user documentation [1]_::
 
      FILESEXTRAPATHS_prepend := "${THISDIR}/files:"
      SRC_URI_append := " file://system.conf"
@@ -98,7 +98,7 @@ you have to follow at least the following steps:
      RAUC_CERT_FILE = "path/to/development-1.cert.pem"
 
    For information on how to generate and use the key and certificate files,
-   please refer to the RAUC user documentation [1].
+   please refer to the RAUC user documentation [1]_.
 
    For a more detailed explanation on the required and available variables,
    read the notes in the bundle.bbclass file.
@@ -145,4 +145,4 @@ enabled in your configuration, too.
 VI. References
 ==============
 
-[1] RAUC user documentation http://rauc.readthedocs.io/en/latest/
+.. [1] http://rauc.readthedocs.io/en/latest/
