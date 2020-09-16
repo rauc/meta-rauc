@@ -1,7 +1,9 @@
 The meta-rauc layer provides support for integrating the RAUC update tool
 into your device.
 
-Please see the corresponding sections below for details.
+Please see the corresponding sections below for more information.
+For a detailed description on steps necessary to integrate RAUC into your
+project, refer https://rauc.readthedocs.io/en/latest/integration.html.
 
 
 Dependencies
