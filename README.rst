@@ -57,18 +57,18 @@ other layers needed. e.g.::
     "
 
 
-II. Building RAUC
-=================
+II. Building RAUC Host Tool
+===========================
 
 If you only intend to build the RAUC host tool, you may simply run::
 
   bitbake rauc-native
 
-This will place the rauc binary at tmp/deploy/tools/rauc.
+This will place the rauc binary at ``tmp/deploy/tools/rauc``.
 
 
-III. Adding the RAUC Update Framework to Your Device
-====================================================
+III. Adding the RAUC Update Service to Your Device
+==================================================
 
 To prepare your device for using RAUC as its update handler,
 you have to follow at least the following steps:
