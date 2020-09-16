@@ -1,5 +1,1 @@
-FILESEXTRAPATHS_prepend := "${THISDIR}/files:"
-
-SRC_URI += "file://rauc.cfg"
-
-SRC_URI += "file://0001-mount-support-the-sizelimit-and-offset-option-for-lo.patch"
+require ${@bb.utils.contains('DISTRO_FEATURES', 'rauc', '${BPN}_rauc.inc', '', d)}
