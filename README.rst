@@ -73,9 +73,9 @@ III. Adding the RAUC Update Service to Your Device
 To prepare your device for using RAUC as its update handler,
 you have to follow at least the following steps:
 
-1. Add the `rauc` package to your systems image recipe::
+1. Add `rauc` to `DISTRO_FEATURES` in your distro (or local) config::
 
-     IMAGE_INSTALL_append = " rauc"
+     DISTRO_FEATURES += "rauc"
 
 2. Add a ``rauc_%.bbappend`` in your device-specific (BSP) layer
    that installs your RAUC system configuration file under
@@ -106,6 +106,12 @@ you have to follow at least the following steps:
 4. Build a bundle and the rootfs for your device::
 
      bitbake my-bundle-recipe
+
+Note: If you do not use packagegroup-base, you als need to manually add
+the `rauc` package to your systems image recipe::
+
+     IMAGE_INSTALL_append = " rauc"
+
 
 IV. Building The RAUC hawkBit Clients
 =====================================
