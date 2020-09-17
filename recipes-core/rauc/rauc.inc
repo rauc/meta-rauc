@@ -17,6 +17,8 @@ PACKAGECONFIG[service] = "--enable-service,--enable-service=no,dbus,${PN}-servic
 PACKAGECONFIG[network] = "--enable-network,--enable-network=no,curl"
 PACKAGECONFIG[json]    = "--enable-json,--enable-json=no,json-glib"
 
+RDEPENDS_${PN}-service += "dbus"
+
 PACKAGES =+ "${PN}-service"
 SYSTEMD_SERVICE_${PN}-service = "rauc.service"
 SYSTEMD_PACKAGES = "${PN}-service"
