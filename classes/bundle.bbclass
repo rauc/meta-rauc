@@ -53,7 +53,7 @@
 #   BUNDLE_ARGS += ' --mksquashfs-args="-comp zstd -Xcompression-level 22" '
 #
 # Likewise, extra arguments can be passed to the convert command with
-# CONVERTS_ARGS.
+# CONVERT_ARGS.
 #
 # Additionally you need to provide a certificate and a key file
 #
