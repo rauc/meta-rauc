@@ -1,11 +1,7 @@
-RAUC_KEYRING_FILE ??= "ca.cert.pem"
-RAUC_KEYRING_URI ??= "file://${RAUC_KEYRING_FILE}"
-
+RDEPENDS_${PN} = "rauc-conf"
 RRECOMMENDS_${PN} = "squashfs-tools"
 
 SRC_URI_append = " \
-  file://system.conf \
-  ${RAUC_KEYRING_URI} \
   file://rauc-mark-good.service \
   file://rauc-mark-good.init \
   "
@@ -21,21 +17,6 @@ inherit systemd update-rc.d
 
 do_install () {
 	autotools_do_install
-
-        # Create rauc config dir
-        # Warn if system configuration was not overwritten
-        if ! grep -q "^[^#]" ${WORKDIR}/system.conf; then
-                bbwarn "Please overwrite example system.conf with a project specific one!"
-        fi
-        install -d ${D}${sysconfdir}/rauc
-        install -m 0644 ${WORKDIR}/system.conf ${D}${sysconfdir}/rauc/system.conf
-
-        # Warn if CA file was not overwritten
-        if ! grep -q "^[^#]" ${WORKDIR}/${RAUC_KEYRING_FILE}; then
-                bbwarn "Please overwrite example ca.cert.pem with a project specific one, or set the RAUC_KEYRING_FILE variable with your file!"
-        fi
-        install -d ${D}${sysconfdir}/rauc/
-        install -m 0644 ${WORKDIR}/${RAUC_KEYRING_FILE} ${D}${sysconfdir}/rauc/
 
         install -d ${D}${systemd_unitdir}/system/
         install -m 0644 ${WORKDIR}/rauc-mark-good.service ${D}${systemd_unitdir}/system/
