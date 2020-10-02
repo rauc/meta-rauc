@@ -171,7 +171,6 @@ def write_manifest(d):
     import shutil
 
     machine = d.getVar('MACHINE')
-    img_fstype = d.getVar('RAUC_IMAGE_FSTYPE')
     bundle_path = d.expand("${BUNDLE_DIR}")
 
     bb.utils.mkdirhier(bundle_path)
@@ -218,6 +217,8 @@ def write_manifest(d):
 
         if slotflags and 'fstype' in slotflags:
             img_fstype = slotflags.get('fstype')
+        else:
+            img_fstype = d.getVar('RAUC_IMAGE_FSTYPE')
 
         if imgtype == 'image':
             if slotflags and 'file' in slotflags:
