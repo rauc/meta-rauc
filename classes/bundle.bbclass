@@ -207,7 +207,7 @@ def write_manifest(d):
 
         if slotflags and 'fstype' in slotflags:
             img_fstype = slotflags.get('fstype')
-        else
+        else:
             img_fstype = d.getVar('RAUC_IMAGE_FSTYPE')
 
         if imgtype == 'image':
