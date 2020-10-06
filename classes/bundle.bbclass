@@ -341,7 +341,7 @@ do_bundle() {
 		if ! [ -x "$(command -v fakeroot)" ]; then
 			ln -sf ${STAGING_DIR_NATIVE}${bindir}/pseudo ${STAGING_DIR_NATIVE}${bindir}/fakeroot
 		fi
-		PSEUDO_PREFIX=${STAGING_DIR_NATIVE}/usr ${STAGING_DIR_NATIVE}${bindir}/rauc convert \
+		PSEUDO_PREFIX=${STAGING_DIR_NATIVE}/usr PSEUDO_DISABLED=0 ${STAGING_DIR_NATIVE}${bindir}/rauc convert \
 			--debug \
 			--cert=${RAUC_CERT_FILE} \
 			--key=${RAUC_KEY_FILE} \
