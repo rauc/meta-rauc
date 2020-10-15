@@ -1,0 +1,178 @@
+From 43cd16d9140a3ac437d9d29d2fd0288501e88a9b Mon Sep 17 00:00:00 2001
+From: Steffen Trumtrar <s.trumtrar@pengutronix.de>
+Date: Wed, 29 Jul 2020 10:43:53 +0200
+Subject: [PATCH] mount: support the sizelimit and offset option for loop
+ devices
+
+Starting with linux kernel v5.4 squashfs has a more strict parameter
+checking implemented. Unlike util-linux mount, busybox never supported
+the sizelimit option but simply forwards it to the kernel.
+Since v5.4 mounting will fail with
+
+    squashfs: Unknown parameter 'sizelimit'
+
+Support the sizelimit parameter by setting it in the LOOP_SET_STATUS64
+structure before handing it to the kernel.
+
+While at it also add support for the offset option, which currently will
+always be set to 0.
+
+function                                             old     new   delta
+cut_out_ull_opt                                        -     167    +167
+singlemount                                         1230    1266     +36
+set_loop                                             834     862     +28
+losetup_main                                         479     483      +4
+------------------------------------------------------------------------------
+(add/remove: 1/0 grow/shrink: 3/0 up/down: 235/0)             Total: 235 bytes
+
+Signed-off-by: Steffen Trumtrar <s.trumtrar@pengutronix.de>
+Signed-off-by: Denys Vlasenko <vda.linux@googlemail.com>
+---
+ include/libbb.h      |  3 ++-
+ libbb/loop.c         |  4 ++-
+ util-linux/losetup.c |  2 +-
+ util-linux/mount.c   | 62 +++++++++++++++++++++++++++++++++++++++++++-
+ 4 files changed, 67 insertions(+), 4 deletions(-)
+
+diff --git a/include/libbb.h b/include/libbb.h
+index 6be934994..106794166 100644
+--- a/include/libbb.h
++++ b/include/libbb.h
+@@ -1515,7 +1515,8 @@ int del_loop(const char *device) FAST_FUNC;
+  * malloc and return it in *devname.
+  * return value is the opened fd to the loop device, or < on error
+  */
+-int set_loop(char **devname, const char *file, unsigned long long offset, unsigned flags) FAST_FUNC;
++int set_loop(char **devname, const char *file, unsigned long long offset,
++		unsigned long long sizelimit, unsigned flags) FAST_FUNC;
+ /* These constants match linux/loop.h (without BB_ prefix): */
+ #define BB_LO_FLAGS_READ_ONLY 1
+ #define BB_LO_FLAGS_AUTOCLEAR 4
+diff --git a/libbb/loop.c b/libbb/loop.c
+index ada0c7638..85b2724e5 100644
+--- a/libbb/loop.c
++++ b/libbb/loop.c
+@@ -102,7 +102,8 @@ int FAST_FUNC get_free_loop(void)
+  * search will re-use an existing loop device already bound to that
+  * file/offset if it finds one.
+  */
+-int FAST_FUNC set_loop(char **device, const char *file, unsigned long long offset, unsigned flags)
++int FAST_FUNC set_loop(char **device, const char *file, unsigned long long offset,
++		unsigned long long sizelimit, unsigned flags)
+ {
+ 	char dev[LOOP_NAMESIZE];
+ 	char *try;
+@@ -185,6 +186,7 @@ int FAST_FUNC set_loop(char **device, const char *file, unsigned long long offse
+ 				memset(&loopinfo, 0, sizeof(loopinfo));
+ 				safe_strncpy((char *)loopinfo.lo_file_name, file, LO_NAME_SIZE);
+ 				loopinfo.lo_offset = offset;
++				loopinfo.lo_sizelimit = sizelimit;
+ 				/*
+ 				 * Used by mount to set LO_FLAGS_AUTOCLEAR.
+ 				 * LO_FLAGS_READ_ONLY is not set because RO is controlled by open type of the file.
+diff --git a/util-linux/losetup.c b/util-linux/losetup.c
+index cc6c2b1d5..ec0cf04e4 100644
+--- a/util-linux/losetup.c
++++ b/util-linux/losetup.c
+@@ -151,7 +151,7 @@ int losetup_main(int argc UNUSED_PARAM, char **argv)
+ 			if (opt & OPT_P) {
+ 				flags |= BB_LO_FLAGS_PARTSCAN;
+ 			}
+-			if (set_loop(&d, argv[0], offset, flags) < 0)
++			if (set_loop(&d, argv[0], offset, 0, flags) < 0)
+ 				bb_simple_perror_msg_and_die(argv[0]);
+ 			return EXIT_SUCCESS;
+ 		}
+diff --git a/util-linux/mount.c b/util-linux/mount.c
+index 84c85c057..efee3b1da 100644
+--- a/util-linux/mount.c
++++ b/util-linux/mount.c
+@@ -1887,6 +1887,58 @@ static int nfsmount(struct mntent *mp, unsigned long vfsflags, char *filteropts)
+ 
+ #endif // !ENABLE_FEATURE_MOUNT_NFS
+ 
++// Find "...,NAME=NUM,..." in the option string, remove "NAME=NUM" option
++// and return NUM.
++// Return 0 if not found.
++// All instances must be parsed and removed (for example, since kernel 5.4
++//      squashfs: Unknown parameter 'sizelimit'
++// will result if loopback mount option "sizelimit=NNN" is not removed
++// and squashfs sees it in option string).
++static unsigned long long cut_out_ull_opt(char *opts, const char *name_eq)
++{
++	unsigned long long ret = 0;
++
++	if (!opts) // allow NULL opts (simplifies callers' work)
++		return ret;
++
++	for (;;) {
++		char *end;
++		char *opt;
++
++		// Find comma-delimited "NAME="
++		for (;;) {
++			opt = strstr(opts, name_eq);
++			if (!opt)
++				return ret;
++			if (opt == opts)
++				break; // found it (it's first opt)
++			if (opt[-1] == ',') {
++				opts = opt - 1;
++				break; // found it (it's not a first opt)
++			}
++			// False positive like "VNAME=", we are at "N".
++			// - skip it, loop back to searching
++			opts = opt + 1;
++		}
++
++		ret = bb_strtoull(opt + strlen(name_eq), &end, 0);
++		if (errno && errno != EINVAL) {
++ err:
++			bb_error_msg_and_die("bad option '%s'", opt);
++		}
++		if (*end == '\0') {
++			// It is "[,]NAME=NUM\0" - truncate it and return
++			*opts = '\0';
++			return ret;
++		}
++		if (*end != ',')
++			goto err;
++		// We are at trailing comma
++		// Remove "NAME=NUM," and loop back to check for duplicate opts
++		overlapping_strcpy(opt, end + 1);
++	}
++}
++
+ // Mount one directory.  Handles CIFS, NFS, loopback, autobind, and filesystem
+ // type detection.  Returns 0 for success, nonzero for failure.
+ // NB: mp->xxx fields may be trashed on exit
+@@ -2030,9 +2082,16 @@ static int singlemount(struct mntent *mp, int ignore_busy)
+ 	) {
+ 		// Do we need to allocate a loopback device for it?
+ 		if (ENABLE_FEATURE_MOUNT_LOOP && S_ISREG(st.st_mode)) {
++			unsigned long long offset;
++			unsigned long long sizelimit;
++
+ 			loopFile = bb_simplify_path(mp->mnt_fsname);
+ 			mp->mnt_fsname = NULL; // will receive malloced loop dev name
+ 
++			// Parse and remove loopback options
++			offset = cut_out_ull_opt(filteropts, "offset=");
++			sizelimit = cut_out_ull_opt(filteropts, "sizelimit=");
++
+ 			// mount always creates AUTOCLEARed loopdevs, so that umounting
+ 			// drops them without any code in the userspace.
+ 			// This happens since circa linux-2.6.25:
+@@ -2041,7 +2100,8 @@ static int singlemount(struct mntent *mp, int ignore_busy)
+ 			// Subject: Allow auto-destruction of loop devices
+ 			loopfd = set_loop(&mp->mnt_fsname,
+ 					loopFile,
+-					0,
++					offset,
++					sizelimit,
+ 					((vfsflags & MS_RDONLY) ? BB_LO_FLAGS_READ_ONLY : 0)
+ 						| BB_LO_FLAGS_AUTOCLEAR
+ 			);
+-- 
+2.28.0
+
