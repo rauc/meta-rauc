@@ -291,6 +291,8 @@ python do_configure() {
         bb.error("extra file '%s' neither found in workdir nor in deploy dir!" % file)
 }
 
+do_configure[cleandirs] = "${BUNDLE_DIR}"
+
 BUNDLE_BASENAME ??= "${PN}"
 BUNDLE_BASENAME[doc] = "Specifies desired output base name of generated bundle."
 BUNDLE_NAME ??= "${BUNDLE_BASENAME}-${MACHINE}-${DATETIME}"
