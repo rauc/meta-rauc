@@ -259,9 +259,6 @@ def write_manifest(d):
         manifest.write("\n")
 
         bundle_imgpath = "%s/%s" % (bundle_path, imgname)
-        # Set or update symlinks to image files
-        if os.path.lexists(bundle_imgpath):
-            bb.utils.remove(bundle_imgpath)
         bb.note("adding image to bundle dir: '%s'" % imgname)
         shutil.copy(d.expand("${DEPLOY_DIR_IMAGE}/%s") % imgsource, bundle_imgpath)
         if not os.path.exists(bundle_imgpath):
