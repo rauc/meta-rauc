@@ -250,9 +250,11 @@ def write_manifest(d):
 
         bundle_imgpath = "%s/%s" % (bundle_path, imgname)
         bb.note("adding image to bundle dir: '%s'" % imgname)
-        shutil.copy(d.expand("${DEPLOY_DIR_IMAGE}/%s") % imgsource, bundle_imgpath)
-        if not os.path.exists(bundle_imgpath):
-            raise bb.build.FuncFailed('Failed creating symlink to %s' % imgname)
+        searchpath = d.expand("${DEPLOY_DIR_IMAGE}/%s") % imgsource
+        if os.path.isfile(searchpath):
+            shutil.copy(searchpath, bundle_imgpath)
+        else:
+            raise bb.fatal("Failed adding image '%s' to bundle: not present in DEPLOY_DIR_IMAGE" % imgsource)
 
     manifest.close()
 
