@@ -254,7 +254,13 @@ def write_manifest(d):
         if os.path.isfile(searchpath):
             shutil.copy(searchpath, bundle_imgpath)
         else:
-            raise bb.fatal("Failed adding image '%s' to bundle: not present in DEPLOY_DIR_IMAGE" % imgsource)
+            searchpath = d.expand("${WORKDIR}/%s") % imgsource
+            if os.path.isfile(searchpath):
+                shutil.copy(searchpath, bundle_imgpath)
+            else:
+                raise bb.fatal('Failed to find source %s' % imgsource)
+        if not os.path.exists(bundle_imgpath):
+            raise bb.fatal("Failed adding image '%s' to bundle: not present in DEPLOY_DIR_IMAGE or WORKDIR" % imgsource)
 
     manifest.close()
 
