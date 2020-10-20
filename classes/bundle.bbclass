@@ -249,13 +249,12 @@ def write_manifest(d):
         manifest.write("\n")
 
         bundle_imgpath = "%s/%s" % (bundle_path, imgname)
-        # Set or update symlinks to image files
-        if os.path.lexists(bundle_imgpath):
-            bb.utils.remove(bundle_imgpath)
         bb.note("adding image to bundle dir: '%s'" % imgname)
-        shutil.copy(d.expand("${DEPLOY_DIR_IMAGE}/%s") % imgsource, bundle_imgpath)
-        if not os.path.exists(bundle_imgpath):
-            raise bb.build.FuncFailed('Failed creating symlink to %s' % imgname)
+        searchpath = d.expand("${DEPLOY_DIR_IMAGE}/%s") % imgsource
+        if os.path.isfile(searchpath):
+            shutil.copy(searchpath, bundle_imgpath)
+        else:
+            raise bb.fatal("Failed adding image '%s' to bundle: not present in DEPLOY_DIR_IMAGE" % imgsource)
 
     manifest.close()
 
@@ -291,6 +290,8 @@ python do_configure() {
 
         bb.error("extra file '%s' neither found in workdir nor in deploy dir!" % file)
 }
+
+do_configure[cleandirs] = "${BUNDLE_DIR}"
 
 BUNDLE_BASENAME ??= "${PN}"
 BUNDLE_BASENAME[doc] = "Specifies desired output base name of generated bundle."
