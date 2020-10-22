@@ -39,6 +39,10 @@
 #   RAUC_SLOT_rootfs ?= "core-image-minimal"
 #   RAUC_SLOT_rootfs[rename] ?= "rootfs.ext4"
 #
+# To prepend an offset to a bootloader image, set the following parameter in bytes.
+# Optionally you can use units allowed by 'dd' e.g. 'K','kB','MB'.
+#   RAUC_SLOT_bootloader[offset] ?= "0"
+#
 # To add additional artifacts to the bundle you can use RAUC_BUNDLE_EXTRA_FILES
 # and RAUC_BUNDLE_EXTRA_DEPENDS.
 # For files from the WORKDIR (fetched using SRC_URI) you can write:
@@ -164,6 +168,7 @@ DEPENDS += "${@bb.utils.contains('RAUC_CASYNC_BUNDLE', '1', 'virtual/fakeroot-na
 
 def write_manifest(d):
     import shutil
+    import subprocess
 
     machine = d.getVar('MACHINE')
     bundle_path = d.expand("${BUNDLE_DIR}")
@@ -240,6 +245,10 @@ def write_manifest(d):
 
         if slotflags and 'rename' in slotflags:
             imgname = d.getVarFlag('RAUC_SLOT_%s' % slot, 'rename')
+        if slotflags and 'offset' in slotflags:
+            imgoffset = slotflags.get('offset')
+            if slotflags.get('offset') == '':
+                imgoffset = '0'
 
         manifest.write("filename=%s\n" % imgname)
         if slotflags and 'hooks' in slotflags:
@@ -252,7 +261,12 @@ def write_manifest(d):
         bb.note("adding image to bundle dir: '%s'" % imgname)
         searchpath = d.expand("${DEPLOY_DIR_IMAGE}/%s") % imgsource
         if os.path.isfile(searchpath):
-            shutil.copy(searchpath, bundle_imgpath)
+            if imgtype == 'boot' and 'offset' in slotflags and imgoffset != '0':
+                subprocess.call(['dd', 'if=%s' % searchpath,
+                                 'of=%s' % bundle_imgpath, 'oflag=seek_bytes',
+                                 'seek=%s' % imgoffset])
+            else:
+                shutil.copy(searchpath, bundle_imgpath)
         else:
             searchpath = d.expand("${WORKDIR}/%s") % imgsource
             if os.path.isfile(searchpath):
