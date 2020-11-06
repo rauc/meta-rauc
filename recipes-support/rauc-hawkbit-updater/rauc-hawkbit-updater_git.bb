@@ -5,7 +5,7 @@ LICENSE = "LGPLv2.1"
 LIC_FILES_CHKSUM = "file://LICENSE;md5=1a6d268fd218675ffea8be556788b780"
 
 SRC_URI = "git://github.com/rauc/rauc-hawkbit-updater.git;protocol=https"
-SRCREV = "d909982e9e4b84cb76b98bf85f25a0a88472301a"
+SRCREV = "28900b59859d80d2e5275ad03278b0b76e7f1b51"
 S = "${WORKDIR}/git"
 PV = "0.0+git${SRCPV}"
 
