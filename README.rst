@@ -1,3 +1,5 @@
+|MIT| |gh_action| |Matrix|
+
 The meta-rauc layer provides support for integrating the RAUC update tool
 into your device.
 
@@ -152,3 +154,11 @@ VI. References
 ==============
 
 .. [1] http://rauc.readthedocs.io/en/latest/
+
+
+.. |MIT| image:: https://img.shields.io/badge/license-MIT-blue.svg
+   :target: https://raw.githubusercontent.com/rauc/meta-rauc/master/COPYING.MIT
+.. |gh_action| image:: https://github.com/rauc/meta-rauc/workflows/meta-rauc%20CI/badge.svg
+   :target: https://github.com/rauc/meta-rauc/actions?query=workflow%3A%22meta-rauc+CI%22
+.. |Matrix| image:: https://img.shields.io/matrix/rauc:matrix.org?label=matrix%20chat
+   :target: https://app.element.io/#/room/#rauc:matrix.org
