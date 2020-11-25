@@ -177,7 +177,7 @@ def write_manifest(d):
     try:
         manifest = open('%s/manifest.raucm' % bundle_path, 'w')
     except OSError:
-        raise bb.build.FuncFailed('Unable to open manifest.raucm')
+        bb.fatal('Unable to open manifest.raucm')
 
     manifest.write('[update]\n')
     manifest.write(d.expand('compatible=${RAUC_BUNDLE_COMPATIBLE}\n'))
@@ -238,10 +238,10 @@ def write_manifest(d):
             if slotflags and 'file' in slotflags:
                 imgsource = d.getVarFlag('RAUC_SLOT_%s' % slot, 'file')
             else:
-                raise bb.build.FuncFailed('Unknown file for slot: %s' % slot)
+                bb.fatal('Unknown file for slot: %s' % slot)
             imgname = "%s.%s" % (imgsource, "img")
         else:
-            raise bb.build.FuncFailed('Unknown image type: %s' % imgtype)
+            bb.fatal('Unknown image type: %s' % imgtype)
 
         if slotflags and 'rename' in slotflags:
             imgname = d.getVarFlag('RAUC_SLOT_%s' % slot, 'rename')
