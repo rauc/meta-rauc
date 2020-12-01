@@ -17,6 +17,8 @@ INITSCRIPT_PACKAGES = "${PN}-mark-good"
 INITSCRIPT_NAME_${PN}-mark-good = "rauc-mark-good"
 INITSCRIPT_PARAMS_${PN}-mark-good = "start 99 5 2 . stop 20 0 1 6 ."
 
+RDEPENDS_${PN} += "${@bb.utils.contains('RAUC_CASYNC_BUNDLE', '1', 'casync', '', d)}"
+
 inherit systemd update-rc.d
 
 do_install () {
