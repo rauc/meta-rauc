@@ -13,22 +13,22 @@ Dependencies
 
 This layer depends on::
 
-  URI: git://git.openembedded.org/bitbake
+  URI: https://github.com/openembedded/bitbake.git
   branch: master
 
-  URI: git://git.openembedded.org/openembedded-core
+  URI: https://github.com/openembedded/openembedded-core.git
   layers: meta
   branch: master
 
 For rauc-hawkbit client::
 
-  URI: git://git.yoctoproject.org/meta-oe
+  URI: https://github.com/openembedded/meta-openembedded.git
   layers: meta-python
   branch: master
 
 For fuse-support in casync (the default)::
 
-  URI: git://git.yoctoproject.org/meta-oe
+  URI: https://github.com/openembedded/meta-openembedded.git
   layers: meta-filesystems
   branch: master
 
