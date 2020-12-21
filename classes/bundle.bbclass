@@ -37,6 +37,10 @@
 #   RAUC_SLOT_rootfs ?= "core-image-minimal"
 #   RAUC_SLOT_rootfs[rename] ?= "rootfs.ext4"
 #
+# Enable building verity format bundles with
+#
+#   RAUC_BUNDLE_FORMAT = "verity"
+#
 # To add additional artifacts to the bundle you can use RAUC_BUNDLE_EXTRA_FILES
 # and RAUC_BUNDLE_EXTRA_DEPENDS.
 # For files from the WORKDIR (fetched using SRC_URI) you can write:
@@ -107,6 +111,9 @@ RAUC_BUNDLE_EXTRA_FILES[doc] = "Specifies list of additional files to add to bun
 RAUC_BUNDLE_EXTRA_DEPENDS[doc] = "Specifies list of recipes that create artifacts in DEPLOY_DIR_IMAGE. For recipes not depending on do_deploy task also <recipename>:do_<taskname> notation is supported"
 
 RAUC_CASYNC_BUNDLE ??= "0"
+
+RAUC_BUNDLE_FORMAT ??= ""
+RAUC_BUNDLE_FORMAT[doc] = "Specifies the bundle format to used (plain/verity)."
 
 # Create dependency list from images
 python __anonymous() {
@@ -179,6 +186,11 @@ def write_manifest(d):
     manifest.write(d.expand('description=${RAUC_BUNDLE_DESCRIPTION}\n'))
     manifest.write(d.expand('build=${RAUC_BUNDLE_BUILD}\n'))
     manifest.write('\n')
+
+    if d.getVar('RAUC_BUNDLE_FORMAT'):
+        manifest.write('[bundle]\n')
+        manifest.write(d.expand('format=${RAUC_BUNDLE_FORMAT}\n'))
+        manifest.write('\n')
 
     hooksflags = d.getVarFlags('RAUC_BUNDLE_HOOKS')
     have_hookfile = False
