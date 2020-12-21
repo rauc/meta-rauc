@@ -313,11 +313,19 @@ python do_configure() {
             bb.note("adding extra file from deploy dir to bundle dir: '%s'" % file)
             shutil.copy(searchpath, destpath)
             continue
+        elif os.path.isdir(searchpath):
+            bb.note("adding extra directory from deploy dir to bundle dir: '%s'" % file)
+            shutil.copytree(searchpath, destpath, dirs_exist_ok=True)
+            continue
 
         searchpath = d.expand("${WORKDIR}/%s") % file
         if os.path.isfile(searchpath):
             bb.note("adding extra file from workdir to bundle dir: '%s'" % file)
             shutil.copy(searchpath, destpath)
+            continue
+        elif os.path.isdir(searchpath):
+            bb.note("adding extra directory from workdir to bundle dir: '%s'" % file)
+            shutil.copytree(searchpath, destpath, dirs_exist_ok=True)
             continue
 
         bb.error("extra file '%s' neither found in workdir nor in deploy dir!" % file)
