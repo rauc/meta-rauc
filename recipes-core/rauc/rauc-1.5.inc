@@ -2,7 +2,7 @@ require rauc.inc
 
 SRC_URI = "https://github.com/rauc/rauc/releases/download/v${PV}/rauc-${PV}.tar.xz"
 
-SRC_URI[md5sum] = "c66e8bfb82d9d3838a270abaafeea044"
-SRC_URI[sha256sum] = "85aabf214cd93a37f7ad0b3aaad89eb94facf0f3ebf6e2edca945acbca9b0967"
+SRC_URI[md5sum] = "83d86821473102682cd1ad2a4a9a7a4c"
+SRC_URI[sha256sum] = "5dfbc46e808240c5014d318cfe64f0431307c37aa79cb2b013caa12daaf96d9d"
 
 UPSTREAM_CHECK_URI = "https://github.com/${BPN}/${BPN}/releases"
