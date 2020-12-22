@@ -119,7 +119,7 @@ RAUC_BUNDLE_EXTRA_DEPENDS[doc] = "Specifies list of recipes that create artifact
 RAUC_CASYNC_BUNDLE ??= "0"
 
 RAUC_BUNDLE_FORMAT ??= ""
-RAUC_BUNDLE_FORMAT[doc] = "Specifies the bundle format to used (plain/verity)."
+RAUC_BUNDLE_FORMAT[doc] = "Specifies the bundle format to be used (plain/verity)."
 
 # Create dependency list from images
 python __anonymous() {
