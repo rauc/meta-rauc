@@ -1,4 +1,4 @@
-inherit native deploy
+inherit deploy native
 
 DEPENDS = "openssl-native glib-2.0-native"
 RRECOMMENDS_${PN} = "squashfs-tools-native"
