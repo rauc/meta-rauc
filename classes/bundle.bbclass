@@ -303,6 +303,9 @@ python do_configure() {
     hooksflags = d.getVarFlags('RAUC_BUNDLE_HOOKS')
     if hooksflags and 'file' in hooksflags:
         hf = hooksflags.get('file')
+        if not os.path.exists(d.expand("${WORKDIR}/%s" % hf)):
+            bb.error("hook file '%s' does not exist in WORKDIR" % hf)
+            return
         dsthook = d.expand("${BUNDLE_DIR}/%s" % hf)
         bb.note("adding hook file to bundle dir: '%s'" % hf)
         shutil.copy(d.expand("${WORKDIR}/%s" % hf), dsthook)
