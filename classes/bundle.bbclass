@@ -354,7 +354,7 @@ do_bundle() {
 do_bundle[dirs] = "${B}"
 do_bundle[cleandirs] = "${B}"
 
-addtask bundle after do_configure before do_build
+addtask bundle after do_configure
 
 inherit deploy
 
