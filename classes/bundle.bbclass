@@ -150,8 +150,8 @@ python __anonymous() {
     for image in (d.getVar('RAUC_BUNDLE_EXTRA_DEPENDS') or "").split():
         imagewithdep = image.split(':')
         deptask = imagewithdep[1] if len(imagewithdep) > 1 else 'do_deploy'
-        d.appendVarFlag('do_unpack', 'depends', ' %s:%s' % (image, deptask))
-        bb.note('adding extra dependency %s:%s' % (image,  deptask))
+        d.appendVarFlag('do_unpack', 'depends', ' %s:%s' % (imagewithdep[0], deptask))
+        bb.note('adding extra dependency %s:%s' % (imagewithdep[0],  deptask))
 }
 
 S = "${WORKDIR}"
