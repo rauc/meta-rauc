@@ -1,0 +1,5 @@
+# Don't watch metadata changes, caused by tools closing the device node which was opened for writing.
+# Barebox-state, mbr-switch and eMMC-bootloader update operates on the root device node. This triggers
+# the inotify which causes a partition rescan. This is racy as devices might disappear while RAUC
+# tries to access them during a update.
+ACTION!="remove", SUBSYSTEM=="block", OPTIONS="nowatch"
