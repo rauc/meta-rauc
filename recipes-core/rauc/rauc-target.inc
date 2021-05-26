@@ -8,6 +8,7 @@ SRC_URI_append = " \
   ${RAUC_KEYRING_URI} \
   file://rauc-mark-good.service \
   file://rauc-mark-good.init \
+  file://0001-rauc-curl-openssl-certificate-verification-skip.patch \
   "
 
 SYSTEMD_PACKAGES += "${PN}-mark-good"

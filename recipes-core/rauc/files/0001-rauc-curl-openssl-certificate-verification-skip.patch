@@ -1,0 +1,24 @@
+From cfde75ad21ac7637582f6b2d2eb8a0a5e2219511 Mon Sep 17 00:00:00 2001
+From: prashantdivate <diwateprashant44@gmail.com>
+Date: Wed, 26 May 2021 17:39:19 +0530
+Subject: [PATCH] rauc: This patch skip openssl certificate verification
+
+---
+ src/network.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/src/network.c b/src/network.c
+index 3dcf4c0..283c8d0 100644
+--- a/src/network.c
++++ b/src/network.c
+@@ -102,6 +102,7 @@ static gboolean transfer(RaucTransfer *xfer, GError **error)
+ 	curl_easy_setopt(curl, CURLOPT_XFERINFOFUNCTION, xfer_cb);
+ 	curl_easy_setopt(curl, CURLOPT_XFERINFODATA, xfer);
+ 	curl_easy_setopt(curl, CURLOPT_FAILONERROR, 1L);
++	curl_easy_setopt(curl, CURLOPT_SSL_VERIFYHOST, 0);
+ 	curl_easy_setopt(curl, CURLOPT_ERRORBUFFER, errbuf);
+ 	curl_easy_setopt(curl, CURLOPT_MAXFILESIZE_LARGE, xfer->limit);
+ 	/* decode all supported Accept-Encoding headers */
+-- 
+2.27.0.windows.1
+
