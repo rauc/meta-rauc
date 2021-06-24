@@ -2,13 +2,13 @@ name: meta-rauc CI
 
 on:
   # Trigger the workflow on push or pull request,
-  # but only for the master branch
+  # but only for the hardknott branch
   push:
     branches:
-      - master
+      - hardknott
   pull_request:
     branches:
-      - master
+      - hardknott
 jobs:
   build:
     name: meta-rauc Build
@@ -23,9 +23,9 @@ jobs:
         with:
           path: meta-rauc
       - name: Clone poky
-        run: git clone -b master git://git.yoctoproject.org/poky
+        run: git clone -b hardknott git://git.yoctoproject.org/poky
       - name: Clone meta-openembedded
-        run: git clone -b master https://github.com/openembedded/meta-openembedded.git
+        run: git clone -b hardknott https://github.com/openembedded/meta-openembedded.git
       - name: Initialize build directory
         run: |
           source poky/oe-init-build-env build
