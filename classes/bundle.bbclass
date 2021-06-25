@@ -176,6 +176,7 @@ DEPENDS += "${@bb.utils.contains('RAUC_CASYNC_BUNDLE', '1', 'virtual/fakeroot-na
 def write_manifest(d):
     import shutil
     import subprocess
+    from pathlib import PurePath
 
     machine = d.getVar('MACHINE')
     bundle_path = d.expand("${BUNDLE_DIR}")
@@ -262,6 +263,8 @@ def write_manifest(d):
             if slotflags.get('offset') == '':
                 imgoffset = '0'
 
+        # Keep only the image name in case the image is in a $DEPLOY_DIR_IMAGE subdirectory
+        imgname = PurePath(imgname).name
         manifest.write("filename=%s\n" % imgname)
         if slotflags and 'hooks' in slotflags:
             if not have_hookfile:
