@@ -329,14 +329,24 @@ python do_configure() {
 do_configure[cleandirs] = "${BUNDLE_DIR}"
 
 BUNDLE_BASENAME ??= "${PN}"
-BUNDLE_BASENAME[doc] = "Specifies desired output base name of generated bundle."
+BUNDLE_BASENAME[doc] = "Specifies desired output base name of generated RAUC bundle."
 BUNDLE_NAME ??= "${BUNDLE_BASENAME}-${MACHINE}-${DATETIME}"
-BUNDLE_NAME[doc] = "Specifies desired full output name of generated bundle."
+BUNDLE_NAME[doc] = "Specifies desired full output name of generated RAUC bundle."
 # Don't include the DATETIME variable in the sstate package sigantures
 BUNDLE_NAME[vardepsexclude] = "DATETIME"
 BUNDLE_LINK_NAME ??= "${BUNDLE_BASENAME}-${MACHINE}"
 BUNDLE_EXTENSION ??= ".raucb"
-BUNDLE_EXTENSION[doc] = "Specifies desired custom filename extension of generated bundle"
+BUNDLE_EXTENSION[doc] = "Specifies desired custom filename extension of generated RAUC bundle."
+
+CASYNC_BUNDLE_BASENAME ??= "casync-${BUNDLE_BASENAME}"
+CASYNC_BUNDLE_BASENAME[doc] = "Specifies desired output base name of generated RAUC casync bundle."
+CASYNC_BUNDLE_NAME ??= "${CASYNC_BUNDLE_BASENAME}-${MACHINE}-${DATETIME}"
+CASYNC_BUNDLE_NAME[doc] = "Specifies desired full output name of generated RAUC casync bundle."
+# Don't include the DATETIME variable in the sstate package sigantures
+CASYNC_BUNDLE_NAME[vardepsexclude] = "DATETIME"
+CASYNC_BUNDLE_LINK_NAME ??= "${CASYNC_BUNDLE_BASENAME}-${MACHINE}"
+CASYNC_BUNDLE_EXTENSION ??= "${BUNDLE_EXTENSION}"
+CASYNC_BUNDLE_EXTENSION[doc] = "Specifies desired custom filename extension of generated RAUC casync bundle."
 
 do_bundle() {
 	if [ -z "${RAUC_KEY_FILE}" ]; then
@@ -389,10 +399,10 @@ do_deploy() {
 	ln -sf ${BUNDLE_NAME}${BUNDLE_EXTENSION} ${DEPLOYDIR}/${BUNDLE_LINK_NAME}${BUNDLE_EXTENSION}
 
 	if [ ${RAUC_CASYNC_BUNDLE} -eq 1 ]; then
-		install ${B}/casync-bundle${BUNDLE_EXTENSION} ${DEPLOYDIR}/casync-${BUNDLE_NAME}${BUNDLE_EXTENSION}
-		cp -r ${B}/casync-bundle.castr ${DEPLOYDIR}/casync-${BUNDLE_NAME}.castr
-		ln -sf casync-${BUNDLE_NAME}${BUNDLE_EXTENSION} ${DEPLOYDIR}/casync-${BUNDLE_LINK_NAME}${BUNDLE_EXTENSION}
-		ln -sf casync-${BUNDLE_NAME}.castr ${DEPLOYDIR}/casync-${BUNDLE_LINK_NAME}.castr
+		install ${B}/casync-bundle.raucb ${DEPLOYDIR}/${CASYNC_BUNDLE_NAME}${CASYNC_BUNDLE_EXTENSION}
+		cp -r ${B}/casync-bundle.castr ${DEPLOYDIR}/${CASYNC_BUNDLE_NAME}.castr
+		ln -sf ${CASYNC_BUNDLE_NAME}${CASYNC_BUNDLE_EXTENSION} ${DEPLOYDIR}/${CASYNC_BUNDLE_LINK_NAME}${CASYNC_BUNDLE_EXTENSION}
+		ln -sf ${CASYNC_BUNDLE_NAME}.castr ${DEPLOYDIR}/${CASYNC_BUNDLE_LINK_NAME}.castr
 	fi
 }
 
