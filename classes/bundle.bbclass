@@ -111,6 +111,7 @@ RAUC_BUNDLE_DESCRIPTION[doc] = "Specifies the bundle description string. See RAU
 RAUC_BUNDLE_BUILD[doc] = "Specifies the bundle build stamp. See RAUC documentation for more details."
 
 RAUC_BUNDLE_SLOTS[doc] = "Space-separated list of slot classes to include in bundle (manifest)"
+RAUC_BUNDLE_HANDLER[doc] = "Allows to fully replace the default update process with a custom script (via varflags '[filename'] and ['args'])"
 RAUC_BUNDLE_HOOKS[doc] = "Allows to specify an additional hook executable and bundle hooks (via varflags '[file'] and ['hooks'])"
 
 RAUC_BUNDLE_EXTRA_FILES[doc] = "Specifies list of additional files to add to bundle. Files must either be located in WORKDIR (added by SRC_URI) or DEPLOY_DIR_IMAGE (assured by RAUC_BUNDLE_EXTRA_DEPENDS)"
@@ -123,6 +124,7 @@ RAUC_BUNDLE_FORMAT[doc] = "Specifies the bundle format to be used (plain/verity)
 
 # Create dependency list from images
 python __anonymous() {
+    d.appendVarFlag('do_unpack', 'vardeps', ' RAUC_BUNDLE_HANDLER')
     d.appendVarFlag('do_unpack', 'vardeps', ' RAUC_BUNDLE_HOOKS')
     for slot in (d.getVar('RAUC_BUNDLE_SLOTS') or "").split():
         slotflags = d.getVarFlags(('RAUC_SLOT_%s' % slot), ['file', 'fstype', 'hooks', 'name', 'offset', 'rename', 'type'])
@@ -196,6 +198,14 @@ def write_manifest(d):
     if d.getVar('RAUC_BUNDLE_FORMAT'):
         manifest.write('[bundle]\n')
         manifest.write(d.expand('format=${RAUC_BUNDLE_FORMAT}\n'))
+        manifest.write('\n')
+
+    handler = d.getVarFlags('RAUC_BUNDLE_HANDLER', ['filename', 'args'])
+    if 'filename' in handler:
+        manifest.write('[handler]\n')
+        manifest.write("filename=%s\n" % handler.get('filename'))
+        if 'args' in handler:
+            manifest.write("args=%s\n" % handler.get('args'))
         manifest.write('\n')
 
     hooksflags = d.getVarFlags('RAUC_BUNDLE_HOOKS', ['file', 'hooks'])
