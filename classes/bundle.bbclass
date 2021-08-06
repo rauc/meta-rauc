@@ -125,7 +125,7 @@ RAUC_BUNDLE_FORMAT[doc] = "Specifies the bundle format to be used (plain/verity)
 python __anonymous() {
     d.appendVarFlag('do_unpack', 'vardeps', ' RAUC_BUNDLE_HOOKS')
     for slot in (d.getVar('RAUC_BUNDLE_SLOTS') or "").split():
-        slotflags = d.getVarFlags('RAUC_SLOT_%s' % slot)
+        slotflags = d.getVarFlags(('RAUC_SLOT_%s' % slot), ['file', 'fstype', 'hooks', 'name', 'offset', 'rename', 'type'])
         imgtype = slotflags.get('type') if slotflags else None
         if not imgtype:
             bb.debug(1, "No [type] given for slot '%s', defaulting to 'image'" % slot)
@@ -198,7 +198,7 @@ def write_manifest(d):
         manifest.write(d.expand('format=${RAUC_BUNDLE_FORMAT}\n'))
         manifest.write('\n')
 
-    hooksflags = d.getVarFlags('RAUC_BUNDLE_HOOKS')
+    hooksflags = d.getVarFlags('RAUC_BUNDLE_HOOKS', ['file', 'hooks'])
     have_hookfile = False
     if 'file' in hooksflags:
         have_hookfile = True
@@ -211,7 +211,7 @@ def write_manifest(d):
         bb.warn("Suspicious use of RAUC_BUNDLE_HOOKS[hooks] without RAUC_BUNDLE_HOOKS[file]")
 
     for slot in (d.getVar('RAUC_BUNDLE_SLOTS') or "").split():
-        slotflags = d.getVarFlags('RAUC_SLOT_%s' % slot)
+        slotflags = d.getVarFlags(('RAUC_SLOT_%s' % slot), ['file', 'fstype', 'hooks', 'name', 'offset', 'rename', 'type'])
         if slotflags and 'name' in slotflags:
             slotname = slotflags.get('name')
         else:
@@ -299,7 +299,7 @@ python do_configure() {
 
     write_manifest(d)
 
-    hooksflags = d.getVarFlags('RAUC_BUNDLE_HOOKS')
+    hooksflags = d.getVarFlags('RAUC_BUNDLE_HOOKS', ['file', 'hooks'])
     if hooksflags and 'file' in hooksflags:
         hf = hooksflags.get('file')
         if not os.path.exists(d.expand("${WORKDIR}/%s" % hf)):
