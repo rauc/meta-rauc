@@ -18,10 +18,10 @@ S = "${WORKDIR}/git"
 inherit setuptools3 systemd
 
 PACKAGES =+ "${PN}-service"
-SYSTEMD_SERVICE_${PN}-service = "rauc-hawkbit.service"
+SYSTEMD_SERVICE:${PN}-service = "rauc-hawkbit.service"
 SYSTEMD_PACKAGES = "${PN}-service"
 
-do_install_append() {
+do_install:append() {
 	install -d ${D}${sysconfdir}/${BPN}/
 	install -m 0644 ${S}/rauc_hawkbit/config.cfg ${D}${sysconfdir}/${BPN}/config.cfg
 	install -d ${D}${systemd_unitdir}/system/
@@ -30,8 +30,8 @@ do_install_append() {
 		${D}${systemd_unitdir}/system/rauc-hawkbit.service
 }
 
-RDEPENDS_${PN} += "python3-aiohttp python3-gbulb"
-FILES_${PN}-service = " \
+RDEPENDS:${PN} += "python3-aiohttp python3-gbulb"
+FILES:${PN}-service = " \
     ${bindir}/rauc-hawkbit-client \
     ${sysconfdir}/${BPN}/config.cfg \
     ${systemd_unitdir}/system/rauc-hawkbit.service \

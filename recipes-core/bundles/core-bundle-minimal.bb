@@ -4,7 +4,7 @@
 # To add this, properly configure it for your specific system and add it to
 # your image recipe you intend to build a bundle from:
 #
-# IMAGE_INSTALL_append = " rauc"
+# IMAGE_INSTALL:append = " rauc"
 #
 # Also note that you need to configure RAUC_KEY_FILE and RAUC_CERT_FILE to
 # point to contain the full path to your key and cert.

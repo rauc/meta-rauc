@@ -1,9 +1,9 @@
 RAUC_KEYRING_FILE ??= "ca.cert.pem"
 RAUC_KEYRING_URI ??= "file://${RAUC_KEYRING_FILE}"
 
-RRECOMMENDS_${PN} = "squashfs-tools"
+RRECOMMENDS:${PN} = "squashfs-tools"
 
-SRC_URI_append = " \
+SRC_URI:append = " \
   file://system.conf \
   ${RAUC_KEYRING_URI} \
   file://rauc-mark-good.service \
@@ -11,11 +11,11 @@ SRC_URI_append = " \
   "
 
 SYSTEMD_PACKAGES += "${PN}-mark-good"
-SYSTEMD_SERVICE_${PN}-mark-good = "rauc-mark-good.service"
+SYSTEMD_SERVICE:${PN}-mark-good = "rauc-mark-good.service"
 
 INITSCRIPT_PACKAGES = "${PN}-mark-good"
-INITSCRIPT_NAME_${PN}-mark-good = "rauc-mark-good"
-INITSCRIPT_PARAMS_${PN}-mark-good = "start 99 5 2 . stop 20 0 1 6 ."
+INITSCRIPT_NAME:${PN}-mark-good = "rauc-mark-good"
+INITSCRIPT_PARAMS:${PN}-mark-good = "start 99 5 2 . stop 20 0 1 6 ."
 
 inherit systemd update-rc.d
 
@@ -63,11 +63,11 @@ python __anonymous () {
     else:
         return
 
-    d.appendVar("RDEPENDS_%s" % d.getVar('PN'), boothelper)
+    d.appendVar("RDEPENDS:%s" % d.getVar('PN'), boothelper)
 }
 
-RRECOMMENDS_${PN}_append = " ${PN}-mark-good"
+RRECOMMENDS:${PN}:append = " ${PN}-mark-good"
 
-FILES_${PN}-mark-good = "${systemd_unitdir}/system/rauc-mark-good.service ${sysconfdir}/init.d/rauc-mark-good"
+FILES:${PN}-mark-good = "${systemd_unitdir}/system/rauc-mark-good.service ${sysconfdir}/init.d/rauc-mark-good"
 
 PACKAGECONFIG ??= "service network json nocreate gpt"

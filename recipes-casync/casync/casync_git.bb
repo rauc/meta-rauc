@@ -20,11 +20,11 @@ EXTRA_OEMESON += "-Dselinux=false -Dman=false -Dudevrulesdir=${nonarch_base_libd
 
 BBCLASSEXTEND = "native nativesdk"
 
-PACKAGECONFIG_class-native = ""
-PACKAGECONFIG_class-nativesdk = ""
+PACKAGECONFIG:class-native = ""
+PACKAGECONFIG:class-nativesdk = ""
 PACKAGECONFIG ?= "fuse udev"
 
 PACKAGECONFIG[fuse] = "-Dfuse=true,-Dfuse=false,fuse"
 PACKAGECONFIG[udev] = "-Dudev=true,-Dudev=false,udev"
 
-FILES_${PN} += "${datadir}/bash-completion"
+FILES:${PN} += "${datadir}/bash-completion"

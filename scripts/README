@@ -20,7 +20,7 @@ To use them in your BSP in order to sign and verify bundles, you have to:
    `recipes-core/rauc/rauc_%.bbappend` that adds the keyring file to the rauc
    package search path:
 
-     FILESEXTRAPATHS_prepend := "${THISDIR}/files:"
+     FILESEXTRAPATHS:prepend := "${THISDIR}/files:"
 
 2) Make your bundle recipe use the generated key and certificate:
 
