@@ -1,7 +1,7 @@
 inherit deploy native
 
 DEPENDS = "openssl-native glib-2.0-native"
-RRECOMMENDS_${PN} = "squashfs-tools-native"
+RRECOMMENDS:${PN} = "squashfs-tools-native"
 
 do_deploy[sstate-outputdirs] = "${DEPLOY_DIR_TOOLS}"
 

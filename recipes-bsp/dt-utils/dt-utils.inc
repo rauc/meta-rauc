@@ -12,6 +12,6 @@ inherit autotools pkgconfig gettext
 
 PACKAGES =+ "${PN}-barebox-state ${PN}-fdtdump ${PN}-dtblint"
 
-FILES_${PN}-barebox-state = "${bindir}/barebox-state"
-FILES_${PN}-fdtdump = "${bindir}/fdtdump"
-FILES_${PN}-dtblint = "${bindir}/dtblint"
+FILES:${PN}-barebox-state = "${bindir}/barebox-state"
+FILES:${PN}-fdtdump = "${bindir}/fdtdump"
+FILES:${PN}-dtblint = "${bindir}/dtblint"

@@ -11,7 +11,7 @@ PV = "0.0+git${SRCPV}"
 
 inherit cmake pkgconfig systemd useradd
 
-SYSTEMD_SERVICE_${PN} = "${@bb.utils.contains('DISTRO_FEATURES', 'systemd', 'rauc-hawkbit-updater.service', '', d)}"
+SYSTEMD_SERVICE:${PN} = "${@bb.utils.contains('DISTRO_FEATURES', 'systemd', 'rauc-hawkbit-updater.service', '', d)}"
 
 PACKAGECONFIG ??= " \
     ${@bb.utils.filter('DISTRO_FEATURES', 'systemd', d)} \
@@ -19,11 +19,11 @@ PACKAGECONFIG ??= " \
 PACKAGECONFIG[systemd] = "-DWITH_SYSTEMD=ON,,systemd"
 
 USERADD_PACKAGES = "${PN}"
-USERADD_PARAM_${PN} = "--system --home-dir / --no-create-home --shell /bin/false rauc-hawkbit"
+USERADD_PARAM:${PN} = "--system --home-dir / --no-create-home --shell /bin/false rauc-hawkbit"
 
 DEPENDS = "curl glib-2.0-native json-glib"
 
-do_install_append () {
+do_install:append () {
 	install -d ${D}${sysconfdir}/${PN}
 	install -m 644 ${S}/config.conf.example ${D}${sysconfdir}/${PN}/config.conf
 }

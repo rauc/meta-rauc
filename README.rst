@@ -84,8 +84,8 @@ you have to follow at least the following steps:
    ``/etc/rauc/system.conf``. For information on how to write the RAUC
    update file, please refer to the RAUC user documentation [1]_::
 
-     FILESEXTRAPATHS_prepend := "${THISDIR}/files:"
-     SRC_URI_append := " file://system.conf"
+     FILESEXTRAPATHS:prepend := "${THISDIR}/files:"
+     SRC_URI:append := " file://system.conf"
 
 3. Create a bundle recipe for your device by adding a recipe
    that inherits the `bundle` class and adds all desired
@@ -112,7 +112,7 @@ you have to follow at least the following steps:
 Note: If you do not use packagegroup-base, you als need to manually add
 the `rauc` package to your systems image recipe::
 
-     IMAGE_INSTALL_append = " rauc"
+     IMAGE_INSTALL:append = " rauc"
 
 
 IV. Building The RAUC hawkBit Clients
@@ -127,7 +127,7 @@ hawkBit deployment server:
 To use ``rauc-hawkbit`` as a standalone service add to your systems image
 recipe::
 
-    IMAGE_INSTALL_append = " rauc-hawkbit-service"
+    IMAGE_INSTALL:append = " rauc-hawkbit-service"
 
 To use it as a python library in your demo application instead, simply add to
 your recipe::
@@ -136,7 +136,7 @@ your recipe::
 
 To use ``rauc-hawkbit-updater`` in your system add to your image recipe::
 
-    IMAGE_INSTALL_append = " rauc-hawkbit-updater"
+    IMAGE_INSTALL:append = " rauc-hawkbit-updater"
 
 V. Configure Custom Kernel
 ==========================
