@@ -166,7 +166,7 @@ RAUC_KEYRING_FILE ??= ""
 RAUC_KEYRING_FILE[doc] = "Specifies the path to the RAUC keyring file used for bundle signature verification. Use COREBASE to reference files located in any shared BSP folder."
 BUNDLE_ARGS ??= ""
 BUNDLE_ARGS[doc] = "Specifies any extra arguments to pass to the rauc bundle command."
-CONVERT_ARGS ??= ""
+CONVERT_ARGS ??= "--trust-environment"
 CONVERT_ARGS[doc] = "Specifies any extra arguments to pass to the rauc convert command."
 
 
