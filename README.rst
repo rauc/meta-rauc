@@ -68,6 +68,10 @@ If you only intend to build the RAUC host tool, you may simply run::
 
 This will place the rauc binary at ``tmp/deploy/tools/rauc``.
 
+If you need to execute the ``casync`` host tool manually, you can do this by running::
+
+  bitbake casync-native -caddto_recipe_sysroot
+  oe-run-native casync-native casync --help
 
 III. Adding the RAUC Update Service to Your Device
 ==================================================
