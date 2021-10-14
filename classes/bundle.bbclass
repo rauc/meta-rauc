@@ -346,6 +346,7 @@ do_bundle() {
 		fi
 		PSEUDO_PREFIX=${STAGING_DIR_NATIVE}/usr PSEUDO_DISABLED=0 ${STAGING_DIR_NATIVE}${bindir}/rauc convert \
 			--debug \
+			--trust-environment \
 			--cert=${RAUC_CERT_FILE} \
 			--key=${RAUC_KEY_FILE} \
 			--keyring=${RAUC_KEYRING_FILE} \
