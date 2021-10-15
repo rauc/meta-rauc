@@ -14,7 +14,7 @@ SRC_URI = " \
 
 S = "${WORKDIR}/git"
 
-inherit meson
+inherit meson pkgconfig
 
 EXTRA_OEMESON += "-Dselinux=false -Dman=false -Dudevrulesdir=${nonarch_base_libdir}/udev/rules.d/"
 
