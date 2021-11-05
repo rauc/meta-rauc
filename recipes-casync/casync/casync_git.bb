@@ -9,7 +9,7 @@ SRCREV = "a8f6c841ccfe59ca8c68aad64df170b64042dce8"
 PV = "2+git${SRCPV}"
 
 SRC_URI = " \
-    git://github.com/systemd/casync.git;protocol=https \
+    git://github.com/systemd/casync.git;protocol=https;branch=master \
     "
 
 S = "${WORKDIR}/git"
