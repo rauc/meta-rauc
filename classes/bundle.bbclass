@@ -123,6 +123,14 @@ RAUC_BUNDLE_FORMAT[doc] = "Specifies the bundle format to be used (plain/verity)
 
 # Create dependency list from images
 python __anonymous() {
+    def append_slot_depends(d, image, deptask=None):
+        dependency = "%s:%s" % (image, deptask) if deptask else image
+
+        if image.startswith('multiconfig:') or image.startswith('mc:'):
+            d.appendVarFlag('do_unpack', 'mcdepends', ' ' + dependency)
+        else:
+            d.appendVarFlag('do_unpack', 'depends', ' ' + dependency)
+
     d.appendVarFlag('do_unpack', 'vardeps', ' RAUC_BUNDLE_HOOKS')
     for slot in (d.getVar('RAUC_BUNDLE_SLOTS') or "").split():
         slotflags = d.getVarFlags('RAUC_SLOT_%s' % slot)
@@ -139,18 +147,16 @@ python __anonymous() {
         d.appendVarFlag('do_unpack', 'vardeps', ' RAUC_SLOT_%s' % slot)
         depends = slotflags.get('depends') if slotflags else None
         if depends:
-            d.appendVarFlag('do_unpack', 'depends', ' ' + depends)
+            d.append_slot_depends('do_unpack', depends)
             continue
 
-        if imgtype == 'image':
-            d.appendVarFlag('do_unpack', 'depends', ' ' + image + ':do_image_complete')
-        else:
-            d.appendVarFlag('do_unpack', 'depends', ' ' + image + ':do_deploy')
+        deptask = 'do_image_complete' if imgtype == 'image' else 'do_deploy'
+        append_slot_depends(d, image, deptask)
 
     for image in (d.getVar('RAUC_BUNDLE_EXTRA_DEPENDS') or "").split():
         imagewithdep = image.split(':')
         deptask = imagewithdep[1] if len(imagewithdep) > 1 else 'do_deploy'
-        d.appendVarFlag('do_unpack', 'depends', ' %s:%s' % (imagewithdep[0], deptask))
+        append_slot_depends(d, imagewithdep[0], deptask)
         bb.note('adding extra dependency %s:%s' % (imagewithdep[0],  deptask))
 }
 
