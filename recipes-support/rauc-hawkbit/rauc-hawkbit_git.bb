@@ -6,7 +6,7 @@ SUMMARY = "hawkBit client for RAUC"
 DEPENDS = "python3-setuptools-scm-native"
 
 SRC_URI = " \
-    git://github.com/rauc/rauc-hawkbit.git;protocol=https \
+    git://github.com/rauc/rauc-hawkbit.git;protocol=https;branch=master \
     file://rauc-hawkbit.service \
 "
 
