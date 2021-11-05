@@ -3,7 +3,7 @@ require rauc.inc
 PR = "r0"
 
 SRC_URI = " \ 
-  git://github.com/rauc/rauc.git;protocol=https \
+  git://github.com/rauc/rauc.git;protocol=https;branch=master \
   "
 
 PV = "1.1+git${SRCPV}"
