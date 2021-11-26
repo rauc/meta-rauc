@@ -1,0 +1,3 @@
+require dt-utils.inc
+
+SRC_URI[sha256sum] = "36a56924e356250988315cd8761fde52832e6d4934323aca2827ff93fa12907f"
