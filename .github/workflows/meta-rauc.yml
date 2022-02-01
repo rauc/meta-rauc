@@ -41,6 +41,10 @@ jobs:
         run: |
           source poky/oe-init-build-env build
           bitbake rauc-hawkbit-updater
+      - name: Build dt-utils
+        run: |
+          source poky/oe-init-build-env build
+          bitbake dt-utils
       - name: Build casync, casync-native
         run: |
           source poky/oe-init-build-env build
