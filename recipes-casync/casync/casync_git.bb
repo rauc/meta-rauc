@@ -1,6 +1,6 @@
 SUMMARY = "Content-Addressable Data Synchronization Tool"
 HOMEPAGE = "https://github.com/systemd/casync"
-LICENSE = "LGPLv2.1"
+LICENSE = "LGPL-2.1-or-later"
 LIC_FILES_CHKSUM = "file://LICENSE.LGPL2.1;md5=4fbd65380cdd255951079008b364516c"
 
 DEPENDS = "xz curl openssl acl zstd"

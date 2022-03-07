@@ -1,7 +1,7 @@
 DESCRIPTION = "device-tree and barebox-related tools"
 HOMEPAGE = "http://git.pengutronix.de/?p=tools/dt-utils.git"
 SECTION = "base"
-LICENSE = "GPLv2"
+LICENSE = "GPL-2.0-only"
 LIC_FILES_CHKSUM = "file://COPYING;md5=9ac2e7cff1ddaf48b6eab6028f23ef88"
 DEPENDS = "udev"
 PR = "r0"
