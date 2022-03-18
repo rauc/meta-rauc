@@ -153,9 +153,26 @@ If you build your own kernel with a full custom ``defconfig`` file, you have to
 make sure that the options in ``recipes-kernel/linux/linux-yocto/rauc.cfg`` are
 enabled in your configuration, too.
 
+VI. Build RAUC Development Version
+==================================
 
-VI. References
-==============
+Beside the standard release version recipes, the _git variants of RAUC recipes
+allow to build RAUC from a master branch revision that is newer than the latest
+release.
+
+This is especially useful for early testing and adaption to upcoming features
+in RAUC.
+
+By default, the _git recipes are disabled. To enable it, you can set::
+
+  RAUC_USE_DEVEL_VERSION = "1"
+
+in your local.conf. Note that this has the same effect as setting
+``DEFAULT_PREFERENCE = "1"`` for each recipe (target/native/nativesdk)
+individually.
+
+VII. References
+===============
 
 .. [1] http://rauc.readthedocs.io/en/latest/
 
