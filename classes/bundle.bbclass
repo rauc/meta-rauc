@@ -17,6 +17,7 @@
 #   RAUC_SLOT_rootfs ?= "core-image-minimal"
 #   RAUC_SLOT_rootfs[fstype] = "ext4"
 #   RAUC_SLOT_rootfs[hooks] ?= "install;post-install"
+#   RAUC_SLOT_rootfs[incremental] ?= "block-hash-index"
 #   
 #   RAUC_SLOT_kernel ?= "linux-yocto"
 #   RAUC_SLOT_kernel[type] ?= "kernel"
@@ -270,6 +271,8 @@ def write_manifest(d):
             if not have_hookfile:
                 bb.warn("A hook is defined for slot %s, but RAUC_BUNDLE_HOOKS[file] is not defined" % slot)
             manifest.write("hooks=%s\n" % slotflags.get('hooks'))
+        if slotflags and 'incremental' in slotflags:
+            manifest.write("incremental=%s\n" % slotflags.get('incremental'))
         manifest.write("\n")
 
         bundle_imgpath = "%s/%s" % (bundle_path, imgname)
