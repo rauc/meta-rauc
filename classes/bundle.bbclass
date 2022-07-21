@@ -145,6 +145,7 @@ python __anonymous() {
 
         if imgtype == 'image':
             d.appendVarFlag('do_unpack', 'depends', ' ' + image + ':do_image_complete')
+            d.appendVarFlag('do_rm_work_all', 'depends', ' ' + image + ':do_rm_work_all')
         else:
             d.appendVarFlag('do_unpack', 'depends', ' ' + image + ':do_deploy')
 
