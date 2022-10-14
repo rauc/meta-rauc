@@ -4,14 +4,14 @@ HOMEPAGE = "https://github.com/rauc/rauc-hawkbit-updater"
 LICENSE = "LGPLv2.1"
 LIC_FILES_CHKSUM = "file://LICENSE;md5=1a6d268fd218675ffea8be556788b780"
 
-inherit cmake pkgconfig systemd useradd
+inherit meson pkgconfig systemd useradd
 
 SYSTEMD_SERVICE_${PN} = "${@bb.utils.contains('DISTRO_FEATURES', 'systemd', 'rauc-hawkbit-updater.service', '', d)}"
 
 PACKAGECONFIG ??= " \
     ${@bb.utils.filter('DISTRO_FEATURES', 'systemd', d)} \
 "
-PACKAGECONFIG[systemd] = "-DWITH_SYSTEMD=ON,,systemd"
+PACKAGECONFIG[systemd] = "-Dsystemd=enabled,-Dsystemd=disabled,systemd"
 
 USERADD_PACKAGES = "${PN}"
 USERADD_PARAM_${PN} = "--system --home-dir / --no-create-home --shell /bin/false rauc-hawkbit"
