@@ -39,6 +39,7 @@
 #
 # To prepend an offset to a bootloader image, set the following parameter in bytes.
 # Optionally you can use units allowed by 'dd' e.g. 'K','kB','MB'.
+# If the offset is negative, bytes will not be added, but removed.
 #   RAUC_SLOT_bootloader[offset] ?= "0"
 #
 # Enable building verity format bundles with
@@ -256,8 +257,17 @@ def write_manifest(d):
         if slotflags and 'rename' in slotflags:
             imgname = d.getVarFlag('RAUC_SLOT_%s' % slot, 'rename')
         if slotflags and 'offset' in slotflags:
+            padding = 'seek'
             imgoffset = slotflags.get('offset')
-            if slotflags.get('offset') == '':
+            if imgoffset:
+                sign, magnitude = imgoffset[:1], imgoffset[1:]
+                if sign == '+':
+                    padding = 'seek'
+                    imgoffset = magnitude
+                elif sign == '-':
+                    padding = 'skip'
+                    imgoffset = magnitude
+            if imgoffset == '':
                 imgoffset = '0'
 
         manifest.write("filename=%s\n" % imgname)
@@ -273,8 +283,9 @@ def write_manifest(d):
         if os.path.isfile(searchpath):
             if imgtype == 'boot' and 'offset' in slotflags and imgoffset != '0':
                 subprocess.call(['dd', 'if=%s' % searchpath,
-                                 'of=%s' % bundle_imgpath, 'oflag=seek_bytes',
-                                 'seek=%s' % imgoffset])
+                                 'of=%s' % bundle_imgpath,
+                                 'iflag=skip_bytes', 'oflag=seek_bytes',
+                                 '%s=%s' % (padding, imgoffset)])
             else:
                 shutil.copy(searchpath, bundle_imgpath)
         else:
