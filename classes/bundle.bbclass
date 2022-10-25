@@ -262,7 +262,7 @@ def write_manifest(d):
             imgname = d.getVarFlag('RAUC_SLOT_%s' % slot, 'rename')
         if slotflags and 'offset' in slotflags:
             padding = 'seek'
-            imgoffset = slotflags.get('offset')
+            imgoffset = d.getVarFlag('RAUC_SLOT_%s' % slot, 'offset')
             if imgoffset:
                 sign, magnitude = imgoffset[:1], imgoffset[1:]
                 if sign == '+':
@@ -280,9 +280,9 @@ def write_manifest(d):
         if slotflags and 'hooks' in slotflags:
             if not have_hookfile:
                 bb.warn("A hook is defined for slot %s, but RAUC_BUNDLE_HOOKS[file] is not defined" % slot)
-            manifest.write("hooks=%s\n" % slotflags.get('hooks'))
+            manifest.write("hooks=%s\n" % d.getVarFlag('RAUC_SLOT_%s' % slot, 'hooks'))
         if slotflags and 'adaptive' in slotflags:
-            manifest.write("adaptive=%s\n" % slotflags.get('adaptive'))
+            manifest.write("adaptive=%s\n" % d.getVarFlag('RAUC_SLOT_%s' % slot, 'adaptive'))
         manifest.write("\n")
 
         bundle_imgpath = "%s/%s" % (bundle_path, imgname)
