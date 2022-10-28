@@ -201,6 +201,10 @@ def write_manifest(d):
         manifest.write('[bundle]\n')
         manifest.write(d.expand('format=${RAUC_BUNDLE_FORMAT}\n'))
         manifest.write('\n')
+    else:
+        bb.warn('No RAUC_BUNDLE_FORMAT set. This will default to using legacy \'plain\' format.'
+                '\nIf you are unsure, set RAUC_BUNDLE_FORMAT = "verity" for new projects.'
+                '\nRefer to https://rauc.readthedocs.io/en/latest/reference.html#sec-ref-formats for more information about RAUC bundle formats.')
 
     hooksflags = d.getVarFlags('RAUC_BUNDLE_HOOKS')
     have_hookfile = False
