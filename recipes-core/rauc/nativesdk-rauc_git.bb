@@ -1,4 +1,3 @@
 require rauc.inc
 require rauc-git.inc
-
-inherit nativesdk
+require nativesdk-rauc.inc
