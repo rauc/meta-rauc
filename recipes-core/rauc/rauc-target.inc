@@ -20,7 +20,7 @@ INITSCRIPT_PARAMS:${PN}-mark-good = "start 99 5 2 . stop 20 0 1 6 ."
 inherit systemd update-rc.d
 
 do_install () {
-	autotools_do_install
+	meson_do_install
 
         # Create rauc config dir
         # Warn if system configuration was not overwritten
