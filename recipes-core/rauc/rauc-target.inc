@@ -72,7 +72,7 @@ FILES:${PN}-mark-good = "${systemd_unitdir}/system/rauc-mark-good.service ${sysc
 
 PACKAGES =+ "${PN}-service"
 SYSTEMD_SERVICE:${PN}-service = "rauc.service"
-SYSTEMD_PACKAGES = "${PN}-service"
+SYSTEMD_PACKAGES += "${PN}-service"
 RDEPENDS:${PN}-service += "dbus"
 
 FILES:${PN}-service = "\
