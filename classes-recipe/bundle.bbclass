@@ -79,6 +79,16 @@
 # Enable building casync bundles with
 #
 #   RAUC_CASYNC_BUNDLE = "1"
+#
+# To define custom manifest 'meta' sections, you may use
+# 'RAUC_META_SECTIONS' as follows:
+#
+#   RAUC_META_SECTIONS = "mydata foo"
+#
+#   RAUC_META_mydata[release-type] = "beta"
+#   RAUC_META_mydata[release-notes] = "a few notes here"
+#
+#   RAUC_META_foo[bar] = "baz"
 
 LICENSE ?= "MIT"
 
@@ -309,6 +319,13 @@ def write_manifest(d):
                 raise bb.fatal('Failed to find source %s' % imgsource)
         if not os.path.exists(bundle_imgpath):
             raise bb.fatal("Failed adding image '%s' to bundle: not present in DEPLOY_DIR_IMAGE or WORKDIR" % imgsource)
+
+    for meta_section in (d.getVar('RAUC_META_SECTIONS') or "").split():
+        manifest.write("[meta.%s]\n" % meta_section)
+        for meta_key in d.getVarFlags('RAUC_META_%s' % meta_section):
+            meta_value = d.getVarFlag('RAUC_META_%s' % meta_section, meta_key)
+            manifest.write("%s=%s\n" % (meta_key, meta_value))
+        manifest.write("\n");
 
     manifest.close()
 
