@@ -89,6 +89,11 @@
 #   RAUC_META_mydata[release-notes] = "a few notes here"
 #
 #   RAUC_META_foo[bar] = "baz"
+#
+# Adding any sort of additional lines to the manifest can be done with the
+# RAUC_MANIFEST_EXTRA_LINES variable (using '\n' to indicate newlines):
+#
+#   RAUC_MANIFEST_EXTRA_LINES = "[section]\nkey=value\n"
 
 LICENSE ?= "MIT"
 
@@ -326,6 +331,8 @@ def write_manifest(d):
             meta_value = d.getVarFlag('RAUC_META_%s' % meta_section, meta_key)
             manifest.write("%s=%s\n" % (meta_key, meta_value))
         manifest.write("\n");
+
+    manifest.write((d.getVar('RAUC_MANIFEST_EXTRA_LINES') or "").replace(r'\n', '\n'))
 
     manifest.close()
 
