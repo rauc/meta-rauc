@@ -20,18 +20,6 @@ PACKAGECONFIG[network] = "-Dnetwork=true,-Dnetwork=false,curl"
 PACKAGECONFIG[json]    = "-Djson=enabled,-Djson=disabled,json-glib"
 PACKAGECONFIG[gpt]     = "-Dgpt=enabled,-Dgpt=disabled,util-linux"
 
-RDEPENDS:${PN}-service += "dbus"
-
-PACKAGES =+ "${PN}-service"
-SYSTEMD_SERVICE:${PN}-service = "rauc.service"
-SYSTEMD_PACKAGES = "${PN}-service"
-
-FILES:${PN}-service = "\
-  ${systemd_unitdir}/system/rauc.service \
-  ${datadir}/dbus-1/system.d/de.pengutronix.rauc.conf \
-  ${datadir}/dbus-1/system-services/de.pengutronix.rauc.service \
-  "
-
 FILES:${PN}-dev += "\
   ${datadir}/dbus-1/interfaces/de.pengutronix.rauc.Installer.xml \
   "
