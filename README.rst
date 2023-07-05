@@ -185,6 +185,24 @@ Add a ``Signed-off-by`` line to your commits according to the
 `Developer’s Certificate of Origin
 <https://github.com/rauc/meta-rauc/blob/master/DCO>`_.
 
+Backporting
+-----------
+
+For backporting changes to a stable or LTS branch, two options exist:
+
+a) drop a backport request in the original pull request
+b) backport on your own and create a new pull request
+
+When doing backports on your own, make sure to include a cherry-pick note and
+the original commit-ish in a line below the original Signed-off-by and add your
+own Signed-off-by below.
+When using git, this can be done automatically with::
+
+  git cherry-pick -xs <commit-ish>
+
+Note that backports will be acccepted for actively maintained `poky releases
+<https://wiki.yoctoproject.org/wiki/Releases>`_ only!
+
 VIII. References
 ================
 
