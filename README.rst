@@ -172,8 +172,21 @@ in your local.conf. Note that this has the same effect as setting
 ``DEFAULT_PREFERENCE = "1"`` for each recipe (target/native/nativesdk)
 individually.
 
-VII. References
-===============
+VII. Contributing
+=================
+
+To report bugs, file a new `issue <https://github.com/rauc/meta-rauc/issues>`_
+on GitHub.
+
+For fixing bugs, bumping recipes or adding new features, open a `pull request
+<https://github.com/rauc/meta-rauc/pulls>`_ on GitHub.
+
+Add a ``Signed-off-by`` line to your commits according to the
+`Developer’s Certificate of Origin
+<https://github.com/rauc/meta-rauc/blob/master/DCO>`_.
+
+VIII. References
+================
 
 .. [1] http://rauc.readthedocs.io/en/latest/
 
