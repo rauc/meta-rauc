@@ -15,6 +15,8 @@
 
 inherit bundle
 
+RAUC_BUNDLE_FORMAT = "verity"
+
 RAUC_BUNDLE_COMPATIBLE ?= "Demo Board"
 
 RAUC_BUNDLE_SLOTS ?= "rootfs"
