@@ -254,7 +254,7 @@ def write_manifest(d):
             if slotflags and 'file' in slotflags:
                 imgsource = d.getVarFlag('RAUC_SLOT_%s' % slot, 'file')
             else:
-                imgsource = "%s-%s.%s" % (d.getVar('RAUC_SLOT_%s' % slot), machine, img_fstype)
+                imgsource = "%s-%s.rootfs.%s" % (d.getVar('RAUC_SLOT_%s' % slot), machine, img_fstype)
             imgname = imgsource
         elif imgtype == 'kernel':
             # TODO: Add image type support
