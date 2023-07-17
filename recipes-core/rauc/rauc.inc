@@ -11,6 +11,7 @@ EXTRA_OEMESON += "\
         -Dsystemdunitdir=${systemd_system_unitdir} \
         -Ddbuspolicydir=${datadir}/dbus-1/system.d \
         -Ddbussystemservicedir=${datadir}/dbus-1/system-services \
+        -Ddbusinterfacesdir=${datadir}/dbus-1/interfaces \
         "
 
 PACKAGECONFIG[nocreate]  = "-Dcreate=false,-Dcreate=true,"
