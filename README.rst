@@ -91,7 +91,6 @@ you have to follow at least the following steps:
    update file, please refer to the RAUC user documentation [1]_::
 
      FILESEXTRAPATHS:prepend := "${THISDIR}/files:"
-     SRC_URI:append := " file://system.conf"
 
 3. Create a bundle recipe for your device by adding a recipe
    that inherits the `bundle` class and adds all desired
