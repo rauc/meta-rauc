@@ -71,7 +71,7 @@ RRECOMMENDS:${PN}:append = " ${PN}-mark-good"
 FILES:${PN}-mark-good = "${systemd_unitdir}/system/rauc-mark-good.service ${sysconfdir}/init.d/rauc-mark-good"
 
 PACKAGES =+ "${PN}-service"
-SYSTEMD_SERVICE:${PN}-service = "rauc.service"
+SYSTEMD_SERVICE:${PN}-service = "${@bb.utils.contains('PACKAGECONFIG', 'service', 'rauc.service', '', d)}"
 SYSTEMD_PACKAGES += "${PN}-service"
 RDEPENDS:${PN}-service += "dbus"
 
