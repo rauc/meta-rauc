@@ -252,26 +252,26 @@ def write_manifest(d):
 
         if imgtype == 'image':
             if slotflags and 'file' in slotflags:
-                imgsource = d.getVarFlag('RAUC_SLOT_%s' % slot, 'file')
+                imgsource = slotflags.get('file')
             else:
                 imgsource = "%s-%s.rootfs.%s" % (d.getVar('RAUC_SLOT_%s' % slot), machine, img_fstype)
             imgname = imgsource
         elif imgtype == 'kernel':
             # TODO: Add image type support
             if slotflags and 'file' in slotflags:
-                imgsource = d.getVarFlag('RAUC_SLOT_%s' % slot, 'file')
+                imgsource = slotflags.get('file')
             else:
                 imgsource = "%s-%s.bin" % ("zImage", machine)
             imgname = "%s.%s" % (imgsource, "img")
         elif imgtype == 'boot':
             if slotflags and 'file' in slotflags:
-                imgsource = d.getVarFlag('RAUC_SLOT_%s' % slot, 'file')
+                imgsource = slotflags.get('file')
             else:
                 imgsource = "%s" % ("barebox.img")
             imgname = imgsource
         elif imgtype == 'file':
             if slotflags and 'file' in slotflags:
-                imgsource = d.getVarFlag('RAUC_SLOT_%s' % slot, 'file')
+                imgsource = slotflags.get('file')
             else:
                 bb.fatal('Unknown file for slot: %s' % slot)
             imgname = "%s.%s" % (imgsource, "img")
@@ -279,10 +279,10 @@ def write_manifest(d):
             bb.fatal('Unknown image type: %s' % imgtype)
 
         if slotflags and 'rename' in slotflags:
-            imgname = d.getVarFlag('RAUC_SLOT_%s' % slot, 'rename')
+            imgname = slotflags.get('rename')
         if slotflags and 'offset' in slotflags:
             padding = 'seek'
-            imgoffset = d.getVarFlag('RAUC_SLOT_%s' % slot, 'offset')
+            imgoffset = slotflags.get('offset')
             if imgoffset:
                 sign, magnitude = imgoffset[:1], imgoffset[1:]
                 if sign == '+':
@@ -300,9 +300,9 @@ def write_manifest(d):
         if slotflags and 'hooks' in slotflags:
             if not have_hookfile:
                 bb.warn("A hook is defined for slot %s, but RAUC_BUNDLE_HOOKS[file] is not defined" % slot)
-            manifest.write("hooks=%s\n" % d.getVarFlag('RAUC_SLOT_%s' % slot, 'hooks'))
+            manifest.write("hooks=%s\n" % slotflags.get('hooks'))
         if slotflags and 'adaptive' in slotflags:
-            manifest.write("adaptive=%s\n" % d.getVarFlag('RAUC_SLOT_%s' % slot, 'adaptive'))
+            manifest.write("adaptive=%s\n" % slotflags.get('adaptive'))
         manifest.write("\n")
 
         bundle_imgpath = "%s/%s" % (bundle_path, imgname)
@@ -327,8 +327,7 @@ def write_manifest(d):
 
     for meta_section in (d.getVar('RAUC_META_SECTIONS') or "").split():
         manifest.write("[meta.%s]\n" % meta_section)
-        for meta_key in d.getVarFlags('RAUC_META_%s' % meta_section):
-            meta_value = d.getVarFlag('RAUC_META_%s' % meta_section, meta_key)
+        for meta_key, meta_value in d.getVarFlags('RAUC_META_%s' % meta_section).items():
             manifest.write("%s=%s\n" % (meta_key, meta_value))
         manifest.write("\n");
 
