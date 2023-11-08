@@ -146,8 +146,9 @@ python __anonymous() {
     d.appendVarFlag('do_unpack', 'vardeps', ' RAUC_BUNDLE_HOOKS')
     for slot in (d.getVar('RAUC_BUNDLE_SLOTS') or "").split():
         slot_varflags = d.getVar('RAUC_VARFLAGS_SLOTS').split()
-        slotflags = d.getVarFlags('RAUC_SLOT_%s' % slot, expand=slot_varflags)
-        imgtype = slotflags.get('type') if slotflags else None
+        slotflags = d.getVarFlags('RAUC_SLOT_%s' % slot, expand=slot_varflags) or {}
+
+        imgtype = slotflags.get('type')
         if not imgtype:
             bb.debug(1, "No [type] given for slot '%s', defaulting to 'image'" % slot)
             imgtype = 'image'
@@ -158,7 +159,7 @@ python __anonymous() {
             return
 
         d.appendVarFlag('do_unpack', 'vardeps', ' RAUC_SLOT_%s' % slot)
-        depends = slotflags.get('depends') if slotflags else None
+        depends = slotflags.get('depends')
         if depends:
             d.appendVarFlag('do_unpack', 'depends', ' ' + depends)
             continue
@@ -226,7 +227,7 @@ def write_manifest(d):
                 '\nRefer to https://rauc.readthedocs.io/en/latest/reference.html#sec-ref-formats for more information about RAUC bundle formats.')
 
     hooks_varflags = d.getVar('RAUC_VARFLAGS_HOOKS').split()
-    hooksflags = d.getVarFlags('RAUC_BUNDLE_HOOKS', expand=hooks_varflags)
+    hooksflags = d.getVarFlags('RAUC_BUNDLE_HOOKS', expand=hooks_varflags) or {}
     have_hookfile = False
     if 'file' in hooksflags:
         have_hookfile = True
@@ -240,55 +241,37 @@ def write_manifest(d):
 
     for slot in (d.getVar('RAUC_BUNDLE_SLOTS') or "").split():
         slot_varflags = d.getVar('RAUC_VARFLAGS_SLOTS').split()
-        slotflags = d.getVarFlags('RAUC_SLOT_%s' % slot, expand=slot_varflags)
-        if slotflags and 'name' in slotflags:
-            slotname = slotflags.get('name')
-        else:
-            slotname = slot
-        manifest.write('[image.%s]\n' % slotname)
-        if slotflags and 'type' in slotflags:
-            imgtype = slotflags.get('type')
-        else:
-            imgtype = 'image'
+        slotflags = d.getVarFlags('RAUC_SLOT_%s' % slot, expand=slot_varflags) or {}
 
-        if slotflags and 'fstype' in slotflags:
-            img_fstype = slotflags.get('fstype')
-        else:
-            img_fstype = d.getVar('RAUC_IMAGE_FSTYPE')
+        slotname = slotflags.get('name', slot)
+        manifest.write('[image.%s]\n' % slotname)
+
+        imgtype = slotflags.get('type', 'image')
+
+        img_fstype = slotflags.get('fstype', d.getVar('RAUC_IMAGE_FSTYPE'))
 
         if imgtype == 'image':
-            if slotflags and 'file' in slotflags:
-                imgsource = d.getVarFlag('RAUC_SLOT_%s' % slot, 'file')
-            else:
-                imgsource = "%s-%s.rootfs.%s" % (d.getVar('RAUC_SLOT_%s' % slot), machine, img_fstype)
-            imgname = imgsource
+            fallback = "%s-%s.rootfs.%s" % (d.getVar('RAUC_SLOT_%s' % slot), machine, img_fstype)
+            imgname = imgsource = slotflags.get('file', fallback)
         elif imgtype == 'kernel':
             # TODO: Add image type support
-            if slotflags and 'file' in slotflags:
-                imgsource = d.getVarFlag('RAUC_SLOT_%s' % slot, 'file')
-            else:
-                imgsource = "%s-%s.bin" % ("zImage", machine)
+            fallback = "%s-%s.bin" % ("zImage", machine)
+            imgsource = slotflags.get('file', fallback)
             imgname = "%s.%s" % (imgsource, "img")
         elif imgtype == 'boot':
-            if slotflags and 'file' in slotflags:
-                imgsource = d.getVarFlag('RAUC_SLOT_%s' % slot, 'file')
-            else:
-                imgsource = "%s" % ("barebox.img")
-            imgname = imgsource
+            imgname = imgsource = slotflags.get('file', 'barebox.img')
         elif imgtype == 'file':
-            if slotflags and 'file' in slotflags:
-                imgsource = d.getVarFlag('RAUC_SLOT_%s' % slot, 'file')
-            else:
+            imgsource = slotflags.get('file')
+            if not imgsource:
                 bb.fatal('Unknown file for slot: %s' % slot)
             imgname = "%s.%s" % (imgsource, "img")
         else:
             bb.fatal('Unknown image type: %s' % imgtype)
 
-        if slotflags and 'rename' in slotflags:
-            imgname = d.getVarFlag('RAUC_SLOT_%s' % slot, 'rename')
-        if slotflags and 'offset' in slotflags:
+        imgname = slotflags.get('rename', imgname)
+        if 'offset' in slotflags:
             padding = 'seek'
-            imgoffset = d.getVarFlag('RAUC_SLOT_%s' % slot, 'offset')
+            imgoffset = slotflags.get('offset')
             if imgoffset:
                 sign, magnitude = imgoffset[:1], imgoffset[1:]
                 if sign == '+':
@@ -303,12 +286,12 @@ def write_manifest(d):
         # Keep only the image name in case the image is in a $DEPLOY_DIR_IMAGE subdirectory
         imgname = PurePath(imgname).name
         manifest.write("filename=%s\n" % imgname)
-        if slotflags and 'hooks' in slotflags:
+        if 'hooks' in slotflags:
             if not have_hookfile:
                 bb.warn("A hook is defined for slot %s, but RAUC_BUNDLE_HOOKS[file] is not defined" % slot)
-            manifest.write("hooks=%s\n" % d.getVarFlag('RAUC_SLOT_%s' % slot, 'hooks'))
-        if slotflags and 'adaptive' in slotflags:
-            manifest.write("adaptive=%s\n" % d.getVarFlag('RAUC_SLOT_%s' % slot, 'adaptive'))
+            manifest.write("hooks=%s\n" % slotflags.get('hooks'))
+        if 'adaptive' in slotflags:
+            manifest.write("adaptive=%s\n" % slotflags.get('adaptive'))
         manifest.write("\n")
 
         bundle_imgpath = "%s/%s" % (bundle_path, imgname)
@@ -333,8 +316,7 @@ def write_manifest(d):
 
     for meta_section in (d.getVar('RAUC_META_SECTIONS') or "").split():
         manifest.write("[meta.%s]\n" % meta_section)
-        for meta_key in d.getVarFlags('RAUC_META_%s' % meta_section):
-            meta_value = d.getVarFlag('RAUC_META_%s' % meta_section, meta_key)
+        for meta_key, meta_value in d.getVarFlags('RAUC_META_%s' % meta_section).items():
             manifest.write("%s=%s\n" % (meta_key, meta_value))
         manifest.write("\n");
 
@@ -370,8 +352,8 @@ python do_configure() {
     write_manifest(d)
 
     hooks_varflags = d.getVar('RAUC_VARFLAGS_HOOKS').split()
-    hooksflags = d.getVarFlags('RAUC_BUNDLE_HOOKS', expand=hooks_varflags)
-    if hooksflags and 'file' in hooksflags:
+    hooksflags = d.getVarFlags('RAUC_BUNDLE_HOOKS', expand=hooks_varflags) or {}
+    if 'file' in hooksflags:
         hf = hooksflags.get('file')
         if not os.path.exists(d.expand("${WORKDIR}/%s" % hf)):
             bb.error("hook file '%s' does not exist in WORKDIR" % hf)
