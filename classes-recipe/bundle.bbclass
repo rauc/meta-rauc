@@ -138,11 +138,15 @@ RAUC_CASYNC_BUNDLE ??= "0"
 RAUC_BUNDLE_FORMAT ??= ""
 RAUC_BUNDLE_FORMAT[doc] = "Specifies the bundle format to be used (plain/verity)."
 
+RAUC_VARFLAGS_SLOTS = "name type fstype file hooks adaptive rename offset depends"
+RAUC_VARFLAGS_HOOKS = "file hooks"
+
 # Create dependency list from images
 python __anonymous() {
     d.appendVarFlag('do_unpack', 'vardeps', ' RAUC_BUNDLE_HOOKS')
     for slot in (d.getVar('RAUC_BUNDLE_SLOTS') or "").split():
-        slotflags = d.getVarFlags('RAUC_SLOT_%s' % slot)
+        slot_varflags = d.getVar('RAUC_VARFLAGS_SLOTS').split()
+        slotflags = d.getVarFlags('RAUC_SLOT_%s' % slot, expand=slot_varflags)
         imgtype = slotflags.get('type') if slotflags else None
         if not imgtype:
             bb.debug(1, "No [type] given for slot '%s', defaulting to 'image'" % slot)
@@ -221,7 +225,8 @@ def write_manifest(d):
                 '\nIf you are unsure, set RAUC_BUNDLE_FORMAT = "verity" for new projects.'
                 '\nRefer to https://rauc.readthedocs.io/en/latest/reference.html#sec-ref-formats for more information about RAUC bundle formats.')
 
-    hooksflags = d.getVarFlags('RAUC_BUNDLE_HOOKS')
+    hooks_varflags = d.getVar('RAUC_VARFLAGS_HOOKS').split()
+    hooksflags = d.getVarFlags('RAUC_BUNDLE_HOOKS', expand=hooks_varflags)
     have_hookfile = False
     if 'file' in hooksflags:
         have_hookfile = True
@@ -234,7 +239,8 @@ def write_manifest(d):
         bb.warn("Suspicious use of RAUC_BUNDLE_HOOKS[hooks] without RAUC_BUNDLE_HOOKS[file]")
 
     for slot in (d.getVar('RAUC_BUNDLE_SLOTS') or "").split():
-        slotflags = d.getVarFlags('RAUC_SLOT_%s' % slot)
+        slot_varflags = d.getVar('RAUC_VARFLAGS_SLOTS').split()
+        slotflags = d.getVarFlags('RAUC_SLOT_%s' % slot, expand=slot_varflags)
         if slotflags and 'name' in slotflags:
             slotname = slotflags.get('name')
         else:
@@ -363,7 +369,8 @@ python do_configure() {
 
     write_manifest(d)
 
-    hooksflags = d.getVarFlags('RAUC_BUNDLE_HOOKS')
+    hooks_varflags = d.getVar('RAUC_VARFLAGS_HOOKS').split()
+    hooksflags = d.getVarFlags('RAUC_BUNDLE_HOOKS', expand=hooks_varflags)
     if hooksflags and 'file' in hooksflags:
         hf = hooksflags.get('file')
         if not os.path.exists(d.expand("${WORKDIR}/%s" % hf)):
