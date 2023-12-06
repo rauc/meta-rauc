@@ -1,5 +1,3 @@
-PR = "r0"
-
 SRC_URI = " \ 
   git://github.com/rauc/rauc.git;protocol=https;branch=master \
   "
