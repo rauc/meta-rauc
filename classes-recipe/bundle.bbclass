@@ -425,7 +425,7 @@ do_bundle() {
 		bbfatal "'RAUC_CERT_FILE' not set. Please set to a valid certificate file location."
 	fi
 
-	${STAGING_DIR_NATIVE}${bindir}/rauc bundle \
+	${STAGING_BINDIR_NATIVE}/rauc bundle \
 		--debug \
 		--cert="${RAUC_CERT_FILE}" \
 		--key="${RAUC_KEY_FILE}" \
@@ -442,9 +442,9 @@ do_bundle() {
 		# replacement named "pseudo". But casync requires fakeroot to be
 		# installed, thus make a symlink.
 		if ! [ -x "$(command -v fakeroot)" ]; then
-			ln -sf ${STAGING_DIR_NATIVE}${bindir}/pseudo ${STAGING_DIR_NATIVE}${bindir}/fakeroot
+			ln -sf ${STAGING_BINDIR_NATIVE}/pseudo ${STAGING_BINDIR_NATIVE}/fakeroot
 		fi
-		PSEUDO_PREFIX=${STAGING_DIR_NATIVE}/usr PSEUDO_DISABLED=0 ${STAGING_DIR_NATIVE}${bindir}/rauc convert \
+		PSEUDO_PREFIX=${STAGING_DIR_NATIVE}/${prefix_native} PSEUDO_DISABLED=0 ${STAGING_BINDIR_NATIVE}/rauc convert \
 			--debug \
 			--trust-environment \
 			--cert=${RAUC_CERT_FILE} \
