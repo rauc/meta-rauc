@@ -7,7 +7,7 @@ SRC_URI = " \
 PV = "1.10.1+git${SRCPV}"
 S = "${WORKDIR}/git"
 
-SRCREV = "734bf8937ab154b5edf38bf82c18ca0d7ff1a631"
+SRCREV = "69a95ede643929164f0d044e154c928a855c71a7"
 
 RAUC_USE_DEVEL_VERSION[doc] = "Global switch to enable RAUC development (git) version."
 RAUC_USE_DEVEL_VERSION ??= "-1"
