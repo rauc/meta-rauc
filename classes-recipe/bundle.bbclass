@@ -196,6 +196,8 @@ CONVERT_ARGS[doc] = "Specifies any extra arguments to pass to the rauc convert c
 DEPENDS = "rauc-native squashfs-tools-native"
 DEPENDS += "${@bb.utils.contains('RAUC_CASYNC_BUNDLE', '1', 'virtual/fakeroot-native casync-native', '', d)}"
 
+inherit image-artifact-names
+
 def write_manifest(d):
     import shutil
     import subprocess
@@ -251,7 +253,7 @@ def write_manifest(d):
         img_fstype = slotflags.get('fstype', d.getVar('RAUC_IMAGE_FSTYPE'))
 
         if imgtype == 'image':
-            fallback = "%s-%s.rootfs.%s" % (d.getVar('RAUC_SLOT_%s' % slot), machine, img_fstype)
+            fallback = "%s-%s%s.%s" % (d.getVar('RAUC_SLOT_%s' % slot), machine, d.getVar('IMAGE_NAME_SUFFIX'), img_fstype)
             imgname = imgsource = slotflags.get('file', fallback)
         elif imgtype == 'kernel':
             # TODO: Add image type support
