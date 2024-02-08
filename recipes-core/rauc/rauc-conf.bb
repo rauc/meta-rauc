@@ -7,6 +7,9 @@ RAUC_KEYRING_URI ??= "file://${RAUC_KEYRING_FILE}"
 
 RPROVIDES:${PN} += "virtual-rauc-conf"
 
+INHIBIT_DEFAULT_DEPS = "1"
+do_compile[noexec] = "1"
+
 SRC_URI = " \
   file://system.conf \
   ${RAUC_KEYRING_URI} \
