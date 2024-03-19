@@ -4,6 +4,7 @@ ConditionKernelCommandLine=|bootchooser.active
 ConditionKernelCommandLine=|rauc.slot
 After=boot-complete.target
 Requires=boot-complete.target
+DefaultDependencies=no
 
 [Service]
 Type=oneshot
