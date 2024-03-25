@@ -7,6 +7,7 @@ RRECOMMENDS:${PN} += "squashfs-tools"
 SRC_URI:append = " \
   file://rauc-mark-good.service \
   file://rauc-mark-good.init \
+  file://61-block-nowatch.rules \
   "
 
 SYSTEMD_PACKAGES += "${PN}-mark-good"
@@ -27,6 +28,9 @@ do_install () {
 
         install -d "${D}${sysconfdir}/init.d"
         install -m 755 "${WORKDIR}/rauc-mark-good.init" "${D}${sysconfdir}/init.d/rauc-mark-good"
+
+        install -d ${D}${nonarch_base_libdir}/udev/rules.d
+        install -m 0644 ${WORKDIR}/61-block-nowatch.rules ${D}${nonarch_base_libdir}/udev/rules.d/
 }
 
 PACKAGES =+ "${PN}-mark-good"
