@@ -253,7 +253,7 @@ def write_manifest(d):
         img_fstype = slotflags.get('fstype', d.getVar('RAUC_IMAGE_FSTYPE'))
 
         if imgtype == 'image':
-            fallback = "%s-%s%s.%s" % (d.getVar('RAUC_SLOT_%s' % slot), machine, d.getVar('IMAGE_NAME_SUFFIX'), img_fstype)
+            fallback = "%s%s%s.%s" % (d.getVar('RAUC_SLOT_%s' % slot), d.getVar('IMAGE_MACHINE_SUFFIX'), d.getVar('IMAGE_NAME_SUFFIX'), img_fstype)
             imgname = imgsource = slotflags.get('file', fallback)
         elif imgtype == 'kernel':
             # TODO: Add image type support
