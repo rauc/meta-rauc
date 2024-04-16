@@ -22,12 +22,12 @@ do_install () {
                 bbwarn "Please overwrite example system.conf with a project specific one!"
         fi
         install -d ${D}${sysconfdir}/rauc
-        install -m 0644 ${WORKDIR}/system.conf ${D}${sysconfdir}/rauc/system.conf
+        install -m 0644 ${WORKDIR}/system.conf ${D}${sysconfdir}/rauc/
 
         # Warn if CA file was not overwritten
         if ! grep -q "^[^#]" ${WORKDIR}/${RAUC_KEYRING_FILE}; then
                 bbwarn "Please overwrite example ca.cert.pem with a project specific one, or set the RAUC_KEYRING_FILE variable with your file!"
         fi
-        install -d ${D}${sysconfdir}/rauc/
+        install -d ${D}${sysconfdir}/rauc
         install -m 0644 ${WORKDIR}/${RAUC_KEYRING_FILE} ${D}${sysconfdir}/rauc/
 }
