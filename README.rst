@@ -62,11 +62,15 @@ other layers needed. e.g.::
 II. Building RAUC Host Tool
 ===========================
 
-If you only intend to build the RAUC host tool, you may simply run::
+If you intend to build and use RAUC as a host tool from you BSP, e.g. for
+calling ``rauc info`` on your built bundle, simply run::
 
-  bitbake rauc-native
+  bitbake rauc-native -caddto_recipe_sysroot
+  oe-run-native rauc-native rauc info --keyring=/path/to/keyring.pem tmp/deploy/images/<machine>/<bundle-name>.raucb
 
-This will place the rauc binary at ``tmp/deploy/tools/rauc``.
+For kirkstone still supported but not recommended is to run ``bitbake
+rauc-native`` and use the binary from ``tmp/deploy/tools/rauc`` (together with
+the possibly not-matching host libraries).
 
 If you need to execute the ``casync`` host tool manually, you can do this by running::
 
