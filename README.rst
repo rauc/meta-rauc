@@ -68,8 +68,6 @@ calling ``rauc info`` on your built bundle, simply run::
   bitbake rauc-native -caddto_recipe_sysroot
   oe-run-native rauc-native rauc info --keyring=/path/to/keyring.pem tmp/deploy/images/<machine>/<bundle-name>.raucb
 
-This will place the rauc binary at ``tmp/deploy/tools/rauc``.
-
 If you need to execute the ``casync`` host tool manually, you can do this by running::
 
   bitbake casync-native -caddto_recipe_sysroot
