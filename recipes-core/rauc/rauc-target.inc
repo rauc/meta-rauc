@@ -22,11 +22,11 @@ do_install () {
 	meson_do_install
 
         install -d ${D}${systemd_unitdir}/system/
-        install -m 0644 ${WORKDIR}/rauc-mark-good.service ${D}${systemd_unitdir}/system/
+        install -m 0644 ${UNPACKDIR}/rauc-mark-good.service ${D}${systemd_unitdir}/system/
         sed -i -e 's!@BINDIR@!${bindir}!g' ${D}${systemd_unitdir}/system/*.service
 
         install -d "${D}${sysconfdir}/init.d"
-        install -m 755 "${WORKDIR}/rauc-mark-good.init" "${D}${sysconfdir}/init.d/rauc-mark-good"
+        install -m 755 "${UNPACKDIR}/rauc-mark-good.init" "${D}${sysconfdir}/init.d/rauc-mark-good"
 }
 
 PACKAGES =+ "${PN}-mark-good"

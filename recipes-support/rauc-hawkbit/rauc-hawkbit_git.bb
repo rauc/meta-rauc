@@ -28,7 +28,7 @@ do_install:append() {
 	install -d ${D}${sysconfdir}/${BPN}/
 	install -m 0644 ${S}/rauc_hawkbit/config.cfg ${D}${sysconfdir}/${BPN}/config.cfg
 	install -d ${D}${systemd_unitdir}/system/
-	install -m 0644 ${WORKDIR}/rauc-hawkbit.service ${D}${systemd_unitdir}/system/
+	install -m 0644 ${UNPACKDIR}/rauc-hawkbit.service ${D}${systemd_unitdir}/system/
 	sed -i -e 's!@BINDIR@!${bindir}!g' -e 's!@SYSCONFDIR@!${sysconfdir}!g' \
 		${D}${systemd_unitdir}/system/rauc-hawkbit.service
 }
