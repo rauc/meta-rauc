@@ -15,19 +15,22 @@ SRC_URI = " \
   ${RAUC_KEYRING_URI} \
   "
 
+S = "${WORKDIR}/sources"
+UNPACKDIR = "${S}"
+
 do_install () {
         # Create rauc config dir
         # Warn if system configuration was not overwritten
-        if ! grep -q "^[^#]" ${WORKDIR}/system.conf; then
+        if ! grep -q "^[^#]" ${UNPACKDIR}/system.conf; then
                 bbwarn "Please overwrite example system.conf with a project specific one!"
         fi
         install -d ${D}${sysconfdir}/rauc
-        install -m 0644 ${WORKDIR}/system.conf ${D}${sysconfdir}/rauc/
+        install -m 0644 ${UNPACKDIR}/system.conf ${D}${sysconfdir}/rauc/
 
         # Warn if CA file was not overwritten
-        if ! grep -q "^[^#]" ${WORKDIR}/${RAUC_KEYRING_FILE}; then
+        if ! grep -q "^[^#]" ${UNPACKDIR}/${RAUC_KEYRING_FILE}; then
                 bbwarn "Please overwrite example ca.cert.pem with a project specific one, or set the RAUC_KEYRING_FILE variable with your file!"
         fi
         install -d ${D}${sysconfdir}/rauc
-        install -m 0644 ${WORKDIR}/${RAUC_KEYRING_FILE} ${D}${sysconfdir}/rauc/
+        install -m 0644 ${UNPACKDIR}/${RAUC_KEYRING_FILE} ${D}${sysconfdir}/rauc/
 }
