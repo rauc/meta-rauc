@@ -51,7 +51,7 @@
 #
 # To add additional artifacts to the bundle you can use RAUC_BUNDLE_EXTRA_FILES
 # and RAUC_BUNDLE_EXTRA_DEPENDS.
-# For files from the WORKDIR (fetched using SRC_URI) you can write:
+# For files from the UNPACKDIR (fetched using SRC_URI) you can write:
 #
 #   SRC_URI += "file://myfile"
 #   RAUC_BUNDLE_EXTRA_FILES += "myfile"
@@ -130,7 +130,7 @@ RAUC_BUNDLE_BUILD[doc] = "Specifies the bundle build stamp. See RAUC documentati
 RAUC_BUNDLE_SLOTS[doc] = "Space-separated list of slot classes to include in bundle (manifest)"
 RAUC_BUNDLE_HOOKS[doc] = "Allows to specify an additional hook executable and bundle hooks (via varflags '[file'] and ['hooks'])"
 
-RAUC_BUNDLE_EXTRA_FILES[doc] = "Specifies list of additional files to add to bundle. Files must either be located in WORKDIR (added by SRC_URI) or DEPLOY_DIR_IMAGE (assured by RAUC_BUNDLE_EXTRA_DEPENDS)"
+RAUC_BUNDLE_EXTRA_FILES[doc] = "Specifies list of additional files to add to bundle. Files must either be located in UNPACKDIR (added by SRC_URI) or DEPLOY_DIR_IMAGE (assured by RAUC_BUNDLE_EXTRA_DEPENDS)"
 RAUC_BUNDLE_EXTRA_DEPENDS[doc] = "Specifies list of recipes that create artifacts in DEPLOY_DIR_IMAGE. For recipes not depending on do_deploy task also <recipename>:do_<taskname> notation is supported"
 
 RAUC_CASYNC_BUNDLE ??= "0"
@@ -177,7 +177,8 @@ python __anonymous() {
         bb.note('adding extra dependency %s:%s' % (imagewithdep[0],  deptask))
 }
 
-S = "${WORKDIR}"
+S = "${WORKDIR}/sources"
+UNPACKDIR = "${S}"
 B = "${WORKDIR}/build"
 BUNDLE_DIR = "${S}/bundle"
 
@@ -308,13 +309,13 @@ def write_manifest(d):
             else:
                 shutil.copy(searchpath, bundle_imgpath)
         else:
-            searchpath = d.expand("${WORKDIR}/%s") % imgsource
+            searchpath = d.expand("${UNPACKDIR}/%s") % imgsource
             if os.path.isfile(searchpath):
                 shutil.copy(searchpath, bundle_imgpath)
             else:
                 raise bb.fatal('Failed to find source %s' % imgsource)
         if not os.path.exists(bundle_imgpath):
-            raise bb.fatal("Failed adding image '%s' to bundle: not present in DEPLOY_DIR_IMAGE or WORKDIR" % imgsource)
+            raise bb.fatal("Failed adding image '%s' to bundle: not present in DEPLOY_DIR_IMAGE or UNPACKDIR" % imgsource)
 
     for meta_section in (d.getVar('RAUC_META_SECTIONS') or "").split():
         manifest.write("[meta.%s]\n" % meta_section)
@@ -335,7 +336,7 @@ def try_searchpath(file, d):
         bb.note("adding extra directory from deploy dir to bundle dir: '%s'" % file)
         return searchpath
 
-    searchpath = d.expand("${WORKDIR}/%s") % file
+    searchpath = d.expand("${UNPACKDIR}/%s") % file
     if os.path.isfile(searchpath):
         bb.note("adding extra file from workdir to bundle dir: '%s'" % file)
         return searchpath
@@ -357,12 +358,12 @@ python do_configure() {
     hooksflags = d.getVarFlags('RAUC_BUNDLE_HOOKS', expand=hooks_varflags) or {}
     if 'file' in hooksflags:
         hf = hooksflags.get('file')
-        if not os.path.exists(d.expand("${WORKDIR}/%s" % hf)):
-            bb.error("hook file '%s' does not exist in WORKDIR" % hf)
+        if not os.path.exists(d.expand("${UNPACKDIR}/%s" % hf)):
+            bb.error("hook file '%s' does not exist in UNPACKDIR" % hf)
             return
         dsthook = d.expand("${BUNDLE_DIR}/%s" % hf)
         bb.note("adding hook file to bundle dir: '%s'" % hf)
-        shutil.copy(d.expand("${WORKDIR}/%s" % hf), dsthook)
+        shutil.copy(d.expand("${UNPACKDIR}/%s" % hf), dsthook)
         st = os.stat(dsthook)
         os.chmod(dsthook, st.st_mode | stat.S_IEXEC)
 
