@@ -16,7 +16,7 @@
 #   
 #   RAUC_SLOT_rootfs ?= "core-image-minimal"
 #   RAUC_SLOT_rootfs[fstype] = "ext4"
-#   RAUC_SLOT_rootfs[hooks] ?= "install;post-install"
+#   RAUC_SLOT_rootfs[hooks] ?= "pre-install;post-install"
 #   RAUC_SLOT_rootfs[adaptive] ?= "block-hash-index"
 #   
 #   RAUC_SLOT_kernel ?= "linux-yocto"
