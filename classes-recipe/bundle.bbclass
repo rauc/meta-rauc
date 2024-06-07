@@ -464,5 +464,3 @@ do_deploy() {
 }
 
 addtask deploy after do_bundle before do_build
-
-do_deploy[cleandirs] = "${DEPLOYDIR}"
