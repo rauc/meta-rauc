@@ -113,7 +113,7 @@ do_compile[noexec] = "1"
 do_install[noexec] = "1"
 deltask do_populate_sysroot
 
-RAUC_BUNDLE_COMPATIBLE  ??= "${MACHINE}-${TARGET_VENDOR}"
+RAUC_BUNDLE_COMPATIBLE  ??= "${MACHINE}${TARGET_VENDOR}"
 RAUC_BUNDLE_VERSION     ??= "${PV}"
 RAUC_BUNDLE_DESCRIPTION ??= "${SUMMARY}"
 RAUC_BUNDLE_BUILD       ??= "${DATETIME}"
