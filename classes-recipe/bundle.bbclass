@@ -454,6 +454,8 @@ addtask bundle after do_configure
 
 inherit deploy
 
+SSTATE_SKIP_CREATION:task-deploy = '1'
+
 do_deploy() {
 	install -d ${DEPLOYDIR}
 	install -m 0644 ${B}/bundle.raucb ${DEPLOYDIR}/${BUNDLE_NAME}${BUNDLE_EXTENSION}
