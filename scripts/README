@@ -16,7 +16,7 @@ To use them in your BSP in order to sign and verify bundles, you have to:
 1) Make the target rauc package use the generated keyring file:
 
    Copy the keyring file `dev/ca.cert.pem` into your projects meta layer under
-   `recipes-core/rauc/files` and add a simple rauc .bbappend file
+   `recipes-core/rauc/files` and add a simple .bbappend file
    `recipes-core/rauc/rauc-conf.bbappend` that adds the keyring file to the rauc
    config package search path:
 
