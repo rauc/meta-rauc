@@ -62,7 +62,7 @@ other layers needed. e.g.::
 II. Building RAUC Host Tool
 ===========================
 
-If you intend to build and use RAUC as a host tool from you BSP, e.g. for
+If you intend to build and use RAUC as a host tool from your BSP, e.g. for
 calling ``rauc info`` on your built bundle, simply run::
 
   bitbake rauc-native -caddto_recipe_sysroot
@@ -167,7 +167,7 @@ release.
 This is especially useful for early testing and adaption to upcoming features
 in RAUC.
 
-By default, the _git recipes are disabled. To enable it, you can set::
+By default, the _git recipes are disabled. To enable them, you can set::
 
   RAUC_USE_DEVEL_VERSION = "1"
 
