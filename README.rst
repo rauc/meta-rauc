@@ -39,6 +39,18 @@ Please submit patches via GitHub pull request on https://github.com/rauc/meta-ra
 
 Maintainer: Enrico Joerns <ejo@pengutronix.de>
 
+Migration Notes
+===============
+
+Since **scarthgap**, the platform configuration (system.conf, keyring, etc.) was
+moved to a separate ``rauc-conf.bb`` recipe to allow building the rauc package
+with ``TUNE_PKGARCH`` and have a clearer separation between the binary and the
+configuration.
+
+Thus when updating to scarthgap or newer, make sure to move all
+configuration-specific adaptions from your ``rauc_%.bbappend`` to a
+``rauc-conf.bbappend`` file.
+
 
 I. Adding the rauc Layer to Your Build
 ======================================
@@ -83,7 +95,7 @@ you have to follow at least the following steps:
 
      DISTRO_FEATURES += "rauc"
 
-2. Add a ``rauc_%.bbappend`` in your device-specific (BSP) layer
+2. Add a ``rauc-conf.bbappend`` in your device-specific (BSP) layer
    that installs your RAUC system configuration file under
    ``/etc/rauc/system.conf``. For information on how to write the RAUC
    update file, please refer to the RAUC user documentation [1]_::
