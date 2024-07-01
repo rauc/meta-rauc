@@ -63,6 +63,7 @@ FILES:${PN}-service = "\
   ${systemd_unitdir}/system/rauc.service \
   ${datadir}/dbus-1/system.d/de.pengutronix.rauc.conf \
   ${datadir}/dbus-1/system-services/de.pengutronix.rauc.service \
+  ${nonarch_libdir}/systemd/catalog \
   "
 
 PACKAGECONFIG ??= "service network streaming json nocreate gpt"
