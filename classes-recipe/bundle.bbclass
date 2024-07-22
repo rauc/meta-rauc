@@ -94,6 +94,21 @@
 #
 #   RAUC_KEYRING_FILE ?= "ca.cert.pem"
 #
+# To encrypt manifests of 'crypt' format bundles (RAUC_BUNDLE_FORMAT = "crypt")
+# during the BSP build already, set
+#
+#   RAUC_ENCRYPT_CRYPT_BUNDLE = "1"
+#
+# and set a corresponding certificate file of the recipient(s):
+#
+#   RAUC_RECIPIENTS_CERT_FILE ?= "recipient-certs.pem"
+#
+# This requires RAUC_KEYRING_FILE to be set.
+#
+# Note that encrypting the bundle during BSP builds only fits development or
+# 'single shared key' scenarios that don't support key revocation! For all other
+# cases, per-device (re)encryption should happen outside the BSP.
+#
 # Enable building casync bundles with
 #
 #   RAUC_CASYNC_BUNDLE = "1"
@@ -148,10 +163,11 @@ RAUC_BUNDLE_HOOKS[doc] = "Allows to specify an additional hook executable and bu
 RAUC_BUNDLE_EXTRA_FILES[doc] = "Specifies list of additional files to add to bundle. Files must either be located in UNPACKDIR (added by SRC_URI) or DEPLOY_DIR_IMAGE (assured by RAUC_BUNDLE_EXTRA_DEPENDS)"
 RAUC_BUNDLE_EXTRA_DEPENDS[doc] = "Specifies list of recipes that create files in DEPLOY_DIR_IMAGE. For recipes not depending on do_deploy task also <recipename>:do_<taskname> notation is supported"
 
+RAUC_ENCRYPT_CRYPT_BUNDLE ??= "0"
 RAUC_CASYNC_BUNDLE ??= "0"
 
 RAUC_BUNDLE_FORMAT ??= ""
-RAUC_BUNDLE_FORMAT[doc] = "Specifies the bundle format to be used (plain/verity)."
+RAUC_BUNDLE_FORMAT[doc] = "Specifies the bundle format to be used (plain/verity/crypt)."
 
 RAUC_VARFLAGS_SLOTS = "name type fstype file hooks adaptive rename offset depends convert"
 RAUC_VARFLAGS_HOOKS = "file hooks"
@@ -214,6 +230,8 @@ RAUC_KEY_FILE ??= ""
 RAUC_KEY_FILE[doc] = "Specifies the path to the RAUC key file used for signing. Use COREBASE to reference files located in any shared BSP folder."
 RAUC_CERT_FILE ??= ""
 RAUC_CERT_FILE[doc] = "Specifies the path to the RAUC cert file used for signing. Use COREBASE to reference files located in any shared BSP folder."
+RAUC_RECIPIENTS_CERT_FILE ??= ""
+RAUC_RECIPIENTS_CERT_FILE[doc] = "Specifies the path to the RAUC cert file used for encryption. Use COREBASE to reference files located in any shared BSP folder."
 RAUC_KEYRING_FILE ??= ""
 RAUC_KEYRING_FILE[doc] = "Specifies the path to the RAUC keyring file used for bundle signature verification. Use COREBASE to reference files located in any shared BSP folder."
 BUNDLE_ARGS ??= ""
@@ -460,6 +478,16 @@ BUNDLE_LINK_NAME ??= "${BUNDLE_BASENAME}-${MACHINE}"
 BUNDLE_EXTENSION ??= ".raucb"
 BUNDLE_EXTENSION[doc] = "Specifies desired custom filename extension of generated RAUC bundle."
 
+ENCRYPTED_BUNDLE_BASENAME ??= "encrypted-${BUNDLE_BASENAME}"
+ENCRYPTED_BUNDLE_BASENAME[doc] = "Specifies desired output base name of generated RAUC crypt bundle."
+ENCRYPTED_BUNDLE_NAME ??= "${ENCRYPTED_BUNDLE_BASENAME}-${MACHINE}-${DATETIME}"
+ENCRYPTED_BUNDLE_NAME[doc] = "Specifies desired full output name of generated RAUC crypt bundle."
+# Don't include the DATETIME variable in the sstate package sigantures
+ENCRYPTED_BUNDLE_NAME[vardepsexclude] = "DATETIME"
+ENCRYPTED_BUNDLE_LINK_NAME ??= "${ENCRYPTED_BUNDLE_BASENAME}-${MACHINE}"
+ENCRYPTED_BUNDLE_EXTENSION ??= "${BUNDLE_EXTENSION}"
+ENCRYPTED_BUNDLE_EXTENSION[doc] = "Specifies desired custom filename extension of generated RAUC bundle."
+
 CASYNC_BUNDLE_BASENAME ??= "casync-${BUNDLE_BASENAME}"
 CASYNC_BUNDLE_BASENAME[doc] = "Specifies desired output base name of generated RAUC casync bundle."
 CASYNC_BUNDLE_NAME ??= "${CASYNC_BUNDLE_BASENAME}-${MACHINE}-${DATETIME}"
@@ -486,6 +514,25 @@ fakeroot do_bundle() {
 		${BUNDLE_ARGS} \
 		${BUNDLE_DIR} \
 		${B}/bundle.raucb
+
+	if [ ${RAUC_ENCRYPT_CRYPT_BUNDLE} -eq 1 ]; then
+		if [ "${RAUC_BUNDLE_FORMAT}" != "crypt" ]; then
+			bbfatal "'RAUC_BUNDLE_FORMAT' is not 'crypt'. In order to encrypt bundles during building, please use the 'crypt' bundle format."
+		fi
+		if [ -z "${RAUC_RECIPIENTS_CERT_FILE}" ]; then
+			bbfatal "'RAUC_RECIPIENTS_CERT_FILE' not set. Please set a valid recipient certificate file location."
+		fi
+		if [ -z "${RAUC_KEYRING_FILE}" ]; then
+			bbfatal "'RAUC_KEYRING_FILE' not set. Please set a valid keyring file location."
+		fi
+
+		${STAGING_BINDIR_NATIVE}/rauc encrypt \
+			--debug \
+			--to="${RAUC_RECIPIENTS_CERT_FILE}" \
+			--keyring="${RAUC_KEYRING_FILE}" \
+			${B}/bundle.raucb \
+			${B}/encrypted-bundle.raucb
+	fi
 
 	if [ ${RAUC_CASYNC_BUNDLE} -eq 1 ]; then
 		if [ -z "${RAUC_KEYRING_FILE}" ]; then
@@ -517,6 +564,11 @@ do_deploy() {
 	install -d ${DEPLOYDIR}
 	install -m 0644 ${B}/bundle.raucb ${DEPLOYDIR}/${BUNDLE_NAME}${BUNDLE_EXTENSION}
 	ln -sf ${BUNDLE_NAME}${BUNDLE_EXTENSION} ${DEPLOYDIR}/${BUNDLE_LINK_NAME}${BUNDLE_EXTENSION}
+
+	if [ ${RAUC_ENCRYPT_CRYPT_BUNDLE} -eq 1 ]; then
+		install -m 0644 ${B}/encrypted-bundle.raucb ${DEPLOYDIR}/${ENCRYPTED_BUNDLE_NAME}${ENCRYPTED_BUNDLE_EXTENSION}
+		ln -sf ${ENCRYPTED_BUNDLE_NAME}${ENCRYPTED_BUNDLE_EXTENSION} ${DEPLOYDIR}/${ENCRYPTED_BUNDLE_LINK_NAME}${ENCRYPTED_BUNDLE_EXTENSION}
+	fi
 
 	if [ ${RAUC_CASYNC_BUNDLE} -eq 1 ]; then
 		install -m 0644 ${B}/casync-bundle.raucb ${DEPLOYDIR}/${CASYNC_BUNDLE_NAME}${CASYNC_BUNDLE_EXTENSION}
