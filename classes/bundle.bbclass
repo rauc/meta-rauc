@@ -307,7 +307,8 @@ def write_manifest(d):
 
     for meta_section in (d.getVar('RAUC_META_SECTIONS') or "").split():
         manifest.write("[meta.%s]\n" % meta_section)
-        for meta_key, meta_value in d.getVarFlags('RAUC_META_%s' % meta_section).items():
+        for meta_key in d.getVarFlags('RAUC_META_%s' % meta_section):
+            meta_value = d.getVarFlag('RAUC_META_%s' % meta_section, meta_key)
             manifest.write("%s=%s\n" % (meta_key, meta_value))
         manifest.write("\n");
 
