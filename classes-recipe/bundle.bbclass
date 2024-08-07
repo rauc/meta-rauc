@@ -40,6 +40,12 @@
 #   RAUC_SLOT_rootfs ?= "core-image-minimal"
 #   RAUC_SLOT_rootfs[rename] ?= "rootfs.ext4"
 #
+# To generate an artifact image, use <repo>/<artifact> as the image name:
+#   RAUC_BUNDLE_SLOTS += "containers/test"
+#   RAUC_SLOT_containers/test ?= "container-test-image"
+#   RAUC_SLOT_containers/test[fstype] = "tar.gz"
+#   RAUC_SLOT_containers/test[convert] = "tar-extract;composefs"
+#
 # To prepend an offset to a bootloader image, set the following parameter in bytes.
 # Optionally you can use units allowed by 'dd' e.g. 'K','kB','MB'.
 # If the offset is negative, bytes will not be added, but removed.
@@ -135,7 +141,7 @@ RAUC_CASYNC_BUNDLE ??= "0"
 RAUC_BUNDLE_FORMAT ??= ""
 RAUC_BUNDLE_FORMAT[doc] = "Specifies the bundle format to be used (plain/verity)."
 
-RAUC_VARFLAGS_SLOTS = "name type fstype file hooks adaptive rename offset depends"
+RAUC_VARFLAGS_SLOTS = "name type fstype file hooks adaptive rename offset depends convert"
 RAUC_VARFLAGS_HOOKS = "file hooks"
 
 # Create dependency list from images
@@ -292,6 +298,8 @@ def write_manifest(d):
             manifest.write("hooks=%s\n" % slotflags.get('hooks'))
         if 'adaptive' in slotflags:
             manifest.write("adaptive=%s\n" % slotflags.get('adaptive'))
+        if 'convert' in slotflags:
+            manifest.write("convert=%s\n" % slotflags.get('convert'))
         manifest.write("\n")
 
         bundle_imgpath = "%s/%s" % (bundle_path, imgname)
