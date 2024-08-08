@@ -7,7 +7,7 @@
 #   RAUC_BUNDLE_COMPATIBLE ?= "My Super Product"
 #   RAUC_BUNDLE_VERSION ?= "v2015-06-07-1"
 #
-#   SRC_URI += "hook.sh"
+#   SRC_URI += "file://hook.sh"
 #
 #   RAUC_BUNDLE_HOOKS[file] ?= "hook.sh"
 #   RAUC_BUNDLE_HOOKS[hooks] ?= "install-check"
