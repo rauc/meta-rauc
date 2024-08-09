@@ -2,7 +2,7 @@ SRC_URI = " \
   git://github.com/rauc/rauc.git;protocol=https;branch=master \
   "
 
-PV = "1.11.3+git${SRCPV}"
+PV = "1.12+git${SRCPV}"
 S = "${WORKDIR}/git"
 
 SRCREV = "cf4d63a46c6b0a7a5cba3b039d146bbd6fd59665"
