@@ -1,4 +1,4 @@
-name: meta-rauc CI
+name: build
 
 on:
   # Trigger the workflow on push or pull request,
