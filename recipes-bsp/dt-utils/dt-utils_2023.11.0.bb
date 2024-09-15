@@ -10,8 +10,18 @@ SRC_URI[sha256sum] = "d224d941c076c143f43d59cd7c6e1c522926064a31ac34a67720632dde
 
 inherit autotools pkgconfig gettext
 
-PACKAGES =+ "${PN}-barebox-state ${PN}-fdtdump ${PN}-dtblint"
+NOAUTOPACKAGEDEBUG = "1"
 
+FILES:${PN}-dbg = "${libdir}/.debug/"
+
+PACKAGES =+ "${PN}-barebox-state ${PN}-barebox-state-dbg"
 FILES:${PN}-barebox-state = "${bindir}/barebox-state"
+FILES:${PN}-barebox-state-dbg = "${bindir}/.debug/barebox-state"
+
+PACKAGES =+ "${PN}-fdtdump ${PN}-fdtdump-dbg"
 FILES:${PN}-fdtdump = "${bindir}/fdtdump"
+FILES:${PN}-fdtdump-dbg = "${bindir}/.debug/fdtdump"
+
+PACKAGES =+ "${PN}-dtblint ${PN}-dtblint-dbg"
 FILES:${PN}-dtblint = "${bindir}/dtblint"
+FILES:${PN}-dtblint-dbg = "${bindir}/.debug/dtblint"
