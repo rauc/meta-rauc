@@ -30,9 +30,9 @@ jobs:
         with:
           path: meta-rauc
       - name: Clone poky
-        run: git clone --shared --reference-if-able /srv/shared-git/poky.git -b master https://github.com/yoctoproject/poky.git
+        run: git clone --shared --reference-if-able /srv/shared-git/poky.git -b styhead https://github.com/yoctoproject/poky.git
       - name: Clone meta-openembedded
-        run: git clone --shared --reference-if-able /srv/shared-git/meta-openembedded.git -b master https://github.com/openembedded/meta-openembedded.git
+        run: git clone --shared --reference-if-able /srv/shared-git/meta-openembedded.git -b styhead https://github.com/openembedded/meta-openembedded.git
       - name: Initialize build directory
         run: |
           source poky/oe-init-build-env build
