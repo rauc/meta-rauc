@@ -446,6 +446,7 @@ do_bundle() {
 }
 do_bundle[dirs] = "${B}"
 do_bundle[cleandirs] = "${B}"
+do_bundle[file-checksums] += "${RAUC_CERT_FILE}:True ${RAUC_KEY_FILE}:True"
 
 addtask bundle after do_configure
 
