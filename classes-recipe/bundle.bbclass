@@ -262,7 +262,7 @@ def write_manifest(d):
         elif imgtype == 'file':
             imgsource = slotflags.get('file')
             if not imgsource:
-                bb.fatal('Unknown file for slot: %s' % slot)
+                bb.fatal('Image type "file" requires [file] varflag to be set for slot %s' % slot)
             imgname = "%s.%s" % (imgsource, "img")
         else:
             bb.fatal('Unknown image type: %s' % imgtype)
