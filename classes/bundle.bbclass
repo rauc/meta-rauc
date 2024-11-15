@@ -49,7 +49,7 @@
 #
 #   RAUC_BUNDLE_FORMAT = "verity"
 #
-# To add additional artifacts to the bundle you can use RAUC_BUNDLE_EXTRA_FILES
+# To add additional files to the bundle you can use RAUC_BUNDLE_EXTRA_FILES
 # and RAUC_BUNDLE_EXTRA_DEPENDS.
 # For files from the WORKDIR (fetched using SRC_URI) you can write:
 #
@@ -105,7 +105,7 @@ PACKAGES = ""
 INHIBIT_DEFAULT_DEPS = "1"
 
 RAUC_IMAGE_FSTYPE ??= "${@(d.getVar('IMAGE_FSTYPES') or "").split()[0]}"
-RAUC_IMAGE_FSTYPE[doc] = "Specifies the default file name extension to expect for collecting image artifacts. Defaults to first element set in IMAGE_FSTYPES."
+RAUC_IMAGE_FSTYPE[doc] = "Specifies the default file name extension to expect for collecting images. Defaults to first element set in IMAGE_FSTYPES."
 
 do_fetch[cleandirs] = "${S}"
 do_patch[noexec] = "1"
@@ -127,7 +127,7 @@ RAUC_BUNDLE_SLOTS[doc] = "Space-separated list of slot classes to include in bun
 RAUC_BUNDLE_HOOKS[doc] = "Allows to specify an additional hook executable and bundle hooks (via varflags '[file'] and ['hooks'])"
 
 RAUC_BUNDLE_EXTRA_FILES[doc] = "Specifies list of additional files to add to bundle. Files must either be located in WORKDIR (added by SRC_URI) or DEPLOY_DIR_IMAGE (assured by RAUC_BUNDLE_EXTRA_DEPENDS)"
-RAUC_BUNDLE_EXTRA_DEPENDS[doc] = "Specifies list of recipes that create artifacts in DEPLOY_DIR_IMAGE. For recipes not depending on do_deploy task also <recipename>:do_<taskname> notation is supported"
+RAUC_BUNDLE_EXTRA_DEPENDS[doc] = "Specifies list of recipes that create files in DEPLOY_DIR_IMAGE. For recipes not depending on do_deploy task also <recipename>:do_<taskname> notation is supported"
 
 RAUC_CASYNC_BUNDLE ??= "0"
 
