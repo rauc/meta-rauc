@@ -1,0 +1,31 @@
+name: Schedule Builds
+
+on:
+  # allow rebuilding manually
+  workflow_dispatch:
+  # pre-build sstate regularly
+  schedule:
+    - cron: '30 3 * * *'
+
+jobs:
+  build:
+    name: Schedule Builds
+    runs-on: ubuntu-latest
+    if: ${{ github.event_name == 'workflow_dispatch' || vars.SCHEDULE_BUILDS }}
+    env:
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+      - name: Check out the repository
+        uses: actions/checkout@v4
+
+      - name: Trigger master build
+        run: gh workflow run build --ref master
+
+      - name: Trigger styhead build
+        run: gh workflow run build --ref styhead
+
+      - name: Trigger scarthgap build
+        run: gh workflow run build --ref scarthgap
+
+      - name: Trigger kirkstone build
+        run: gh workflow run build --ref kirkstone
