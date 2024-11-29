@@ -1,4 +1,16 @@
-|MIT| |gh_action| |Matrix|
+.. list-table::
+   :header-rows: 1
+
+   * - master
+     - styhead
+     - scarthgap
+     - kirkstone
+   * - |gh_master|
+     - |gh_styhead|
+     - |gh_scarthgap|
+     - |gh_kirkstone|
+
+|MIT| |Matrix|
 
 The meta-rauc layer provides support for integrating the RAUC update tool
 into your device.
@@ -221,7 +233,13 @@ VIII. References
 
 .. |MIT| image:: https://img.shields.io/badge/license-MIT-blue.svg
    :target: https://raw.githubusercontent.com/rauc/meta-rauc/master/COPYING.MIT
-.. |gh_action| image:: https://github.com/rauc/meta-rauc/workflows/meta-rauc%20CI/badge.svg
-   :target: https://github.com/rauc/meta-rauc/actions?query=workflow%3A%22meta-rauc+CI%22
+.. |gh_kirkstone| image:: https://github.com/rauc/meta-rauc/actions/workflows/build.yml/badge.svg?branch=kirkstone&event=workflow_dispatch
+   :target: https://github.com/rauc/meta-rauc/actions?query=event%3Aworkflow_dispatch+branch%3Akirkstone++
+.. |gh_scarthgap| image:: https://github.com/rauc/meta-rauc/actions/workflows/build.yml/badge.svg?branch=scarthgap&event=workflow_dispatch
+   :target: https://github.com/rauc/meta-rauc/actions?query=event%3Aworkflow_dispatch+branch%3Ascarthgap++
+.. |gh_styhead| image:: https://github.com/rauc/meta-rauc/actions/workflows/build.yml/badge.svg?branch=styhead&event=workflow_dispatch
+   :target: https://github.com/rauc/meta-rauc/actions?query=event%3Aworkflow_dispatch+branch%3Astyhead++
+.. |gh_master| image:: https://github.com/rauc/meta-rauc/actions/workflows/build.yml/badge.svg?branch=master&event=workflow_dispatch
+   :target: https://github.com/rauc/meta-rauc/actions?query=event%3Aworkflow_dispatch+branch%3Amaster++
 .. |Matrix| image:: https://img.shields.io/matrix/rauc:matrix.org?label=matrix%20chat
    :target: https://app.element.io/#/room/#rauc:matrix.org
