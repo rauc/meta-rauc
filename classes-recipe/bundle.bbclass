@@ -104,7 +104,8 @@ inherit nopackages
 PACKAGES = ""
 INHIBIT_DEFAULT_DEPS = "1"
 
-RAUC_IMAGE_FSTYPE ??= "${@(d.getVar('IMAGE_FSTYPES') or "").split()[0]}"
+# [""] is added to avoid "list index out of range" error with empty IMAGE_FSTYPES
+RAUC_IMAGE_FSTYPE ??= "${@(d.getVar('IMAGE_FSTYPES').split() + [""])[0]}"
 RAUC_IMAGE_FSTYPE[doc] = "Specifies the default file name extension to expect for collecting images. Defaults to first element set in IMAGE_FSTYPES."
 
 do_fetch[cleandirs] = "${S}"
