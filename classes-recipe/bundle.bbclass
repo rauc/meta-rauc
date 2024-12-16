@@ -94,6 +94,10 @@
 # RAUC_MANIFEST_EXTRA_LINES variable (using '\n' to indicate newlines):
 #
 #   RAUC_MANIFEST_EXTRA_LINES = "[section]\nkey=value\n"
+#
+# To add a full custom update handler to your manifest file
+#   RAUC_FULL_CUSTOM_HANDLER[file] ?= "custom-handler.sh"
+#
 
 LICENSE ?= "MIT"
 
@@ -137,6 +141,7 @@ RAUC_BUNDLE_FORMAT[doc] = "Specifies the bundle format to be used (plain/verity)
 
 RAUC_VARFLAGS_SLOTS = "name type fstype file hooks adaptive rename offset depends"
 RAUC_VARFLAGS_HOOKS = "file hooks"
+RAUC_FULL_CUSTOM_HANDLER[doc] = "Allows to specify a script to be include in the bundle that performs a full custom update."
 
 # Create dependency list from images
 python __anonymous() {
@@ -225,6 +230,13 @@ def write_manifest(d):
         bb.warn('No RAUC_BUNDLE_FORMAT set. This will default to using legacy \'plain\' format.'
                 '\nIf you are unsure, set RAUC_BUNDLE_FORMAT = "verity" for new projects.'
                 '\nRefer to https://rauc.readthedocs.io/en/latest/reference.html#sec-ref-formats for more information about RAUC bundle formats.')
+
+    custom_update = d.getVarFlags('RAUC_FULL_CUSTOM_HANDLER') or {}
+    if custom_update.get('file'):
+        bb.note("writing manifest with custom update %s" % custom_update.get('file'))
+        manifest.write('[handler]\n')
+        manifest.write("filename=%s\n" % custom_update.get('file'))
+        manifest.write('\n')
 
     hooks_varflags = d.getVar('RAUC_VARFLAGS_HOOKS').split()
     hooksflags = d.getVarFlags('RAUC_BUNDLE_HOOKS', expand=hooks_varflags) or {}
@@ -344,10 +356,20 @@ def try_searchpath(file, d):
 
     return None
 
-python do_configure() {
+def add_file(d, filename, file_type):
     import shutil
     import os
     import stat
+    if not os.path.exists(d.expand("${UNPACKDIR}/%s" % filename)):
+        bb.error("%s file '%s' does not exist in WORKDIR" % (file_type, hf))
+        return
+    dst = d.expand("${BUNDLE_DIR}/%s" % filename)
+    bb.note("adding %s file to bundle dir: '%s'" % (file_type, filename))
+    shutil.copy(d.expand("${UNPACKDIR}/%s" % filename), dst)
+    st = os.stat(dst)
+    os.chmod(dst, st.st_mode | stat.S_IEXEC)
+
+python do_configure() {
     import subprocess
 
     write_manifest(d)
@@ -355,15 +377,12 @@ python do_configure() {
     hooks_varflags = d.getVar('RAUC_VARFLAGS_HOOKS').split()
     hooksflags = d.getVarFlags('RAUC_BUNDLE_HOOKS', expand=hooks_varflags) or {}
     if 'file' in hooksflags:
-        hf = hooksflags.get('file')
-        if not os.path.exists(d.expand("${UNPACKDIR}/%s" % hf)):
-            bb.error("hook file '%s' does not exist in UNPACKDIR" % hf)
-            return
-        dsthook = d.expand("${BUNDLE_DIR}/%s" % hf)
-        bb.note("adding hook file to bundle dir: '%s'" % hf)
-        shutil.copy(d.expand("${UNPACKDIR}/%s" % hf), dsthook)
-        st = os.stat(dsthook)
-        os.chmod(dsthook, st.st_mode | stat.S_IEXEC)
+        add_file(d, hooksflags.get('file'), 'hook')
+
+    custom_update = d.getVarFlags('RAUC_FULL_CUSTOM_HANDLER')
+    if custom_update and 'file' in custom_update:
+        file = custom_update.get('file')
+        add_file(d, custom_update.get('file'), 'custom_update')
 
     for file in (d.getVar('RAUC_BUNDLE_EXTRA_FILES') or "").split():
         bundledir = d.getVar('BUNDLE_DIR')
