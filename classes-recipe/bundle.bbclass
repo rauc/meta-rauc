@@ -406,7 +406,7 @@ CASYNC_BUNDLE_LINK_NAME ??= "${CASYNC_BUNDLE_BASENAME}-${MACHINE}"
 CASYNC_BUNDLE_EXTENSION ??= "${BUNDLE_EXTENSION}"
 CASYNC_BUNDLE_EXTENSION[doc] = "Specifies desired custom filename extension of generated RAUC casync bundle."
 
-do_bundle() {
+fakeroot do_bundle() {
 	if [ -z "${RAUC_KEY_FILE}" ]; then
 		bbfatal "'RAUC_KEY_FILE' not set. Please set to a valid key file location."
 	fi
@@ -428,13 +428,7 @@ do_bundle() {
 			bbfatal "'RAUC_KEYRING_FILE' not set. Please set a valid keyring file location."
 		fi
 
-		# There is no package providing a binary named "fakeroot" but instead a
-		# replacement named "pseudo". But casync requires fakeroot to be
-		# installed, thus make a symlink.
-		if ! [ -x "$(command -v fakeroot)" ]; then
-			ln -sf ${STAGING_BINDIR_NATIVE}/pseudo ${STAGING_BINDIR_NATIVE}/fakeroot
-		fi
-		PSEUDO_PREFIX=${STAGING_DIR_NATIVE}/${prefix_native} PSEUDO_DISABLED=0 ${STAGING_BINDIR_NATIVE}/rauc convert \
+		${STAGING_BINDIR_NATIVE}/rauc convert \
 			--debug \
 			--trust-environment \
 			--cert=${RAUC_CERT_FILE} \
