@@ -1,6 +1,3 @@
-RAUC_KEYRING_FILE ??= "ca.cert.pem"
-RAUC_KEYRING_URI ??= "file://${RAUC_KEYRING_FILE}"
-
 RRECOMMENDS:${PN} += "virtual-rauc-conf"
 RRECOMMENDS:${PN} += "squashfs-tools"
 
