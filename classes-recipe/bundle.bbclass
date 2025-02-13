@@ -29,7 +29,9 @@ python do_configure() {
     import stat
     import subprocess
 
-    write_manifest(d.expand("${BUNDLE_DIR}"), d)
+    bundledir = d.getVar("RAUC_BUNDLE_DIR")
+
+    write_manifest(bundledir, d)
 
     hooks_varflags = d.getVar('RAUC_VARFLAGS_HOOKS').split()
     hooksflags = d.getVarFlags('RAUC_BUNDLE_HOOKS', expand=hooks_varflags) or {}
@@ -38,15 +40,14 @@ python do_configure() {
         if not os.path.exists(d.expand("${UNPACKDIR}/%s" % hf)):
             bb.error("hook file '%s' does not exist in UNPACKDIR" % hf)
             return
-        dsthook = d.expand("${BUNDLE_DIR}/%s" % hf)
+        dsthook = d.expand("%s/%s" % (bundledir, hf))
         bb.note("adding hook file to bundle dir: '%s'" % hf)
         shutil.copy(d.expand("${UNPACKDIR}/%s" % hf), dsthook)
         st = os.stat(dsthook)
         os.chmod(dsthook, st.st_mode | stat.S_IEXEC)
 
     for file in (d.getVar('RAUC_BUNDLE_EXTRA_FILES') or "").split():
-        bundledir = d.getVar('BUNDLE_DIR')
-        destpath = d.expand("${BUNDLE_DIR}/%s") % file
+        destpath = d.expand("%s/%s") % (bundledir, file)
 
         searchpath = try_searchpath(file, d)
         if not searchpath:
@@ -65,7 +66,7 @@ python do_configure() {
 
 addtask do_configure after do_prepare_recipe_sysroot before do_bundle
 
-do_configure[cleandirs] = "${BUNDLE_DIR}"
+do_configure[cleandirs] = "${RAUC_BUNDLE_DIR}"
 
 inherit deploy
 

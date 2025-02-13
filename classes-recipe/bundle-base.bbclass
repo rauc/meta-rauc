@@ -351,7 +351,7 @@ CASYNC_BUNDLE_LINK_NAME ??= "${CASYNC_BUNDLE_BASENAME}-${MACHINE}"
 CASYNC_BUNDLE_EXTENSION ??= "${BUNDLE_EXTENSION}"
 CASYNC_BUNDLE_EXTENSION[doc] = "Specifies desired custom filename extension of generated RAUC casync bundle."
 
-BUNDLE_DIR = "${S}/bundle"
+RAUC_BUNDLE_DIR ??= "${S}/bundle"
 RAUC_BUNDLE_DEST ??= "${B}"
 
 fakeroot do_bundle() {
@@ -368,7 +368,7 @@ fakeroot do_bundle() {
 		--cert="${RAUC_CERT_FILE}" \
 		--key="${RAUC_KEY_FILE}" \
 		${BUNDLE_ARGS} \
-		${BUNDLE_DIR} \
+		${RAUC_BUNDLE_DIR} \
 		${RAUC_BUNDLE_DEST}/bundle.raucb
 
 	if [ ${RAUC_CASYNC_BUNDLE} -eq 1 ]; then
