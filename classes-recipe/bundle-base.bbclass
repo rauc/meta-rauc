@@ -312,6 +312,38 @@ def write_manifest(bundle_path, d):
 
     manifest.close()
 
+def copy_hooks_and_extras(bundledir, d):
+
+    hooks_varflags = d.getVar('RAUC_VARFLAGS_HOOKS').split()
+    hooksflags = d.getVarFlags('RAUC_BUNDLE_HOOKS', expand=hooks_varflags) or {}
+    if 'file' in hooksflags:
+        hf = hooksflags.get('file')
+        if not os.path.exists(d.expand("${UNPACKDIR}/%s" % hf)):
+            bb.error("hook file '%s' does not exist in UNPACKDIR" % hf)
+            return
+        dsthook = d.expand("%s/%s" % (bundledir, hf))
+        bb.note("adding hook file to bundle dir: '%s'" % hf)
+        shutil.copy(d.expand("${UNPACKDIR}/%s" % hf), dsthook)
+        st = os.stat(dsthook)
+        os.chmod(dsthook, st.st_mode | stat.S_IEXEC)
+
+    for file in (d.getVar('RAUC_BUNDLE_EXTRA_FILES') or "").split():
+        destpath = d.expand("%s/%s") % (bundledir, file)
+
+        searchpath = try_searchpath(file, d)
+        if not searchpath:
+            bb.error("extra file '%s' neither found in workdir nor in deploy dir!" % file)
+
+        destdir = '.'
+        # strip leading and trailing slashes to prevent installting into wrong location
+        file = file.rstrip('/').lstrip('/')
+
+        if file.find("/") != -1:
+            destdir = file.rsplit("/", 1)[0] + '/'
+            bb.utils.mkdirhier("%s/%s" % (bundledir, destdir))
+        bb.note("Unpacking %s to %s/" % (file, bundledir))
+        ret = subprocess.call('cp -fpPRH "%s" "%s"' % (searchpath, destdir), shell=True, cwd=bundledir)
+
 def try_searchpath(file, d):
     searchpath = d.expand("${DEPLOY_DIR_IMAGE}/%s") % file
     if os.path.isfile(searchpath):
