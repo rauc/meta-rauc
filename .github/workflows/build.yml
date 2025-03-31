@@ -14,14 +14,14 @@ jobs:
       ${{
         (vars.BUILD_RUNS_ON != ''  && fromJSON(vars.BUILD_RUNS_ON)) ||
         (github.repository == 'rauc/meta-rauc' && fromJSON('["self-hosted", "forrest", "build"]')) ||
-        'ubuntu-20.04'
+        'ubuntu-22.04'
       }}
     # abort if it seems that we're rebuilding too much
     timeout-minutes: 120
     steps:
       - name: Install required packages
         run: |
-          sudo apt-get -q -y --no-install-recommends install diffstat
+          sudo apt-get -q -y --no-install-recommends install diffstat chrpath
       - name: Checkout
         uses: actions/checkout@v4
         with:
