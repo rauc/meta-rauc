@@ -213,7 +213,8 @@ def write_manifest(d):
     manifest.write(d.expand('build=${RAUC_BUNDLE_BUILD}\n'))
     manifest.write('\n')
 
-    if d.getVar('RAUC_BUNDLE_FORMAT'):
+    bundle_format = d.getVar('RAUC_BUNDLE_FORMAT')
+    if bundle_format and bundle_format != "plain":
         manifest.write('[bundle]\n')
         manifest.write(d.expand('format=${RAUC_BUNDLE_FORMAT}\n'))
         manifest.write('\n')
