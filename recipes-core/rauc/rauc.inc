@@ -20,6 +20,7 @@ PACKAGECONFIG[streaming] = "-Dstreaming=true,-Dstreaming=false,libnl"
 PACKAGECONFIG[network] = "-Dnetwork=true,-Dnetwork=false,curl"
 PACKAGECONFIG[json]    = "-Djson=enabled,-Djson=disabled,json-glib"
 PACKAGECONFIG[gpt]     = "-Dgpt=enabled,-Dgpt=disabled,util-linux"
+PACKAGECONFIG[composefs] = "-Dcomposefs=enabled,-Dcomposefs=disabled,composefs"
 
 FILES:${PN}-dev += "\
   ${datadir}/dbus-1/interfaces/de.pengutronix.rauc.Installer.xml \
