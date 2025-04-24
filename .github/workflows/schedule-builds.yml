@@ -21,6 +21,9 @@ jobs:
       - name: Trigger master build
         run: gh workflow run build --ref master
 
+      - name: Trigger walnascar build
+        run: gh workflow run build --ref walnascar
+
       - name: Trigger styhead build
         run: gh workflow run build --ref styhead
 
