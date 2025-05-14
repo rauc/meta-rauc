@@ -51,6 +51,13 @@
 # If the offset is negative, bytes will not be added, but removed.
 #   RAUC_SLOT_bootloader[offset] ?= "0"
 #
+# To unpack before writing the image in the bundle, use 'unpack'. Possible
+# values are 'bzip2', 'gzip', 'xz' and 'zst'. 'unpack' requires 'file' to be set
+# and is not compatible with 'offset'.
+#   RAUC_SLOT_rootfs ?= "core-image-minimal"
+#   RAUC_SLOT_rootfs[file] = "core-image-minimal-qemuarm64.rootfs.ext4.zst"
+#   RAUC_SLOT_rootfs[unpack] = "zst"
+#
 # Enable building verity format bundles with
 #
 #   RAUC_BUNDLE_FORMAT = "verity"
@@ -173,6 +180,19 @@ python __anonymous() {
         else:
             d.appendVarFlag('do_unpack', 'depends', ' ' + image + ':do_deploy')
 
+        extension = slotflags.get('unpack')
+        if extension:
+            decompressor = {
+                "bz2": " bzip2-native ",
+                "gz": " gzip-native ",
+                "xz": " xz-native ",
+                "zst": " zstd-native ",
+            }.get(extension)
+            if not decompressor:
+                bb.error("Not supported compressor filename extension: %s" % extension)
+                return
+            d.appendVar('DEPENDS', decompressor)
+
     for image in (d.getVar('RAUC_BUNDLE_EXTRA_DEPENDS') or "").split():
         imagewithdep = image.split(':')
         deptask = imagewithdep[1] if len(imagewithdep) > 1 else 'do_deploy'
@@ -203,6 +223,19 @@ DEPENDS += "${@bb.utils.contains('RAUC_CASYNC_BUNDLE', '1', 'virtual/fakeroot-na
 inherit image-artifact-names
 
 def write_manifest(d):
+    def decompress_image(src, dst, extension):
+        import subprocess
+        decompressor = {
+            "bz2": "bzip2",
+            "gz": "gzip",
+            "xz": "xz",
+            "zst": "zstd -f",
+        }.get(extension)
+        if not decompressor:
+            raise bb.fatal("Not supported compressor filename extension: %s" % extension)
+        cmd = "%s -dc %s > %s" % (decompressor, src, dst)
+        subprocess.check_call(cmd, shell=True)
+
     import shutil
     import subprocess
     from pathlib import PurePath
@@ -275,6 +308,10 @@ def write_manifest(d):
         else:
             bb.fatal('Unknown image type: %s' % imgtype)
 
+        # Remove the last matching suffix when unpack is set (keep the .img)
+        if 'unpack' in slotflags:
+            imgname = "".join(imgname.rsplit(".%s" % slotflags.get('unpack'), 1))
+
         imgname = slotflags.get('rename', imgname)
         if 'offset' in slotflags:
             padding = 'seek'
@@ -308,16 +345,23 @@ def write_manifest(d):
         searchpath = d.expand("${DEPLOY_DIR_IMAGE}/%s") % imgsource
         if os.path.isfile(searchpath):
             if imgtype == 'boot' and 'offset' in slotflags and imgoffset != '0':
+                if 'unpack' in slotflags:
+                    bb.fatal("unpack not supported for image type boot with offset")
                 subprocess.call(['dd', 'if=%s' % searchpath,
                                  'of=%s' % bundle_imgpath,
                                  'iflag=skip_bytes', 'oflag=seek_bytes',
                                  '%s=%s' % (padding, imgoffset)])
+            elif 'unpack' in slotflags:
+                decompress_image(searchpath, bundle_imgpath, slotflags.get('unpack'))
             else:
                 shutil.copy(searchpath, bundle_imgpath)
         else:
             searchpath = d.expand("${UNPACKDIR}/%s") % imgsource
             if os.path.isfile(searchpath):
-                shutil.copy(searchpath, bundle_imgpath)
+                if 'unpack' in slotflags:
+                    decompress_image(searchpath, bundle_imgpath, slotflags.get('unpack'))
+                else:
+                    shutil.copy(searchpath, bundle_imgpath)
             else:
                 raise bb.fatal('Failed to find source %s' % imgsource)
         if not os.path.exists(bundle_imgpath):
