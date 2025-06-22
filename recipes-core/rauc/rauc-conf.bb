@@ -15,9 +15,7 @@ SRC_URI = " \
   ${RAUC_KEYRING_URI} \
   "
 
-S = "${WORKDIR}/sources"
-UNPACKDIR = "${S}"
-
+S = "${UNPACKDIR}"
 do_install () {
         # Create rauc config dir
         # Warn if system configuration was not overwritten
