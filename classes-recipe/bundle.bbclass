@@ -180,8 +180,7 @@ python __anonymous() {
         bb.note('adding extra dependency %s:%s' % (imagewithdep[0],  deptask))
 }
 
-S = "${WORKDIR}/sources"
-UNPACKDIR = "${S}"
+S = "${UNPACKDIR}/sources"
 B = "${WORKDIR}/build"
 BUNDLE_DIR = "${S}/bundle"
 
@@ -315,13 +314,13 @@ def write_manifest(d):
             else:
                 shutil.copy(searchpath, bundle_imgpath)
         else:
-            searchpath = d.expand("${UNPACKDIR}/%s") % imgsource
+            searchpath = d.expand("${S}/%s") % imgsource
             if os.path.isfile(searchpath):
                 shutil.copy(searchpath, bundle_imgpath)
             else:
                 raise bb.fatal('Failed to find source %s' % imgsource)
         if not os.path.exists(bundle_imgpath):
-            raise bb.fatal("Failed adding image '%s' to bundle: not present in DEPLOY_DIR_IMAGE or UNPACKDIR" % imgsource)
+            raise bb.fatal("Failed adding image '%s' to bundle: not present in DEPLOY_DIR_IMAGE or S" % imgsource)
 
     for meta_section in (d.getVar('RAUC_META_SECTIONS') or "").split():
         manifest.write("[meta.%s]\n" % meta_section)
@@ -343,7 +342,7 @@ def try_searchpath(file, d):
         bb.note("adding extra directory from deploy dir to bundle dir: '%s'" % file)
         return searchpath
 
-    searchpath = d.expand("${UNPACKDIR}/%s") % file
+    searchpath = d.expand("${S}/%s") % file
     if os.path.isfile(searchpath):
         bb.note("adding extra file from workdir to bundle dir: '%s'" % file)
         return searchpath
@@ -365,12 +364,12 @@ python do_configure() {
     hooksflags = d.getVarFlags('RAUC_BUNDLE_HOOKS', expand=hooks_varflags) or {}
     if 'file' in hooksflags:
         hf = hooksflags.get('file')
-        if not os.path.exists(d.expand("${UNPACKDIR}/%s" % hf)):
-            bb.error("hook file '%s' does not exist in UNPACKDIR" % hf)
+        if not os.path.exists(d.expand("${S}/%s" % hf)):
+            bb.error("hook file '%s' does not exist in S" % hf)
             return
         dsthook = d.expand("${BUNDLE_DIR}/%s" % hf)
         bb.note("adding hook file to bundle dir: '%s'" % hf)
-        shutil.copy(d.expand("${UNPACKDIR}/%s" % hf), dsthook)
+        shutil.copy(d.expand("${S}/%s" % hf), dsthook)
         st = os.stat(dsthook)
         os.chmod(dsthook, st.st_mode | stat.S_IEXEC)
 
