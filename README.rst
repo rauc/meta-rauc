@@ -3,12 +3,10 @@
 
    * - master
      - walnascar
-     - styhead
      - scarthgap
      - kirkstone
    * - |gh_master|
      - |gh_walnascar|
-     - |gh_styhead|
      - |gh_scarthgap|
      - |gh_kirkstone|
 
@@ -239,8 +237,6 @@ VIII. References
    :target: https://github.com/rauc/meta-rauc/actions?query=event%3Aworkflow_dispatch+branch%3Akirkstone++
 .. |gh_scarthgap| image:: https://github.com/rauc/meta-rauc/actions/workflows/build.yml/badge.svg?branch=scarthgap&event=workflow_dispatch
    :target: https://github.com/rauc/meta-rauc/actions?query=event%3Aworkflow_dispatch+branch%3Ascarthgap++
-.. |gh_styhead| image:: https://github.com/rauc/meta-rauc/actions/workflows/build.yml/badge.svg?branch=styhead&event=workflow_dispatch
-   :target: https://github.com/rauc/meta-rauc/actions?query=event%3Aworkflow_dispatch+branch%3Astyhead++
 .. |gh_walnascar| image:: https://github.com/rauc/meta-rauc/actions/workflows/build.yml/badge.svg?branch=walnascar&event=workflow_dispatch
    :target: https://github.com/rauc/meta-rauc/actions?query=event%3Aworkflow_dispatch+branch%3Awalnascar++
 .. |gh_master| image:: https://github.com/rauc/meta-rauc/actions/workflows/build.yml/badge.svg?branch=master&event=workflow_dispatch
