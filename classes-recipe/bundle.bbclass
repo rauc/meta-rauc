@@ -180,8 +180,7 @@ python __anonymous() {
         bb.note('adding extra dependency %s:%s' % (imagewithdep[0],  deptask))
 }
 
-S = "${WORKDIR}/sources"
-UNPACKDIR = "${S}"
+S = "${UNPACKDIR}"
 B = "${WORKDIR}/build"
 BUNDLE_DIR = "${S}/bundle"
 
