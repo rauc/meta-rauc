@@ -12,8 +12,6 @@ SRC_URI = " \
     git://github.com/systemd/casync.git;protocol=https;branch=main \
     "
 
-S = "${WORKDIR}/git"
-
 inherit meson pkgconfig
 
 EXTRA_OEMESON += "-Dselinux=false -Dman=false -Dudevrulesdir=${nonarch_base_libdir}/udev/rules.d/"
