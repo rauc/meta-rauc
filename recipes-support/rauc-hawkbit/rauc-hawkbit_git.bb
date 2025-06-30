@@ -16,8 +16,6 @@ SRC_URI = " \
 PV = "0.2.0+git${SRCPV}"
 SRCREV = "47bebb4a011768817f13f7796ec1b4e67edaffc5"
 
-S = "${WORKDIR}/git"
-
 inherit setuptools3 systemd
 
 PACKAGES =+ "${PN}-service"
