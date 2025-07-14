@@ -1,7 +1,7 @@
 include rauc-hawkbit-updater.inc
 
 SRC_URI = "git://github.com/rauc/rauc-hawkbit-updater.git;protocol=https;branch=master"
-SRCREV = "e19bc259a615ea31584c4056f365db46237d70f9"
-PV = "1.3+git${SRCPV}"
+SRCREV = "2711c0e02781eb9d97285c87197f1bafef75d0d1"
+PV = "1.4+git${SRCPV}"
 
 DEFAULT_PREFERENCE = "-1"
