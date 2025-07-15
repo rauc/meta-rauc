@@ -40,6 +40,12 @@
 #   RAUC_SLOT_rootfs ?= "core-image-minimal"
 #   RAUC_SLOT_rootfs[rename] ?= "rootfs.ext4"
 #
+# RAUC also accepts image sections without an actual image file, e.g. for
+# 'install' hooks. These can be specified using the 'none' type:
+#   RAUC_SLOT_datafs ?= "dummy"
+#   RAUC_SLOT_datafs[type] ?= "none"
+#   RAUC_SLOT_datafs[hooks] ?= "install"
+#
 # To generate an artifact image, use <repo>/<artifact> as the image name:
 #   RAUC_BUNDLE_SLOTS += "containers/test"
 #   RAUC_SLOT_containers/test ?= "container-test-image"
@@ -170,6 +176,8 @@ python __anonymous() {
         if imgtype == 'image':
             d.appendVarFlag('do_unpack', 'depends', ' ' + image + ':do_image_complete')
             d.appendVarFlag('do_rm_work_all', 'depends', ' ' + image + ':do_rm_work_all')
+        elif imgtype == 'none':
+            pass
         else:
             d.appendVarFlag('do_unpack', 'depends', ' ' + image + ':do_deploy')
 
@@ -271,6 +279,8 @@ def write_manifest(d):
             if not imgsource:
                 bb.fatal('Image type "file" requires [file] varflag to be set for slot %s' % slot)
             imgname = "%s.%s" % (imgsource, "img")
+        elif imgtype == 'none':
+            imgname = None
         else:
             bb.fatal('Unknown image type: %s' % imgtype)
 
@@ -290,8 +300,9 @@ def write_manifest(d):
                 imgoffset = '0'
 
         # Keep only the image name in case the image is in a $DEPLOY_DIR_IMAGE subdirectory
-        imgname = PurePath(imgname).name
-        manifest.write("filename=%s\n" % imgname)
+        if imgname:
+            imgname = PurePath(imgname).name
+            manifest.write("filename=%s\n" % imgname)
         if 'hooks' in slotflags:
             if not have_hookfile:
                 bb.warn("A hook is defined for slot %s, but RAUC_BUNDLE_HOOKS[file] is not defined" % slot)
@@ -302,8 +313,9 @@ def write_manifest(d):
             manifest.write("convert=%s\n" % slotflags.get('convert'))
         manifest.write("\n")
 
-        bundle_imgpath = "%s/%s" % (bundle_path, imgname)
-        bb.note("adding image to bundle dir: '%s'" % imgname)
+        if imgname:
+            bundle_imgpath = "%s/%s" % (bundle_path, imgname)
+            bb.note("adding image to bundle dir: '%s'" % imgname)
         searchpath = d.expand("${DEPLOY_DIR_IMAGE}/%s") % imgsource
         if os.path.isfile(searchpath):
             if imgtype == 'boot' and 'offset' in slotflags and imgoffset != '0':
