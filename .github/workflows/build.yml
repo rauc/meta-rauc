@@ -21,7 +21,7 @@ jobs:
     steps:
       - name: Install required packages
         run: |
-          sudo apt-get -q -y --no-install-recommends install diffstat python3-distutils
+          sudo apt-get -q -y --no-install-recommends install diffstat python3-setuptools
       - name: Checkout
         uses: actions/checkout@v4
         with:
