@@ -1,7 +1,7 @@
 DESCRIPTION = "RAUC update controller for host and target"
 HOMEPAGE = "https://github.com/rauc/rauc"
 LICENSE = "LGPL-2.1-or-later"
-LIC_FILES_CHKSUM = "file://COPYING;md5=4fbd65380cdd255951079008b364516c"
+LIC_FILES_CHKSUM = "file://COPYING;md5=4bf661c1e3793e55c8d1051bc5e0ae21"
 DEPENDS = "openssl glib-2.0 glib-2.0-native"
 
 inherit meson pkgconfig gettext
