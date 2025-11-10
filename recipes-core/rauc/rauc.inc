@@ -21,6 +21,7 @@ PACKAGECONFIG[network] = "-Dnetwork=true,-Dnetwork=false,curl"
 PACKAGECONFIG[json]    = "-Djson=enabled,-Djson=disabled,json-glib"
 PACKAGECONFIG[gpt]     = "-Dgpt=enabled,-Dgpt=disabled,util-linux"
 PACKAGECONFIG[composefs] = "-Dcomposefs=enabled,-Dcomposefs=disabled,composefs"
+PACKAGECONFIG[manpages] = "-Dmanpages=true,-Dmanpages=false,python3-sphinx-native python3-sphinx-rtd-theme-native"
 
 FILES:${PN}-dev += "\
   ${datadir}/dbus-1/interfaces/de.pengutronix.rauc.Installer.xml \
