@@ -26,13 +26,15 @@ jobs:
         uses: actions/checkout@v4
         with:
           path: meta-rauc
-      - name: Clone poky
-        run: git clone --shared --reference-if-able /srv/shared-git/poky.git -b master https://github.com/yoctoproject/poky.git
+      - name: Clone bitbake
+        run: git clone --shared --reference-if-able /srv/shared-git/bitbake.git -b master https://github.com/openembedded/bitbake.git
+      - name: Clone openembedded-core
+        run: git clone --shared --reference-if-able /srv/shared-git/openembedded-core.git -b master https://github.com/openembedded/openembedded-core.git
       - name: Clone meta-openembedded
         run: git clone --shared --reference-if-able /srv/shared-git/meta-openembedded.git -b master https://github.com/openembedded/meta-openembedded.git
       - name: Initialize build directory
         run: |
-          source poky/oe-init-build-env build
+          source openembedded-core/oe-init-build-env build
           bitbake-layers add-layer ../meta-rauc
           if [ -f ~/.yocto/auto.conf ]; then
             cp ~/.yocto/auto.conf conf/
@@ -46,19 +48,19 @@ jobs:
           echo 'DISTRO_FEATURES:remove = "alsa bluetooth usbgadget usbhost wifi nfs zeroconf pci 3g nfc x11 opengl ptest wayland vulkan"' >> conf/local.conf
       - name: Build rauc, rauc-native
         run: |
-          source poky/oe-init-build-env build
+          source openembedded-core/oe-init-build-env build
           bitbake rauc rauc-native
       - name: Build rauc-hawkbit-updater
         run: |
-          source poky/oe-init-build-env build
+          source openembedded-core/oe-init-build-env build
           bitbake rauc-hawkbit-updater
       - name: Build dt-utils
         run: |
-          source poky/oe-init-build-env build
+          source openembedded-core/oe-init-build-env build
           bitbake dt-utils
       - name: Build casync, casync-native
         run: |
-          source poky/oe-init-build-env build
+          source openembedded-core/oe-init-build-env build
           bitbake-layers add-layer ../meta-openembedded/meta-oe
           bitbake-layers add-layer ../meta-openembedded/meta-python
           bitbake-layers add-layer ../meta-openembedded/meta-networking
@@ -66,7 +68,7 @@ jobs:
           bitbake casync casync-native
       - name: Build rauc-hawkbit
         run: |
-          source poky/oe-init-build-env build
+          source openembedded-core/oe-init-build-env build
           bitbake-layers add-layer ../meta-openembedded/meta-python
           bitbake rauc-hawkbit
       - name: Cache Data
