@@ -40,6 +40,25 @@
 #   RAUC_SLOT_rootfs ?= "core-image-minimal"
 #   RAUC_SLOT_rootfs[rename] ?= "rootfs.ext4"
 #
+# RAUC also accepts image sections without an actual image file, e.g. for
+# 'install' hooks. These can be specified using the 'none' type:
+#   RAUC_SLOT_datafs ?= "dummy"
+#   RAUC_SLOT_datafs[type] ?= "none"
+#   RAUC_SLOT_datafs[hooks] ?= "install"
+#
+# To explicitly set the image 'type' in the manifest, use 'imagetype'.
+# When using this option, the filename extension can be chosen freely.
+#   RAUC_SLOT_rootfs ?= "core-image-minimal"
+#   RAUC_SLOT_rootfs[imagetype] ?= "ext4"
+#   RAUC_SLOT_rootfs[file] ?= "custom-rootfs.img"
+#
+#   RAUC_SLOT_appfs ?= "application-image"
+#   RAUC_SLOT_appfs[imagetype] ?= "vfat"
+#   RAUC_SLOT_appfs[file] ?= "apps.bin"
+#
+#   RAUC_SLOT_data ?= "empty-data-partition"
+#   RAUC_SLOT_data[imagetype] ?= "emptyfs"
+#
 # To generate an artifact image, use <repo>/<artifact> as the image name:
 #   RAUC_BUNDLE_SLOTS += "containers/test"
 #   RAUC_SLOT_containers/test ?= "container-test-image"
@@ -148,7 +167,7 @@ RAUC_CASYNC_BUNDLE ??= "0"
 RAUC_BUNDLE_FORMAT ??= ""
 RAUC_BUNDLE_FORMAT[doc] = "Specifies the bundle format to be used (plain/verity)."
 
-RAUC_VARFLAGS_SLOTS = "name type fstype file hooks adaptive rename offset depends convert"
+RAUC_VARFLAGS_SLOTS = "name type fstype imagetype file hooks adaptive rename offset depends convert"
 RAUC_VARFLAGS_HOOKS = "file hooks"
 
 # Create dependency list from images
@@ -177,6 +196,8 @@ python __anonymous() {
         if imgtype == 'image':
             d.appendVarFlag('do_unpack', 'depends', ' ' + image + ':do_image_complete')
             d.appendVarFlag('do_rm_work_all', 'depends', ' ' + image + ':do_rm_work_all')
+        elif imgtype == 'none':
+            pass
         else:
             d.appendVarFlag('do_unpack', 'depends', ' ' + image + ':do_deploy')
 
@@ -285,12 +306,33 @@ def write_manifest(d):
         slotname = slotflags.get('name', slot)
         manifest.write('[image.%s]\n' % slotname)
 
+        if 'hooks' in slotflags:
+            if not have_hookfile:
+                bb.warn("A hook is defined for slot %s, but RAUC_BUNDLE_HOOKS[file] is not defined" % slot)
+            manifest.write("hooks=%s\n" % slotflags.get('hooks'))
+        if 'adaptive' in slotflags:
+            manifest.write("adaptive=%s\n" % slotflags.get('adaptive'))
+        if 'convert' in slotflags:
+            manifest.write("convert=%s\n" % slotflags.get('convert'))
+
+        manifest_imagetype = slotflags.get('imagetype', None)
+        if manifest_imagetype:
+            manifest.write("type=%s\n" % manifest_imagetype)
+            if manifest_imagetype == "emptyfs":
+                continue
+        else:
+            bb.note('The image section does not have an explicit image type set for slot %s. RAUC will deduce the type from the file name extension.' % slot)
+
         imgtype = slotflags.get('type', 'image')
 
-        img_fstype = slotflags.get('fstype', d.getVar('RAUC_IMAGE_FSTYPE'))
-
-        if imgtype == 'image':
-            fallback = "%s%s%s.%s" % (d.getVar('RAUC_SLOT_%s' % slot), d.getVar('IMAGE_MACHINE_SUFFIX'), d.getVar('IMAGE_NAME_SUFFIX'), img_fstype)
+        if imgtype == 'none':
+            continue
+        elif imgtype == 'image':
+            fallback = "%s%s%s.%s" % (
+                        d.getVar('RAUC_SLOT_%s' % slot),
+                        d.getVar('IMAGE_MACHINE_SUFFIX'),
+                        d.getVar('IMAGE_NAME_SUFFIX'),
+                        slotflags.get('fstype', d.getVar('RAUC_IMAGE_FSTYPE')))
             imgname = imgsource = slotflags.get('file', fallback)
         elif imgtype == 'kernel':
             # TODO: Add image type support
@@ -329,14 +371,6 @@ def write_manifest(d):
         # Keep only the image name in case the image is in a $DEPLOY_DIR_IMAGE subdirectory
         imgname = PurePath(imgname).name
         manifest.write("filename=%s\n" % imgname)
-        if 'hooks' in slotflags:
-            if not have_hookfile:
-                bb.warn("A hook is defined for slot %s, but RAUC_BUNDLE_HOOKS[file] is not defined" % slot)
-            manifest.write("hooks=%s\n" % slotflags.get('hooks'))
-        if 'adaptive' in slotflags:
-            manifest.write("adaptive=%s\n" % slotflags.get('adaptive'))
-        if 'convert' in slotflags:
-            manifest.write("convert=%s\n" % slotflags.get('convert'))
         manifest.write("\n")
 
         bundle_imgpath = "%s/%s" % (bundle_path, imgname)
