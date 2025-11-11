@@ -284,6 +284,15 @@ def write_manifest(d):
         slotname = slotflags.get('name', slot)
         manifest.write('[image.%s]\n' % slotname)
 
+        if 'hooks' in slotflags:
+            if not have_hookfile:
+                bb.warn("A hook is defined for slot %s, but RAUC_BUNDLE_HOOKS[file] is not defined" % slot)
+            manifest.write("hooks=%s\n" % slotflags.get('hooks'))
+        if 'adaptive' in slotflags:
+            manifest.write("adaptive=%s\n" % slotflags.get('adaptive'))
+        if 'convert' in slotflags:
+            manifest.write("convert=%s\n" % slotflags.get('convert'))
+
         imgtype = slotflags.get('type', 'image')
 
         if imgtype == 'image':
@@ -330,14 +339,6 @@ def write_manifest(d):
         # Keep only the image name in case the image is in a $DEPLOY_DIR_IMAGE subdirectory
         imgname = PurePath(imgname).name
         manifest.write("filename=%s\n" % imgname)
-        if 'hooks' in slotflags:
-            if not have_hookfile:
-                bb.warn("A hook is defined for slot %s, but RAUC_BUNDLE_HOOKS[file] is not defined" % slot)
-            manifest.write("hooks=%s\n" % slotflags.get('hooks'))
-        if 'adaptive' in slotflags:
-            manifest.write("adaptive=%s\n" % slotflags.get('adaptive'))
-        if 'convert' in slotflags:
-            manifest.write("convert=%s\n" % slotflags.get('convert'))
         manifest.write("\n")
 
         bundle_imgpath = "%s/%s" % (bundle_path, imgname)
