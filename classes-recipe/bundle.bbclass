@@ -40,6 +40,12 @@
 #   RAUC_SLOT_rootfs ?= "core-image-minimal"
 #   RAUC_SLOT_rootfs[rename] ?= "rootfs.ext4"
 #
+# RAUC also accepts image sections without an actual image file, e.g. for
+# 'install' hooks. These can be specified using the 'none' type:
+#   RAUC_SLOT_datafs ?= "dummy"
+#   RAUC_SLOT_datafs[type] ?= "none"
+#   RAUC_SLOT_datafs[hooks] ?= "install"
+#
 # To generate an artifact image, use <repo>/<artifact> as the image name:
 #   RAUC_BUNDLE_SLOTS += "containers/test"
 #   RAUC_SLOT_containers/test ?= "container-test-image"
@@ -177,6 +183,8 @@ python __anonymous() {
         if imgtype == 'image':
             d.appendVarFlag('do_unpack', 'depends', ' ' + image + ':do_image_complete')
             d.appendVarFlag('do_rm_work_all', 'depends', ' ' + image + ':do_rm_work_all')
+        elif imgtype == 'none':
+            pass
         else:
             d.appendVarFlag('do_unpack', 'depends', ' ' + image + ':do_deploy')
 
@@ -296,7 +304,9 @@ def write_manifest(d):
 
         imgtype = slotflags.get('type', 'image')
 
-        if imgtype == 'image':
+        if imgtype == 'none':
+            continue
+        elif imgtype == 'image':
             fallback = "%s%s%s.%s" % (
                         d.getVar('RAUC_SLOT_%s' % slot),
                         d.getVar('IMAGE_MACHINE_SUFFIX'),
