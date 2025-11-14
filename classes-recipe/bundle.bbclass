@@ -153,7 +153,6 @@ RAUC_VARFLAGS_HOOKS = "file hooks"
 
 # Create dependency list from images
 python __anonymous() {
-    d.appendVarFlag('do_unpack', 'vardeps', ' RAUC_BUNDLE_HOOKS')
     for slot in (d.getVar('RAUC_BUNDLE_SLOTS') or "").split():
         slot_varflags = d.getVar('RAUC_VARFLAGS_SLOTS').split()
         slotflags = d.getVarFlags('RAUC_SLOT_%s' % slot, expand=slot_varflags) or {}
@@ -437,6 +436,7 @@ python do_configure() {
 }
 
 do_configure[cleandirs] = "${BUNDLE_DIR}"
+do_configure[vardeps] += "RAUC_BUNDLE_HOOKS[file] RAUC_BUNDLE_HOOKS[hooks]"
 
 BUNDLE_BASENAME ??= "${PN}"
 BUNDLE_BASENAME[doc] = "Specifies desired output base name of generated RAUC bundle."
