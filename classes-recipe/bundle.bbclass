@@ -45,6 +45,12 @@
 #   RAUC_SLOT_datafs[type] ?= "none"
 #   RAUC_SLOT_datafs[hooks] ?= "install"
 #
+# To explicitly set the image 'type' in the manifest, use 'imagetype'.
+# When using this option, the filename extension can be chosen freely.
+#   RAUC_SLOT_bootloader ?= "u-boot"
+#   RAUC_SLOT_bootloader[imagetype] ?= "raw"
+#   RAUC_SLOT_bootloader[file] ?= "u-boot.bin"
+#
 # To generate an artifact image, use <repo>/<artifact> as the image name:
 #   RAUC_BUNDLE_SLOTS += "containers/test"
 #   RAUC_SLOT_containers/test ?= "container-test-image"
@@ -169,7 +175,7 @@ RAUC_CASYNC_BUNDLE ??= "0"
 RAUC_BUNDLE_FORMAT ??= ""
 RAUC_BUNDLE_FORMAT[doc] = "Specifies the bundle format to be used (plain/verity/crypt)."
 
-RAUC_VARFLAGS_SLOTS = "name type fstype file hooks adaptive rename offset depends convert"
+RAUC_VARFLAGS_SLOTS = "name type fstype imagetype file hooks adaptive rename offset depends convert"
 RAUC_VARFLAGS_HOOKS = "file hooks"
 
 # Create dependency list from images
@@ -317,6 +323,10 @@ def write_manifest(d):
             manifest.write("adaptive=%s\n" % slotflags.get('adaptive'))
         if 'convert' in slotflags:
             manifest.write("convert=%s\n" % slotflags.get('convert'))
+
+        manifest_imagetype = slotflags.get('imagetype', None)
+        if manifest_imagetype:
+            manifest.write("type=%s\n" % manifest_imagetype)
 
         imgtype = slotflags.get('type', 'image')
 
