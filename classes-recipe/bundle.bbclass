@@ -164,7 +164,7 @@ python __anonymous() {
         image = d.getVar('RAUC_SLOT_%s' % slot)
 
         if not image:
-            bb.error("No image set for slot '%s'. Specify via 'RAUC_SLOT_%s = \"<recipe-name>\"'" % (slot, slot))
+            bb.fatal("No image set for slot '%s'. Specify via 'RAUC_SLOT_%s = \"<recipe-name>\"'" % (slot, slot))
             return
 
         d.appendVarFlag('do_unpack', 'vardeps', ' RAUC_SLOT_%s' % slot)
