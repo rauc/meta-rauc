@@ -5,7 +5,7 @@ LIC_FILES_CHKSUM = "file://LICENSE.LGPL2.1;md5=4fbd65380cdd255951079008b364516c"
 
 DEPENDS = "xz curl openssl acl zstd"
 
-SRCREV = "0efa7abffe5fffbde8c457d3c8fafbdde0bb6e4f"
+SRCREV = "b4b7e5606f785572b78a43626a27a45fe3df2fbd"
 PV = "2+git${SRCPV}"
 
 SRC_URI = " \
