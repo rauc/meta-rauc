@@ -13,7 +13,7 @@ SRC_URI = " \
     file://rauc-hawkbit.service \
 "
 
-PV = "0.2.0+git${SRCPV}"
+PV = "0.2.0+git"
 SRCREV = "47bebb4a011768817f13f7796ec1b4e67edaffc5"
 
 inherit setuptools3 systemd

@@ -6,7 +6,7 @@ LIC_FILES_CHKSUM = "file://LICENSE.LGPL2.1;md5=4fbd65380cdd255951079008b364516c"
 DEPENDS = "xz curl openssl acl zstd"
 
 SRCREV = "b4b7e5606f785572b78a43626a27a45fe3df2fbd"
-PV = "2+git${SRCPV}"
+PV = "2+git"
 
 SRC_URI = " \
     git://github.com/systemd/casync.git;protocol=https;branch=main \
