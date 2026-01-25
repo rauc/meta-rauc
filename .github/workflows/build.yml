@@ -66,11 +66,6 @@ jobs:
           bitbake-layers add-layer ../meta-openembedded/meta-networking
           bitbake-layers add-layer ../meta-openembedded/meta-filesystems
           bitbake casync casync-native
-      - name: Build rauc-hawkbit
-        run: |
-          source openembedded-core/oe-init-build-env build
-          bitbake-layers add-layer ../meta-openembedded/meta-python
-          bitbake rauc-hawkbit
       - name: Cache Data
         env:
           CACHE_KEY: ${{ secrets.YOCTO_CACHE_KEY }}
