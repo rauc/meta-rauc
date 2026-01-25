@@ -8,6 +8,8 @@ DEPENDS = "xz curl openssl acl zstd"
 SRCREV = "b4b7e5606f785572b78a43626a27a45fe3df2fbd"
 PV = "2+git"
 
+EXCLUDE_FROM_WORLD = "1"
+
 SRC_URI = " \
     git://github.com/systemd/casync.git;protocol=https;branch=main \
     "
