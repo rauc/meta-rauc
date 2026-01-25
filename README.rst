@@ -32,12 +32,6 @@ This layer depends on::
   layers: meta
   branch: master
 
-For rauc-hawkbit client::
-
-  URI: https://github.com/openembedded/meta-openembedded.git
-  layers: meta-python
-  branch: master
-
 For fuse-support in casync (the default)::
 
   URI: https://github.com/openembedded/meta-openembedded.git
@@ -145,21 +139,8 @@ the `rauc` package to your systems image recipe::
 IV. Building The RAUC hawkBit Clients
 =====================================
 
-This layer offers support for two clients that interface between RAUC and the
-hawkBit deployment server:
-
-* rauc-hawkbit (python implementation)
-* rauc-hawkbit-updater (C implementation)
-
-To use ``rauc-hawkbit`` as a standalone service add to your systems image
-recipe::
-
-    IMAGE_INSTALL:append = " rauc-hawkbit-service"
-
-To use it as a python library in your demo application instead, simply add to
-your recipe::
-
-    DEPENDS += "rauc-hawkbit"
+This layer offers support for ``rauc-hawkbit-updater``, a daemon that
+interfaces between RAUC and the hawkBit deployment server.
 
 To use ``rauc-hawkbit-updater`` in your system add to your image recipe::
 
