@@ -32,6 +32,10 @@ jobs:
         run: git clone --shared --reference-if-able /srv/shared-git/openembedded-core.git -b master https://github.com/openembedded/openembedded-core.git
       - name: Clone meta-openembedded
         run: git clone --shared --reference-if-able /srv/shared-git/meta-openembedded.git -b master https://github.com/openembedded/meta-openembedded.git
+      - name: Run yocto-check-layer
+        run: |
+          source openembedded-core/oe-init-build-env build
+          yocto-check-layer ../meta-rauc
       - name: Initialize build directory
         run: |
           source openembedded-core/oe-init-build-env build
