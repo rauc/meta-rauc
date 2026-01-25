@@ -27,11 +27,11 @@ jobs:
         with:
           path: meta-rauc
       - name: Clone bitbake
-        run: git clone --shared --reference-if-able /srv/shared-git/bitbake.git -b master https://github.com/openembedded/bitbake.git
+        run: git clone --shared --reference-if-able /srv/shared-git/bitbake.git -b 2.16 https://github.com/openembedded/bitbake.git
       - name: Clone openembedded-core
-        run: git clone --shared --reference-if-able /srv/shared-git/openembedded-core.git -b master https://github.com/openembedded/openembedded-core.git
+        run: git clone --shared --reference-if-able /srv/shared-git/openembedded-core.git -b whinlatter https://github.com/openembedded/openembedded-core.git
       - name: Clone meta-openembedded
-        run: git clone --shared --reference-if-able /srv/shared-git/meta-openembedded.git -b master https://github.com/openembedded/meta-openembedded.git
+        run: git clone --shared --reference-if-able /srv/shared-git/meta-openembedded.git -b whinlatter https://github.com/openembedded/meta-openembedded.git
       - name: Initialize build directory
         run: |
           source openembedded-core/oe-init-build-env build
