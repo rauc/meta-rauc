@@ -45,6 +45,14 @@
 #   RAUC_SLOT_datafs[type] ?= "none"
 #   RAUC_SLOT_datafs[hooks] ?= "install"
 #
+# To explicitly set the image 'type' in the manifest, use 'imagetype'.
+# When using this option, the filename extension can be chosen freely.
+#   RAUC_SLOT_bootloader ?= "u-boot"
+#   RAUC_SLOT_bootloader[imagetype] ?= "raw"
+#   RAUC_SLOT_bootloader[file] ?= "u-boot.bin"
+#
+#   RAUC_SLOT_data[imagetype] ?= "emptyfs"
+#
 # To generate an artifact image, use <repo>/<artifact> as the image name:
 #   RAUC_BUNDLE_SLOTS += "containers/test"
 #   RAUC_SLOT_containers/test ?= "container-test-image"
@@ -153,7 +161,7 @@ RAUC_CASYNC_BUNDLE ??= "0"
 RAUC_BUNDLE_FORMAT ??= ""
 RAUC_BUNDLE_FORMAT[doc] = "Specifies the bundle format to be used (plain/verity)."
 
-RAUC_VARFLAGS_SLOTS = "name type fstype file hooks adaptive rename offset depends convert"
+RAUC_VARFLAGS_SLOTS = "name type fstype imagetype file hooks adaptive rename offset depends convert"
 RAUC_VARFLAGS_HOOKS = "file hooks"
 
 # Create dependency list from images
@@ -161,6 +169,10 @@ python __anonymous() {
     for slot in (d.getVar('RAUC_BUNDLE_SLOTS') or "").split():
         slot_varflags = d.getVar('RAUC_VARFLAGS_SLOTS').split()
         slotflags = d.getVarFlags('RAUC_SLOT_%s' % slot, expand=slot_varflags) or {}
+
+        # emptyfs manifest image type doesn't support/require dependencies
+        if slotflags.get('imagetype') == 'emptyfs':
+            continue
 
         imgtype = slotflags.get('type')
         if not imgtype:
@@ -299,6 +311,13 @@ def write_manifest(d):
             manifest.write("adaptive=%s\n" % slotflags.get('adaptive'))
         if 'convert' in slotflags:
             manifest.write("convert=%s\n" % slotflags.get('convert'))
+
+        manifest_imagetype = slotflags.get('imagetype', None)
+        if manifest_imagetype:
+            manifest.write("type=%s\n" % manifest_imagetype)
+            # emptyfs image type can skip image file handling
+            if manifest_imagetype == "emptyfs":
+                continue
 
         imgtype = slotflags.get('type', 'image')
 
