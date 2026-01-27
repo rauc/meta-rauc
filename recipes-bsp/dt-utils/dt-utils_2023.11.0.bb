@@ -14,7 +14,7 @@ NOAUTOPACKAGEDEBUG = "1"
 
 PACKAGECONFIG ??= "barebox-state"
 
-PACKAGECONFIG[barebox-state] = "-Dbarebox-state=true,-Dbarebox-state=false"
+PACKAGECONFIG[barebox-state] = "-Dbarebox-state=true,-Dbarebox-state=false,,udev"
 
 FILES:${PN}-dbg = "${libdir}/.debug/"
 
