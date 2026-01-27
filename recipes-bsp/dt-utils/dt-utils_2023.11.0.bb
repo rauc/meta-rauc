@@ -12,6 +12,10 @@ inherit meson pkgconfig gettext
 
 NOAUTOPACKAGEDEBUG = "1"
 
+PACKAGECONFIG ??= "barebox-state"
+
+PACKAGECONFIG[barebox-state] = "-Dbarebox-state=true,-Dbarebox-state=false"
+
 FILES:${PN}-dbg = "${libdir}/.debug/"
 
 PACKAGES =+ "${PN}-barebox-state ${PN}-barebox-state-dbg"
