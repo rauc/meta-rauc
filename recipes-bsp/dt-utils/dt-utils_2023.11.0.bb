@@ -8,9 +8,13 @@ DEPENDS = "udev"
 SRC_URI = "http://www.pengutronix.de/software/dt-utils/download/${BPN}-${PV}.tar.xz"
 SRC_URI[sha256sum] = "d224d941c076c143f43d59cd7c6e1c522926064a31ac34a67720632ddecb6b53"
 
-inherit autotools pkgconfig gettext
+inherit meson pkgconfig gettext
 
 NOAUTOPACKAGEDEBUG = "1"
+
+PACKAGECONFIG ??= "barebox-state"
+
+PACKAGECONFIG[barebox-state] = "-Dbarebox-state=true,-Dbarebox-state=false,,udev"
 
 FILES:${PN}-dbg = "${libdir}/.debug/"
 
