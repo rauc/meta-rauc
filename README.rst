@@ -203,7 +203,7 @@ When using git, this can be done automatically with::
 
   git cherry-pick -xs <commit-ish>
 
-Note that backports will be acccepted for actively maintained `poky releases
+Note that backports will be accepted for actively maintained `poky releases
 <https://wiki.yoctoproject.org/wiki/Releases>`_ only!
 
 VIII. References
