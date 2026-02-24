@@ -149,7 +149,6 @@ INHIBIT_DEFAULT_DEPS = "1"
 RAUC_IMAGE_FSTYPE ??= "${@(d.getVar('IMAGE_FSTYPES').split() + [""])[0]}"
 RAUC_IMAGE_FSTYPE[doc] = "Specifies the default file name extension to expect for collecting images. Defaults to first element set in IMAGE_FSTYPES."
 
-do_fetch[cleandirs] = "${S}"
 do_patch[noexec] = "1"
 do_compile[noexec] = "1"
 do_install[noexec] = "1"
