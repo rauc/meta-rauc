@@ -5,9 +5,6 @@ set -xe
 ORG="Test Org"
 CA="rauc CA"
 
-# After the CRL expires, signatures cannot be verified anymore
-CRL="-crldays 5000"
-
 BASE="$(pwd)/openssl-ca"
 
 if [ -e $BASE ]; then
