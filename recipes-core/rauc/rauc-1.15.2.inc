@@ -1,5 +1,5 @@
 SRC_URI = "https://github.com/rauc/rauc/releases/download/v${PV}/rauc-${PV}.tar.xz"
 
-SRC_URI[sha256sum] = "603dafa5085b6b964c74d5f57a154a1489af2b415dd20c6ff1447815d02c094f"
+SRC_URI[sha256sum] = "127a24cde208c65b837ae978c695a00730f1094ee8b6c7d48cf58ef846eae340"
 
 UPSTREAM_CHECK_URI = "https://github.com/${BPN}/${BPN}/releases"
