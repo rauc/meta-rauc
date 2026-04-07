@@ -23,23 +23,16 @@ For a detailed description on steps necessary to integrate RAUC into your
 project, refer https://rauc.readthedocs.io/en/latest/integration.html.
 
 
-Dependencies
-============
+Layer Dependencies
+==================
 
-This layer depends on::
+This layer depends on:
 
-  URI: https://github.com/openembedded/bitbake.git
-  branch: master
+* `openembedded-core <https://github.com/openembedded/openembedded-core.git>`_
 
-  URI: https://github.com/openembedded/openembedded-core.git
-  layers: meta
-  branch: master
+To use the optional casync feature with FUSE, you will also need:
 
-For fuse-support in casync (the default)::
-
-  URI: https://github.com/openembedded/meta-openembedded.git
-  layers: meta-filesystems
-  branch: master
+* ``meta-filesystems`` from `meta-openembedded <https://github.com/openembedded/meta-openembedded.git>`_.
 
 Patches
 =======
