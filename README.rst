@@ -97,7 +97,7 @@ III. Adding the RAUC Update Service to Your Device
 To prepare your device for using RAUC as its update handler,
 you have to follow at least the following steps:
 
-1. Add `rauc` to `DISTRO_FEATURES` in your distro (or local) config::
+1. Add ``rauc`` to ``DISTRO_FEATURES`` in your distro (or local) config::
 
      DISTRO_FEATURES += "rauc"
 
@@ -109,7 +109,7 @@ you have to follow at least the following steps:
      FILESEXTRAPATHS:prepend := "${THISDIR}/files:"
 
 3. Create a bundle recipe for your device by adding a recipe
-   that inherits the `bundle` class and adds all desired
+   that inherits the ``bundle`` class and adds all desired
    configuration::
 
      inherit bundle
@@ -131,7 +131,7 @@ you have to follow at least the following steps:
      bitbake my-bundle-recipe
 
 Note: If you do not use packagegroup-base, you als need to manually add
-the `rauc` package to your systems image recipe::
+the ``rauc`` package to your systems image recipe::
 
      IMAGE_INSTALL:append = " rauc"
 
