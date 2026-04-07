@@ -22,13 +22,15 @@ do_install () {
         if ! grep -q "^[^#]" ${UNPACKDIR}/system.conf; then
                 bbwarn "Please overwrite example system.conf with a project specific one!"
         fi
-        install -d ${D}${sysconfdir}/rauc
-        install -m 0644 ${UNPACKDIR}/system.conf ${D}${sysconfdir}/rauc/
+        install -d ${D}${nonarch_libdir}/rauc
+        install -m 0644 ${UNPACKDIR}/system.conf ${D}${nonarch_libdir}/rauc/
 
         # Warn if CA file was not overwritten
         if ! grep -q "^[^#]" ${UNPACKDIR}/${RAUC_KEYRING_FILE}; then
                 bbwarn "Please overwrite example ca.cert.pem with a project specific one, or set the RAUC_KEYRING_FILE variable with your file!"
         fi
-        install -d ${D}${sysconfdir}/rauc
-        install -m 0644 ${UNPACKDIR}/${RAUC_KEYRING_FILE} ${D}${sysconfdir}/rauc/
+        install -d ${D}${nonarch_libdir}/rauc
+        install -m 0644 ${UNPACKDIR}/${RAUC_KEYRING_FILE} ${D}${nonarch_libdir}/rauc/
 }
+
+FILES:${PN} += "${nonarch_libdir}/rauc"

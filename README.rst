@@ -37,6 +37,12 @@ To use the optional casync feature with FUSE, you will also need:
 Migration Notes
 ===============
 
+Since **wrynose**, the ``rauc-conf`` recipe installs the ``system.conf`` and
+keyring file into ``/usr/lib/rauc`` to align with the 'hermetic ``/usr/``'
+policy followed by other OE components (like systemd).
+If you rely on the exact path where the ``system.conf`` is installed, you will
+need to adjust your integration.
+
 Since **scarthgap**, the platform configuration (system.conf, keyring, etc.) was
 moved to a separate ``rauc-conf.bb`` recipe to allow building the rauc package
 with ``TUNE_PKGARCH`` and have a clearer separation between the binary and the
@@ -63,7 +69,7 @@ at least the following steps are required:
 
      FILESEXTRAPATHS:prepend := "${THISDIR}/files:"
 
-   The ``rauc-conf`` recipe will install these files into ``/etc/rauc/`` by
+   The ``rauc-conf`` recipe will install these files into ``/usr/lib/rauc/`` by
    default.
 
    For information on how to write a proper RAUC system configuration, please
