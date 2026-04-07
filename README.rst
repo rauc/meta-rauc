@@ -58,27 +58,8 @@ configuration-specific adaptions from your ``rauc_%.bbappend`` to a
 ``rauc-conf.bbappend`` file.
 
 
-I. Adding the rauc Layer to Your Build
-======================================
-
-In order to use this layer, you need to make the build system aware of
-it.
-
-Assuming the rauc layer exists at the top-level of your
-yocto build tree, you can add it to the build system by adding the
-location of the rauc layer to bblayers.conf, along with any
-other layers needed. e.g.::
-
-  BBLAYERS ?= " \
-    /path/to/yocto/meta \
-    /path/to/yocto/meta-poky \
-    /path/to/yocto/meta-yocto-bsp \
-    /path/to/yocto/meta-rauc \
-    "
-
-
-II. Building and Using RAUC Host Tool
-=====================================
+Building and Using RAUC Host Tool
+=================================
 
 If you intend to build and use RAUC as a host tool from your BSP, e.g. for
 calling ``rauc info`` on your built bundle, simply run::
@@ -91,8 +72,8 @@ If you need to execute the ``casync`` host tool manually, you can do this by run
   bitbake casync-native -caddto_recipe_sysroot
   oe-run-native casync-native casync --help
 
-III. Adding the RAUC Update Service to Your Device
-==================================================
+Adding the RAUC Update Service to Your Device
+=============================================
 
 To prepare your device for using RAUC as its update handler,
 at least the following steps are required:
@@ -136,8 +117,8 @@ the ``rauc`` package to your systems image recipe::
      IMAGE_INSTALL:append = " rauc"
 
 
-IV. Building The RAUC hawkBit Client
-====================================
+Building The RAUC hawkBit Client
+================================
 
 This layer offers support for ``rauc-hawkbit-updater``, a daemon that
 interfaces between RAUC and the hawkBit deployment server.
@@ -146,8 +127,8 @@ To use ``rauc-hawkbit-updater`` in your system add to your image recipe::
 
     IMAGE_INSTALL:append = " rauc-hawkbit-updater"
 
-V. Configure Custom Kernel
-==========================
+Configure Custom Kernel
+=======================
 
 To use RAUC on your system, the kernel must support SquashFS and loop
 mounts. For the standard yocto kernel, the meta-rauc layer provides a kernel
@@ -157,8 +138,8 @@ If you build your own kernel with a full custom ``defconfig`` file, you have to
 make sure that the options in ``recipes-kernel/linux/linux-yocto/rauc.cfg`` are
 enabled in your configuration, too.
 
-VI. Build RAUC Development Version
-==================================
+Build RAUC Development Version
+==============================
 
 Beside the standard release version recipes, the _git variants of RAUC recipes
 allow to build RAUC from a master branch revision that is newer than the latest
@@ -175,8 +156,8 @@ in your local.conf. Note that this has the same effect as setting
 ``DEFAULT_PREFERENCE = "1"`` for each recipe (target/native/nativesdk)
 individually.
 
-VII. Contributing
-=================
+Contributing
+============
 
 To report bugs, file a new `issue <https://github.com/rauc/meta-rauc/issues>`_
 on GitHub.
@@ -206,8 +187,8 @@ When using git, this can be done automatically with::
 Note that backports will be accepted for actively maintained `poky releases
 <https://wiki.yoctoproject.org/wiki/Releases>`_ only!
 
-VIII. References
-================
+References
+==========
 
 .. [1] http://rauc.readthedocs.io/en/latest/
 
