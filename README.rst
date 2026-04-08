@@ -95,7 +95,7 @@ III. Adding the RAUC Update Service to Your Device
 ==================================================
 
 To prepare your device for using RAUC as its update handler,
-you have to follow at least the following steps:
+at least the following steps are required:
 
 1. Add ``rauc`` to ``DISTRO_FEATURES`` in your distro (or local) config::
 
@@ -130,7 +130,7 @@ you have to follow at least the following steps:
 
      bitbake my-bundle-recipe
 
-Note: If you do not use packagegroup-base, you als need to manually add
+Note: If you do not use packagegroup-base, you also need to manually add
 the ``rauc`` package to your systems image recipe::
 
      IMAGE_INSTALL:append = " rauc"
@@ -149,7 +149,7 @@ To use ``rauc-hawkbit-updater`` in your system add to your image recipe::
 V. Configure Custom Kernel
 ==========================
 
-In order to use RAUC on your system, the kernel must support SquashFS and loop
+To use RAUC on your system, the kernel must support SquashFS and loop
 mounts. For the standard yocto kernel, the meta-rauc layer provides a kernel
 configuration fragment that enables the config options required for this.
 
@@ -181,7 +181,7 @@ VII. Contributing
 To report bugs, file a new `issue <https://github.com/rauc/meta-rauc/issues>`_
 on GitHub.
 
-For fixing bugs, bumping recipes or adding new features, open a `pull request
+For fixing bugs, bumping recipes, or adding new features, open a `pull request
 <https://github.com/rauc/meta-rauc/pulls>`_ on GitHub.
 
 Add a ``Signed-off-by`` line to your commits according to the
