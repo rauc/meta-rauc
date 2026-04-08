@@ -89,6 +89,8 @@ at least the following steps are required:
 
      inherit bundle
 
+     RAUC_BUNDLE_FORMAT = "verity"
+
      RAUC_BUNDLE_SLOTS = "rootfs"
      RAUC_SLOT_rootfs = "my-rootfs-recipe"
 
