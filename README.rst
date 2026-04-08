@@ -168,19 +168,19 @@ Add a ``Signed-off-by`` line to your commits according to the
 Backporting
 -----------
 
-For backporting changes to a stable or LTS branch, two options exist:
+For backporting fixes or version bumps to a stable or LTS branch, two options exist:
 
 a) drop a backport request in the original pull request
 b) backport on your own and create a new pull request
 
-When doing backports on your own, make sure to include a cherry-pick note and
+When doing backports on your own, make sure to include a cherry-pick/backport note and
 the original commit-ish in a line below the original Signed-off-by and add your
 own Signed-off-by below.
 When using git, this can be done automatically with::
 
   git cherry-pick -xs <commit-ish>
 
-Note that backports will be accepted for actively maintained `poky releases
+Note that backports will be accepted for `actively maintained Yocto releases
 <https://wiki.yoctoproject.org/wiki/Releases>`_ only!
 
 References
