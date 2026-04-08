@@ -155,6 +155,14 @@ in your local.conf. Note that this has the same effect as setting
 ``DEFAULT_PREFERENCE = "1"`` for each recipe (target/native/nativesdk)
 individually.
 
+Release Cycle
+=============
+
+We follow the Yocto Project release methodology, schedule, and stable/LTS
+support timelines.
+See https://docs.yoctoproject.org/ref-manual/release-process.html for more
+information.
+
 Contributing
 ============
 
