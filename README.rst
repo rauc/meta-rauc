@@ -136,8 +136,8 @@ the ``rauc`` package to your systems image recipe::
      IMAGE_INSTALL:append = " rauc"
 
 
-IV. Building The RAUC hawkBit Clients
-=====================================
+IV. Building The RAUC hawkBit Client
+====================================
 
 This layer offers support for ``rauc-hawkbit-updater``, a daemon that
 interfaces between RAUC and the hawkBit deployment server.
