@@ -71,12 +71,17 @@ at least the following steps are required:
 
      DISTRO_FEATURES += "rauc"
 
-2. Add a ``rauc-conf.bbappend`` in your device-specific (BSP) layer
-   that installs your RAUC system configuration file under
-   ``/etc/rauc/system.conf``. For information on how to write the RAUC
-   update file, please refer to the RAUC user documentation [1]_::
+2. Provide a RAUC system configuration (and keyring) in your BSP layer by
+   creating a ``rauc-conf.bbappend`` that fetches your custom ``system.conf``
+   (and keyring) from your layer::
 
      FILESEXTRAPATHS:prepend := "${THISDIR}/files:"
+
+   The ``rauc-conf`` recipe will install these files into ``/etc/rauc/`` by
+   default.
+
+   For information on how to write a proper RAUC system configuration, please
+   refer to the RAUC user documentation [1]_.
 
 3. Create a bundle recipe for your device by adding a recipe
    that inherits the ``bundle`` class and adds all desired
