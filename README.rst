@@ -12,10 +12,13 @@
 
 |MIT| |Matrix|
 
-The meta-rauc layer provides support for integrating the RAUC update tool
-into your device.
+The meta-rauc Yocto/OpenEmbedded layer provides integration for
+`RAUC <https://github.com/rauc/rauc>`_, a robust and secure **update framework
+for embedded Linux systems**.
 
-Please see the corresponding sections below for more information.
+This layer integrates RAUC into Yocto builds for both **target usage (update
+client)** and **host usage (bundle creation)**.
+
 For a detailed description on steps necessary to integrate RAUC into your
 project, refer https://rauc.readthedocs.io/en/latest/integration.html.
 
