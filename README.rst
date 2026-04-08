@@ -34,13 +34,6 @@ To use the optional casync feature with FUSE, you will also need:
 
 * ``meta-filesystems`` from `meta-openembedded <https://github.com/openembedded/meta-openembedded.git>`_.
 
-Patches
-=======
-
-Please submit patches via GitHub pull request on https://github.com/rauc/meta-rauc
-
-Maintainer: Enrico Joerns <ejo@pengutronix.de>
-
 Migration Notes
 ===============
 
@@ -182,6 +175,11 @@ When using git, this can be done automatically with::
 
 Note that backports will be accepted for `actively maintained Yocto releases
 <https://wiki.yoctoproject.org/wiki/Releases>`_ only!
+
+Maintainer(s)
+-------------
+
+* Enrico Joerns <ejo@pengutronix.de>
 
 References
 ==========
