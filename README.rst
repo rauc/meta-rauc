@@ -69,7 +69,15 @@ at least the following steps are required:
    For information on how to write a proper RAUC system configuration, please
    refer to the RAUC user documentation [1]_.
 
-3. Create a bundle recipe for your device by adding a recipe
+Note: If you do not use packagegroup-base, you also need to manually add
+the ``rauc`` package to your systems image recipe::
+
+     IMAGE_INSTALL:append = " rauc"
+
+Building a RAUC Update Bundle
+=============================
+
+1. Create a bundle recipe for your device by adding a recipe
    that inherits the ``bundle`` class and adds all desired
    configuration::
 
@@ -89,14 +97,9 @@ at least the following steps are required:
    For a more detailed explanation on the required and available variables,
    read the notes in the bundle.bbclass file.
 
-4. Build a bundle and the rootfs for your device::
+2. Build a bundle and the rootfs for your device::
 
      bitbake my-bundle-recipe
-
-Note: If you do not use packagegroup-base, you also need to manually add
-the ``rauc`` package to your systems image recipe::
-
-     IMAGE_INSTALL:append = " rauc"
 
 
 Building and Using the RAUC Host Tool
