@@ -47,16 +47,16 @@ configuration-specific adaptions from your ``rauc_%.bbappend`` to a
 ``rauc-conf.bbappend`` file.
 
 
-Building and Using RAUC Host Tool
-=================================
+Building and Using the RAUC Host Tool
+=====================================
 
-If you intend to build and use RAUC as a host tool from your BSP, e.g. for
-calling ``rauc info`` on your built bundle, simply run::
+To manually build and use RAUC as a host tool from your BSP (e.g. for
+calling ``rauc info`` on your built bundle), run::
 
   bitbake rauc-native -caddto_recipe_sysroot
   oe-run-native rauc-native rauc info --keyring=/path/to/keyring.pem tmp/deploy/images/<machine>/<bundle-name>.raucb
 
-If you need to execute the ``casync`` host tool manually, you can do this by running::
+To manually build and use the ``casync`` host tool, run::
 
   bitbake casync-native -caddto_recipe_sysroot
   oe-run-native casync-native casync --help
