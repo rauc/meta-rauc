@@ -47,20 +47,6 @@ configuration-specific adaptions from your ``rauc_%.bbappend`` to a
 ``rauc-conf.bbappend`` file.
 
 
-Building and Using the RAUC Host Tool
-=====================================
-
-To manually build and use RAUC as a host tool from your BSP (e.g. for
-calling ``rauc info`` on your built bundle), run::
-
-  bitbake rauc-native -caddto_recipe_sysroot
-  oe-run-native rauc-native rauc info --keyring=/path/to/keyring.pem tmp/deploy/images/<machine>/<bundle-name>.raucb
-
-To manually build and use the ``casync`` host tool, run::
-
-  bitbake casync-native -caddto_recipe_sysroot
-  oe-run-native casync-native casync --help
-
 Adding the RAUC Update Service to Your Device
 =============================================
 
@@ -112,6 +98,20 @@ the ``rauc`` package to your systems image recipe::
 
      IMAGE_INSTALL:append = " rauc"
 
+
+Building and Using the RAUC Host Tool
+=====================================
+
+To manually build and use RAUC as a host tool from your BSP (e.g. for
+calling ``rauc info`` on your built bundle), run::
+
+  bitbake rauc-native -caddto_recipe_sysroot
+  oe-run-native rauc-native rauc info --keyring=/path/to/keyring.pem tmp/deploy/images/<machine>/<bundle-name>.raucb
+
+To manually build and use the ``casync`` host tool, run::
+
+  bitbake casync-native -caddto_recipe_sysroot
+  oe-run-native casync-native casync --help
 
 Building The RAUC hawkBit Client
 ================================
