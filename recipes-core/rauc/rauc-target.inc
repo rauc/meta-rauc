@@ -63,4 +63,4 @@ FILES:${PN}-service = "\
   ${nonarch_libdir}/systemd/catalog \
   "
 
-PACKAGECONFIG ??= "service network streaming json nocreate gpt"
+PACKAGECONFIG ??= "service network streaming json nocreate gpt engine"
