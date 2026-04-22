@@ -475,7 +475,7 @@ python do_configure() {
         # strip leading and trailing slashes to prevent installing into wrong location
         file = file.rstrip('/').lstrip('/')
 
-        if file.find("/") != -1:
+        if "/" in file:
             destdir = file.rsplit("/", 1)[0] + '/'
             bb.utils.mkdirhier("%s/%s" % (bundledir, destdir))
         bb.note("Unpacking %s to %s/" % (file, bundledir))
