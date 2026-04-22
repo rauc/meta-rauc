@@ -466,7 +466,6 @@ python do_configure() {
 
     for file in (d.getVar('RAUC_BUNDLE_EXTRA_FILES') or "").split():
         bundledir = d.getVar('BUNDLE_DIR')
-        destpath = d.expand("${BUNDLE_DIR}/%s") % file
 
         searchpath = try_searchpath(file, d)
         if not searchpath:
