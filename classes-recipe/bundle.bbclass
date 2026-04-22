@@ -472,7 +472,7 @@ python do_configure() {
             bb.fatal("extra file '%s' neither found in workdir nor in deploy dir!" % file)
 
         destdir = '.'
-        # strip leading and trailing slashes to prevent installting into wrong location
+        # strip leading and trailing slashes to prevent installing into wrong location
         file = file.rstrip('/').lstrip('/')
 
         if file.find("/") != -1:
