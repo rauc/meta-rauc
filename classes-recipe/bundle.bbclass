@@ -479,7 +479,7 @@ python do_configure() {
             destdir = file.rsplit("/", 1)[0] + '/'
             bb.utils.mkdirhier("%s/%s" % (bundledir, destdir))
         bb.note("Unpacking %s to %s/" % (file, bundledir))
-        ret = subprocess.call('cp -fpPRH "%s" "%s"' % (searchpath, destdir), shell=True, cwd=bundledir)
+        subprocess.check_call('cp -fpPRH "%s" "%s"' % (searchpath, destdir), shell=True, cwd=bundledir)
 }
 
 do_configure[cleandirs] = "${BUNDLE_DIR}"
