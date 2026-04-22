@@ -469,7 +469,7 @@ python do_configure() {
 
         searchpath = try_searchpath(file, d)
         if not searchpath:
-            bb.error("extra file '%s' neither found in workdir nor in deploy dir!" % file)
+            bb.fatal("extra file '%s' neither found in workdir nor in deploy dir!" % file)
 
         destdir = '.'
         # strip leading and trailing slashes to prevent installting into wrong location
