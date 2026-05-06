@@ -1,34 +1,37 @@
-# Class for creating rauc bundles
+# Class for creating RAUC bundles
 #
-# Description:
-# 
-# You have to set the slot images in your recipe file following this example:
+# See https://rauc.readthedocs.io/en/latest/integration.html for general
+# information on how to integrate RAUC into your platform.
+#
+# An example bundle recipe can look as follows:
+#
+#   inherit bundle
+#   [...]
 #
 #   RAUC_BUNDLE_COMPATIBLE ?= "My Super Product"
-#   RAUC_BUNDLE_VERSION ?= "v2015-06-07-1"
 #
-#   SRC_URI += "file://hook.sh"
+#   RAUC_BUNDLE_FORMAT = "verity"
 #
-#   RAUC_BUNDLE_HOOKS[file] ?= "hook.sh"
-#   RAUC_BUNDLE_HOOKS[hooks] ?= "install-check"
-#
-#   RAUC_BUNDLE_SLOTS ?= "rootfs kernel dtb bootloader"
+#   RAUC_BUNDLE_SLOTS ?= "bootloader kernel rootfs"
 #   
 #   RAUC_SLOT_rootfs ?= "core-image-minimal"
-#   RAUC_SLOT_rootfs[fstype] = "ext4"
-#   RAUC_SLOT_rootfs[hooks] ?= "pre-install;post-install"
-#   RAUC_SLOT_rootfs[adaptive] ?= "block-hash-index"
 #   
 #   RAUC_SLOT_kernel ?= "linux-yocto"
 #   RAUC_SLOT_kernel[type] ?= "kernel"
 #   
 #   RAUC_SLOT_bootloader ?= "barebox"
 #   RAUC_SLOT_bootloader[type] ?= "boot"
-#   RAUC_SLOT_bootloader[file] ?= "barebox.img"
 #
-#   RAUC_SLOT_dtb ?= linux-yocto
-#   RAUC_SLOT_dtb[type] ?= "file"
-#   RAUC_SLOT_dtb[file] ?= "${MACHINE}.dtb"
+# Additional bundle information can be set using 'RAUC_BUNDLE_COMPATIBLE',
+# 'RAUC_BUNDLE_VERSION', 'RAUC_BUNDLE_DESCRIPTION', and 'RAUC_BUNDLE_BUILD'.
+# See https://rauc.readthedocs.io/en/latest/reference.html#update-section
+# for the meaning of the individual fields.
+#
+# With 'RAUC_BUNDLE_SLOTS' you list the slot classes the bundle should contain
+# an image for.
+# With the RAUC_SLOT_<slotclass> entries, you specify which recipe provides the
+# file/image. Additional configuration can be done using varflags like 'name',
+# 'type', 'imagetype', 'file', or 'hooks'.
 #
 # To use a different name for the image section in the bundle manifest (e.g. to
 # distinguish slot variants), use the 'name' varflag.
