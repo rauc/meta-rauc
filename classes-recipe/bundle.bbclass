@@ -30,7 +30,8 @@
 #   RAUC_SLOT_dtb[type] ?= "file"
 #   RAUC_SLOT_dtb[file] ?= "${MACHINE}.dtb"
 #
-# To use a different image name, e.g. for variants
+# To use a different name for the image section in the bundle manifest (e.g. to
+# distinguish slot variants), use the 'name' varflag.
 #   RAUC_SLOT_dtb ?= linux-yocto
 #   RAUC_SLOT_dtb[name] ?= "dtb.my,compatible"
 #   RAUC_SLOT_dtb[type] ?= "file"
