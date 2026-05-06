@@ -36,7 +36,8 @@
 #   RAUC_SLOT_dtb[type] ?= "file"
 #   RAUC_SLOT_dtb[file] ?= "${MACHINE}-variant1.dtb"
 #
-# To override the file name used in the bundle use 'rename'
+# To include the slot image under a different file name in the bundle, use the
+# 'rename' varflag:
 #   RAUC_SLOT_rootfs ?= "core-image-minimal"
 #   RAUC_SLOT_rootfs[rename] ?= "rootfs.ext4"
 #
