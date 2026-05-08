@@ -466,21 +466,20 @@ python do_configure() {
 
     for file in (d.getVar('RAUC_BUNDLE_EXTRA_FILES') or "").split():
         bundledir = d.getVar('BUNDLE_DIR')
-        destpath = d.expand("${BUNDLE_DIR}/%s") % file
 
         searchpath = try_searchpath(file, d)
         if not searchpath:
-            bb.error("extra file '%s' neither found in workdir nor in deploy dir!" % file)
+            bb.fatal("extra file '%s' neither found in workdir nor in deploy dir!" % file)
 
         destdir = '.'
-        # strip leading and trailing slashes to prevent installting into wrong location
+        # strip leading and trailing slashes to prevent installing into wrong location
         file = file.rstrip('/').lstrip('/')
 
-        if file.find("/") != -1:
+        if "/" in file:
             destdir = file.rsplit("/", 1)[0] + '/'
             bb.utils.mkdirhier("%s/%s" % (bundledir, destdir))
         bb.note("Unpacking %s to %s/" % (file, bundledir))
-        ret = subprocess.call('cp -fpPRH "%s" "%s"' % (searchpath, destdir), shell=True, cwd=bundledir)
+        subprocess.check_call('cp -fpPRH "%s" "%s"' % (searchpath, destdir), shell=True, cwd=bundledir)
 }
 
 do_configure[cleandirs] = "${BUNDLE_DIR}"
