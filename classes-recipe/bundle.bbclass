@@ -33,6 +33,20 @@
 # file/image. Additional configuration can be done using varflags like 'name',
 # 'type', 'imagetype', 'file', or 'hooks'.
 #
+# To use a hook script, add it to the SRC_URI and let RAUC_BUNDLE_HOOKS point
+# to it:
+#
+#   SRC_URI += "file://hook.sh"
+#   RAUC_BUNDLE_HOOKS[file] ?= "hook.sh"
+#
+# For (global) install hooks, use the RAUC_BUNDLE_HOOKS 'hooks' varflag:
+#
+#   RAUC_BUNDLE_HOOKS[hooks] ?= "install-check"
+#
+# For slot hooks, use the 'hooks' varflag of the corresponding slot. E.g.:
+#
+#   RAUC_SLOT_rootfs[hooks] ?= "pre-install;post-install"
+#
 # To use a different name for the image section in the bundle manifest (e.g. to
 # distinguish slot variants), use the 'name' varflag.
 #   RAUC_SLOT_dtb ?= linux-yocto
