@@ -12,6 +12,9 @@ jobs:
     name: Schedule Builds
     runs-on: ubuntu-latest
     if: ${{ github.event_name == 'workflow_dispatch' || vars.SCHEDULE_BUILDS }}
+    permissions:
+      # needed for triggering other workflows
+      actions: write
     env:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     steps:
