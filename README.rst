@@ -4,11 +4,9 @@
    * - master
      - whinlatter
      - scarthgap
-     - kirkstone
    * - |gh_master|
      - |gh_whinlatter|
      - |gh_scarthgap|
-     - |gh_kirkstone|
 
 |MIT| |Matrix|
 
@@ -213,8 +211,6 @@ References
 
 .. |MIT| image:: https://img.shields.io/badge/license-MIT-blue.svg
    :target: https://raw.githubusercontent.com/rauc/meta-rauc/master/COPYING.MIT
-.. |gh_kirkstone| image:: https://github.com/rauc/meta-rauc/actions/workflows/build.yml/badge.svg?branch=kirkstone&event=workflow_dispatch
-   :target: https://github.com/rauc/meta-rauc/actions?query=event%3Aworkflow_dispatch+branch%3Akirkstone++
 .. |gh_scarthgap| image:: https://github.com/rauc/meta-rauc/actions/workflows/build.yml/badge.svg?branch=scarthgap&event=workflow_dispatch
    :target: https://github.com/rauc/meta-rauc/actions?query=event%3Aworkflow_dispatch+branch%3Ascarthgap++
 .. |gh_whinlatter| image:: https://github.com/rauc/meta-rauc/actions/workflows/build.yml/badge.svg?branch=whinlatter&event=workflow_dispatch
