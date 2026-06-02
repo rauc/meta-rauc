@@ -203,15 +203,14 @@ python __anonymous() {
         depends = slotflags.get('depends')
         if depends:
             d.appendVarFlag('do_unpack', 'depends', ' ' + depends)
-            continue
-
-        if imgtype == 'image':
-            d.appendVarFlag('do_unpack', 'depends', ' ' + image + ':do_image_complete')
-            d.appendVarFlag('do_rm_work_all', 'depends', ' ' + image + ':do_rm_work_all')
-        elif imgtype == 'none':
-            pass
         else:
-            d.appendVarFlag('do_unpack', 'depends', ' ' + image + ':do_deploy')
+            if imgtype == 'image':
+                d.appendVarFlag('do_unpack', 'depends', ' ' + image + ':do_image_complete')
+                d.appendVarFlag('do_rm_work_all', 'depends', ' ' + image + ':do_rm_work_all')
+            elif imgtype == 'none':
+                pass
+            else:
+                d.appendVarFlag('do_unpack', 'depends', ' ' + image + ':do_deploy')
 
         extension = slotflags.get('unpack')
         if extension:
