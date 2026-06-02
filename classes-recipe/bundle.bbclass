@@ -64,6 +64,12 @@
 # If the offset is negative, bytes will not be added, but removed.
 #   RAUC_SLOT_bootloader[offset] ?= "0"
 #
+# For most cases, the class will automatically add dependencies to recipes
+# providing the slot content. For cases where the default mechanism fails, you
+# can use the 'depends' varflag to add custom dependencies:
+#
+#   RAUC_SLOT_custom[depends] = "firmware-image:do_specific_task"
+#
 # To unpack before writing the image in the bundle, use 'unpack'. Possible
 # values are 'bzip2', 'gzip', 'xz' and 'zst'. 'unpack' requires 'file' to be set
 # and is not compatible with 'offset'.
