@@ -29,6 +29,3 @@ jobs:
 
       - name: Trigger scarthgap build
         run: gh workflow run build --ref scarthgap
-
-      - name: Trigger kirkstone build
-        run: gh workflow run build --ref kirkstone
