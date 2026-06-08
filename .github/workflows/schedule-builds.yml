@@ -24,8 +24,8 @@ jobs:
       - name: Trigger master build
         run: gh workflow run build --ref master
 
-      - name: Trigger whinlatter build
-        run: gh workflow run build --ref whinlatter
+      - name: Trigger wrynose build
+        run: gh workflow run build --ref wrynose
 
       - name: Trigger scarthgap build
         run: gh workflow run build --ref scarthgap
