@@ -2,10 +2,10 @@
    :header-rows: 1
 
    * - master
-     - whinlatter
+     - wrynose
      - scarthgap
    * - |gh_master|
-     - |gh_whinlatter|
+     - |gh_wrynose|
      - |gh_scarthgap|
 
 |MIT| |Matrix|
@@ -213,8 +213,8 @@ References
    :target: https://raw.githubusercontent.com/rauc/meta-rauc/master/COPYING.MIT
 .. |gh_scarthgap| image:: https://github.com/rauc/meta-rauc/actions/workflows/build.yml/badge.svg?branch=scarthgap&event=workflow_dispatch
    :target: https://github.com/rauc/meta-rauc/actions?query=event%3Aworkflow_dispatch+branch%3Ascarthgap++
-.. |gh_whinlatter| image:: https://github.com/rauc/meta-rauc/actions/workflows/build.yml/badge.svg?branch=whinlatter&event=workflow_dispatch
-   :target: https://github.com/rauc/meta-rauc/actions?query=event%3Aworkflow_dispatch+branch%3Awhinlatter++
+.. |gh_wrynose| image:: https://github.com/rauc/meta-rauc/actions/workflows/build.yml/badge.svg?branch=wrynose&event=workflow_dispatch
+   :target: https://github.com/rauc/meta-rauc/actions?query=event%3Aworkflow_dispatch+branch%wrynose++
 .. |gh_master| image:: https://github.com/rauc/meta-rauc/actions/workflows/build.yml/badge.svg?branch=master&event=workflow_dispatch
    :target: https://github.com/rauc/meta-rauc/actions?query=event%3Aworkflow_dispatch+branch%3Amaster++
 .. |Matrix| image:: https://img.shields.io/matrix/rauc:matrix.org?label=matrix%20chat
