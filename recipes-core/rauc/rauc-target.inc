@@ -51,15 +51,17 @@ RRECOMMENDS:${PN}:append = " ${PN}-mark-good"
 
 FILES:${PN}-mark-good = "${systemd_unitdir}/system/rauc-mark-good.service ${sysconfdir}/init.d/rauc-mark-good"
 
-PACKAGES =+ "${PN}-service"
-SYSTEMD_SERVICE:${PN}-service = "${@bb.utils.contains('PACKAGECONFIG', 'service', 'rauc.service', '', d)}"
-SYSTEMD_PACKAGES += "${PN}-service"
-RDEPENDS:${PN}-service += "dbus"
+PACKAGES =+ "${PN}-service ${PN}-service-systemd"
+SYSTEMD_SERVICE:${PN}-service-systemd = "${@bb.utils.contains('PACKAGECONFIG', 'service', 'rauc.service', '', d)}"
+SYSTEMD_PACKAGES += "${PN}-service-systemd"
+RDEPENDS:${PN}-service += "dbus ${@bb.utils.contains('DISTRO_FEATURES', 'systemd', '${PN}-service-systemd', '', d)}"
 
 FILES:${PN}-service = "\
-  ${systemd_unitdir}/system/rauc.service \
   ${datadir}/dbus-1/system.d/de.pengutronix.rauc.conf \
   ${datadir}/dbus-1/system-services/de.pengutronix.rauc.service \
+  "
+FILES:${PN}-service-systemd = "\
+  ${systemd_unitdir}/system/rauc.service \
   ${nonarch_libdir}/systemd/catalog \
   "
 
