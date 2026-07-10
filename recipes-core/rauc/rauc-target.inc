@@ -54,7 +54,7 @@ FILES:${PN}-mark-good = "${systemd_unitdir}/system/rauc-mark-good.service ${sysc
 PACKAGES =+ "${PN}-service"
 SYSTEMD_SERVICE:${PN}-service = "${@bb.utils.contains('PACKAGECONFIG', 'service', 'rauc.service', '', d)}"
 SYSTEMD_PACKAGES += "${PN}-service"
-RDEPENDS:${PN}-service += "dbus"
+RDEPENDS:${PN}-service += "${VIRTUAL-RUNTIME_dbus}"
 
 FILES:${PN}-service = "\
   ${systemd_unitdir}/system/rauc.service \
