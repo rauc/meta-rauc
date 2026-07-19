@@ -8,7 +8,7 @@
 #
 # Also note that you need to configure RAUC_KEY_FILE and RAUC_CERT_FILE to
 # point to contain the full path to your key and cert.
-# Depending on you requirements you can either set them via global
+# Depending on your requirements you can either set them via global
 # configuration or from a bundle recipe bbappend.
 #
 # For testing purpose, you may use the scripts/openssl-ca.sh to create some.

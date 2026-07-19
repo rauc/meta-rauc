@@ -508,7 +508,7 @@ BUNDLE_BASENAME ??= "${PN}"
 BUNDLE_BASENAME[doc] = "Specifies desired output base name of generated RAUC bundle."
 BUNDLE_NAME ??= "${BUNDLE_BASENAME}-${MACHINE}-${DATETIME}"
 BUNDLE_NAME[doc] = "Specifies desired full output name of generated RAUC bundle."
-# Don't include the DATETIME variable in the sstate package sigantures
+# Don't include the DATETIME variable in the sstate package signatures
 BUNDLE_NAME[vardepsexclude] = "DATETIME"
 BUNDLE_LINK_NAME ??= "${BUNDLE_BASENAME}-${MACHINE}"
 BUNDLE_EXTENSION ??= ".raucb"
@@ -518,7 +518,7 @@ ENCRYPTED_BUNDLE_BASENAME ??= "encrypted-${BUNDLE_BASENAME}"
 ENCRYPTED_BUNDLE_BASENAME[doc] = "Specifies desired output base name of generated RAUC crypt bundle."
 ENCRYPTED_BUNDLE_NAME ??= "${ENCRYPTED_BUNDLE_BASENAME}-${MACHINE}-${DATETIME}"
 ENCRYPTED_BUNDLE_NAME[doc] = "Specifies desired full output name of generated RAUC crypt bundle."
-# Don't include the DATETIME variable in the sstate package sigantures
+# Don't include the DATETIME variable in the sstate package signatures
 ENCRYPTED_BUNDLE_NAME[vardepsexclude] = "DATETIME"
 ENCRYPTED_BUNDLE_LINK_NAME ??= "${ENCRYPTED_BUNDLE_BASENAME}-${MACHINE}"
 ENCRYPTED_BUNDLE_EXTENSION ??= "${BUNDLE_EXTENSION}"
@@ -528,7 +528,7 @@ CASYNC_BUNDLE_BASENAME ??= "casync-${BUNDLE_BASENAME}"
 CASYNC_BUNDLE_BASENAME[doc] = "Specifies desired output base name of generated RAUC casync bundle."
 CASYNC_BUNDLE_NAME ??= "${CASYNC_BUNDLE_BASENAME}-${MACHINE}-${DATETIME}"
 CASYNC_BUNDLE_NAME[doc] = "Specifies desired full output name of generated RAUC casync bundle."
-# Don't include the DATETIME variable in the sstate package sigantures
+# Don't include the DATETIME variable in the sstate package signatures
 CASYNC_BUNDLE_NAME[vardepsexclude] = "DATETIME"
 CASYNC_BUNDLE_LINK_NAME ??= "${CASYNC_BUNDLE_BASENAME}-${MACHINE}"
 CASYNC_BUNDLE_EXTENSION ??= "${BUNDLE_EXTENSION}"
