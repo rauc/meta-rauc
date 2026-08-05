@@ -1,4 +1,4 @@
-SRC_URI = " \ 
+SRC_URI = " \
   git://github.com/rauc/rauc.git;protocol=https;branch=master \
   "
 
