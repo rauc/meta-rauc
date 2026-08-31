@@ -23,6 +23,7 @@ PACKAGECONFIG[gpt]     = "-Dgpt=enabled,-Dgpt=disabled,util-linux"
 PACKAGECONFIG[composefs] = "-Dcomposefs=enabled,-Dcomposefs=disabled,composefs"
 PACKAGECONFIG[manpages] = "-Dmanpages=true,-Dmanpages=false,python3-sphinx-native python3-sphinx-rtd-theme-native"
 PACKAGECONFIG[mtd]     = ",,,mtd-utils"
+PACKAGECONFIG[pkcs11-engine] = "-Dpkcs11_engine=true,-Dpkcs11_engine=false,libp11"
 
 FILES:${PN}-dev += "\
   ${datadir}/dbus-1/interfaces/de.pengutronix.rauc.Installer.xml \
