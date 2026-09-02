@@ -430,9 +430,9 @@ do_bundle() {
 		PSEUDO_PREFIX=${STAGING_DIR_NATIVE}/${prefix_native} PSEUDO_DISABLED=0 ${STAGING_BINDIR_NATIVE}/rauc convert \
 			--debug \
 			--trust-environment \
-			--cert=${RAUC_CERT_FILE} \
-			--key=${RAUC_KEY_FILE} \
-			--keyring=${RAUC_KEYRING_FILE} \
+			--cert="${RAUC_CERT_FILE}" \
+			--key="${RAUC_KEY_FILE}" \
+			--keyring="${RAUC_KEYRING_FILE}" \
 			${CONVERT_ARGS} \
 			${B}/bundle.raucb \
 			${B}/casync-bundle.raucb
