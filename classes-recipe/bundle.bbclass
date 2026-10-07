@@ -593,7 +593,17 @@ fakeroot do_bundle() {
 }
 do_bundle[dirs] = "${B}"
 do_bundle[cleandirs] = "${B}"
-do_bundle[file-checksums] += "${RAUC_CERT_FILE}:False ${RAUC_KEY_FILE}:False"
+
+#Rerun do_bundle when the cert or key file changes (PKCS#11 URIs are not files)
+def rauc_signing_file_checksums(d):
+    entries = []
+    for var in ('RAUC_CERT_FILE', 'RAUC_KEY_FILE'):
+        path = d.getVar(var)
+        if path and not path.startswith('pkcs11:'):
+            entries.append('%s:%s' % (path, os.path.exists(path)))
+    return ' '.join(entries)
+
+do_bundle[file-checksums] += "${@rauc_signing_file_checksums(d)}"
 
 addtask bundle after do_configure
 
