@@ -1,0 +1,4 @@
+define KFEATURE_DESCRIPTION "Enable features needed to support RAUC"
+define KFEATURE_COMPATIBILITY all
+
+kconf non-hardware rauc.cfg
