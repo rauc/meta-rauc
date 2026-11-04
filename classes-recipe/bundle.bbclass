@@ -583,9 +583,9 @@ fakeroot do_bundle() {
 		${STAGING_BINDIR_NATIVE}/rauc convert \
 			--debug \
 			--trust-environment \
-			--cert=${RAUC_CERT_FILE} \
-			--key=${RAUC_KEY_FILE} \
-			--keyring=${RAUC_KEYRING_FILE} \
+			--cert="${RAUC_CERT_FILE}" \
+			--key="${RAUC_KEY_FILE}" \
+			--keyring="${RAUC_KEYRING_FILE}" \
 			${CONVERT_ARGS} \
 			${B}/bundle.raucb \
 			${B}/casync-bundle.raucb
