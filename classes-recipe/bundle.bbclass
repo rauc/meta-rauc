@@ -123,6 +123,19 @@
 #   RAUC_KEY_FILE ?= "development-1.key.pem"
 #   RAUC_CERT_FILE ?= "development-1.cert.pem"
 #
+# If the key file is encrypted, or if a PKCS#11 URI is used for RAUC_KEY_FILE,
+# the passphrase, PIN and PKCS#11 module can be passed to rauc with
+#
+#   RAUC_KEY_PASSPHRASE
+#   RAUC_PKCS11_PIN
+#   RAUC_PKCS11_MODULE
+#
+# To avoid storing secrets in configuration files, set them in the shell
+# environment and allow them to pass into BitBake:
+#
+#   export BB_ENV_PASSTHROUGH_ADDITIONS="$BB_ENV_PASSTHROUGH_ADDITIONS RAUC_KEY_PASSPHRASE"
+#   export RAUC_KEY_PASSPHRASE="..."
+#
 # For bundle signature verification a keyring file must be provided
 #
 #   RAUC_KEYRING_FILE ?= "ca.cert.pem"
@@ -265,6 +278,20 @@ RAUC_KEY_FILE ??= ""
 RAUC_KEY_FILE[doc] = "Specifies the path to the RAUC key file used for signing. Use COREBASE to reference files located in any shared BSP folder."
 RAUC_CERT_FILE ??= ""
 RAUC_CERT_FILE[doc] = "Specifies the path to the RAUC cert file used for signing. Use COREBASE to reference files located in any shared BSP folder."
+
+# rauc reads these from the environment. They are only exported if set.
+# Exported variables are dependencies of all shell tasks, so use a fixed
+# value for signatures to keep secrets out of the (shareable) siginfo files
+# and to avoid rebuilds when e.g. only the passphrase changes.
+export RAUC_KEY_PASSPHRASE
+RAUC_KEY_PASSPHRASE[vardepvalue] = ""
+RAUC_KEY_PASSPHRASE[doc] = "Passphrase for an encrypted RAUC_KEY_FILE. Passed to rauc via the environment."
+export RAUC_PKCS11_PIN
+RAUC_PKCS11_PIN[vardepvalue] = ""
+RAUC_PKCS11_PIN[doc] = "PIN for the PKCS#11 token when RAUC_KEY_FILE is a PKCS#11 URI. Passed to rauc via the environment."
+export RAUC_PKCS11_MODULE
+RAUC_PKCS11_MODULE[vardepvalue] = ""
+RAUC_PKCS11_MODULE[doc] = "Path to the PKCS#11 module used when RAUC_KEY_FILE is a PKCS#11 URI. Passed to rauc via the environment."
 RAUC_RECIPIENTS_CERT_FILE ??= ""
 RAUC_RECIPIENTS_CERT_FILE[doc] = "Specifies the path to the RAUC cert file used for encryption. Use COREBASE to reference files located in any shared BSP folder."
 RAUC_KEYRING_FILE ??= ""
